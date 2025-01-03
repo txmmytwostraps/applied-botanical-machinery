@@ -1,5 +1,6 @@
 {
   "parent": "block/block",
+  "ambientocclusion": false,
   "textures": {
     "frame": "botanicalextramachinery:block/malachite_dragonstone_block",
     "livingrock": "botania:block/metamorphic_plains_stone",
