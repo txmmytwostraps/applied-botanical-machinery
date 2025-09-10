@@ -110,6 +110,10 @@ dependencies {
 
     implementation fg.deobf("curse.maven:applied-energistics-2-223794:5641282")
     runtimeOnly fg.deobf("appeng:appliedenergistics2-forge:15.2.13:api")
+
+    // EMI (recipe viewer) - compile against API; include at runtime for dev
+    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+    runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 }
 
 tasks.named('processResources', ProcessResources).configure {
