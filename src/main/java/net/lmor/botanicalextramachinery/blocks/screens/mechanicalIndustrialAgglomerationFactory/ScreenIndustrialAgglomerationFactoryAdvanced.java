@@ -56,6 +56,11 @@ public class ScreenIndustrialAgglomerationFactoryAdvanced extends ExtraScreenBas
 
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ADVANCED_INDUSTRIAL_AGGLOMERATION_FACTORY_GUI, screenAddInventory,

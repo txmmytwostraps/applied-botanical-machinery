@@ -40,6 +40,11 @@ public class ScreenAlfheimMarketBase extends ExtraScreenBase<ContainerAlfheimMar
         blockEntity = this.menu.getBlockEntity();
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.BASE_ALFHEIM_MARKET_GUI, screenAddInventory,

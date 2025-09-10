@@ -49,6 +49,11 @@ public class ScreenManaPoolUpgraded extends ExtraScreenBase<ContainerManaPoolUpg
         slotInfo.setTranslatableText(new String[] { "botanicalextramachinery.tooltip.screen.catalyst_slot"});
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_MECHANICAL_MANA_POOL_GUI, screenAddInventory,

@@ -25,6 +25,11 @@ public class ScreenDaisyBase extends ExtraScreenBase<ContainerDaisyBase> {
         this.imageHeight = ContainerAlfheimMarketBase.HEIGHT_GUI;
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.BASE_MECHANICAL_DAISY_GUI, screenAddInventory,

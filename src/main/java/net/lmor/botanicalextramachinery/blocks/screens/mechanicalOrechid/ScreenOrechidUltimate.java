@@ -67,6 +67,11 @@ public class ScreenOrechidUltimate extends ExtraScreenBase<ContainerOrechidUltim
         slotInfo.setTranslatableText(infoTranslate);
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ULTIMATE_ORECHID_GUI, screenAddInventory,

@@ -59,6 +59,11 @@ public class ScreenJadedAmaranthus extends ExtraScreenBase<ContainerJadedAmarant
         items.add(new ItemStack(ModItems.catalystPetalBlock));
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.JADED_AMARANTHUS_GUI, screenAddInventory,

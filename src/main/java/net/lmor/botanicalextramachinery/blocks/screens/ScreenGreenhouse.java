@@ -70,6 +70,11 @@ public class ScreenGreenhouse extends ExtraScreenBase<ContainerGreenhouse> {
     }
 
     @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
+    @Override
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.GREENHOUSE_GUI, screenAddInventory,
                 new int[] { blockEntity.getCurrentMana(), blockEntity.getEnergyStored(), blockEntity.getCountHeat(), blockEntity.getCountHeat() },

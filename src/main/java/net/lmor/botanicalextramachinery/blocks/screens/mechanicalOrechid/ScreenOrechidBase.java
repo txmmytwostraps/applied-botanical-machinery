@@ -53,6 +53,11 @@ public class ScreenOrechidBase extends ExtraScreenBase<ContainerOrechidBase> {
         slotInfo.setTranslatableText(infoTranslate);
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.BASE_ORECHID_GUI, screenAddInventory,

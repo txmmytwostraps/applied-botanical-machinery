@@ -58,6 +58,11 @@ public class ScreenRunicAltarAdvanced extends ExtraScreenBase<ContainerRunicAlta
         });
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ADVANCED_MECHANICAL_RUNIC_ALTAR_GUI, screenAddInventory,

@@ -52,6 +52,11 @@ public class ScreenAlfheimMarketAdvanced extends ExtraScreenBase<ContainerAlfhei
         slotInfo.setTranslatableText(new String[] { "botanicalextramachinery.tooltip.screen.upgrade_slot" });
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ADVANCED_ALFHEIM_MARKET_GUI, screenAddInventory,

@@ -39,6 +39,11 @@ public class ScreenIndustrialAgglomerationFactoryUpgraded extends ExtraScreenBas
         blockEntity = this.menu.getBlockEntity();
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_INDUSTRIAL_AGGLOMERATION_FACTORY_GUI, screenAddInventory,

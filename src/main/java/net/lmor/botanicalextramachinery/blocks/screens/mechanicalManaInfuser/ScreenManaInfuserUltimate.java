@@ -55,6 +55,11 @@ public class ScreenManaInfuserUltimate extends ExtraScreenBase<ContainerManaInfu
         slotInfo.setTranslatableText(new String[] { "botanicalextramachinery.tooltip.screen.upgrade_slot", "botanicalextramachinery.tooltip.screen.upgrade_slot"});
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ULTIMATE_MANA_INFUSER_GUI, screenAddInventory,

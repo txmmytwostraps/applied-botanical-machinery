@@ -27,7 +27,14 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         super.init();
 
         this.leftPos = (width - this.imageWidth) / 2;
-        this.topPos = (height - this.imageHeight) / 2;
+        // Center the entire GUI (machine + appended player inventory) once during init.
+        // This avoids changing topPos every frame, which can confuse overlay mods like EMI.
+        int effectiveHeight = this.imageHeight;
+        ScreenAddInventory addInv = getAddInventory();
+        if (addInv != null) {
+            effectiveHeight = addInv.getHeightGuiMax(this.imageHeight);
+        }
+        this.topPos = (height - effectiveHeight) / 2;
 
         this.inventoryLabelY = -9999;
         this.titleLabelY = -9999;
@@ -49,8 +56,6 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
             slotInfo.setGuiCoord(this.leftPos, this.topPos);
         }
 
-        this.topPos = (this.height - addInventory.getHeightGuiMax(this.imageHeight)) / 2;
-
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(screenLocation, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
@@ -63,6 +68,12 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         if (bars != null && storageAll.length != 0 && maxStorageAll.length != 0){
             bars.draw(guiGraphics, storageAll, maxStorageAll, checkUpgradeInfinityMana(slotInfo));
         }
+    }
+
+    // Subclasses can override to provide their ScreenAddInventory so the
+    // base class can center the full GUI correctly during init.
+    protected ScreenAddInventory getAddInventory() {
+        return null;
     }
 
     public boolean checkUpgradeInfinityMana(SlotInfo slotInfo){

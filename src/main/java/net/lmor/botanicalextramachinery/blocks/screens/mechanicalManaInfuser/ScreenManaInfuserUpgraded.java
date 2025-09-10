@@ -38,6 +38,11 @@ public class ScreenManaInfuserUpgraded extends ExtraScreenBase<ContainerManaInfu
         blockEntity = this.menu.getBlockEntity();
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_MANA_INFUSER_GUI, screenAddInventory,

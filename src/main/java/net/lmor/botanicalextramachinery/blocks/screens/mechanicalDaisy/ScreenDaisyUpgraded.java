@@ -23,6 +23,11 @@ public class ScreenDaisyUpgraded extends ExtraScreenBase<ContainerDaisyUpgraded>
         this.imageHeight = ContainerDaisyUpgraded.HEIGHT_GUI;
     }
 
+    @Override
+    protected ScreenAddInventory getAddInventory() {
+        return screenAddInventory;
+    }
+
     @OnlyIn(Dist.CLIENT)
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_MECHANICAL_DAISY_GUI, screenAddInventory,
