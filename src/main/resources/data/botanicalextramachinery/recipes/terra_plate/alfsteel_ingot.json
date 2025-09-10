@@ -1,0 +1,20 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        { "type": "forge:mod_loaded", "modid": "mythicbotany" }
+      ],
+      "recipe": {
+        "type": "botania:terra_plate",
+        "ingredients": [
+          { "item": "botania:dragonstone" },
+          { "item": "botania:pixie_dust" },
+          { "item": "botania:elementium_ingot" }
+        ],
+        "mana": 150000,
+        "result": { "item": "mythicbotany:alfsteel_ingot" }
+      }
+    }
+  ]
+}
