@@ -105,7 +105,6 @@ import net.lmor.botanicalextramachinery.blocks.tiles.mechanicalRunicAltar.BlockE
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.fml.ModList;
 import org.moddingx.libx.annotation.registration.Reg;
 import org.moddingx.libx.annotation.registration.RegisterClass;
 import org.moddingx.libx.base.BlockBase;
@@ -165,10 +164,10 @@ public class ModBlocks {
     public static final MenuBlockBE<BlockEntityJadedAmaranthus, ContainerJadedAmaranthus> jadedAmaranthus;
     public static final MenuBlockBE<BlockEntityGreenhouse, ContainerGreenhouse> greenhouse;
 
-    public static final MenuBlockBE<BlockEntityManaInfuserBase, ContainerManaInfuserBase> baseManaInfuser = ModList.get().isLoaded("mythicbotany") ? new BlockManaInfuserBase(ExtraMachinery.getInstance(), BlockEntityManaInfuserBase.class, BlockEntityMenu.createMenuType(ContainerManaInfuserBase::new)) : null;
-    public static final MenuBlockBE<BlockEntityManaInfuserUpgraded, ContainerManaInfuserUpgraded> upgradedManaInfuser = ModList.get().isLoaded("mythicbotany") ? new BlockManaInfuserUpgraded(ExtraMachinery.getInstance(), BlockEntityManaInfuserUpgraded.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUpgraded::new)) : null;
-    public static final MenuBlockBE<BlockEntityManaInfuserAdvanced, ContainerManaInfuserAdvanced> advancedManaInfuser = ModList.get().isLoaded("mythicbotany") ? new BlockManaInfuserAdvanced(ExtraMachinery.getInstance(), BlockEntityManaInfuserAdvanced.class, BlockEntityMenu.createMenuType(ContainerManaInfuserAdvanced::new)) : null;
-    public static final MenuBlockBE<BlockEntityManaInfuserUltimate, ContainerManaInfuserUltimate> ultimateManaInfuser = ModList.get().isLoaded("mythicbotany") ? new BlockManaInfuserUltimate(ExtraMachinery.getInstance(), BlockEntityManaInfuserUltimate.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUltimate::new)) : null;
+    public static final MenuBlockBE<BlockEntityManaInfuserBase, ContainerManaInfuserBase> baseManaInfuser = new BlockManaInfuserBase(ExtraMachinery.getInstance(), BlockEntityManaInfuserBase.class, BlockEntityMenu.createMenuType(ContainerManaInfuserBase::new));
+    public static final MenuBlockBE<BlockEntityManaInfuserUpgraded, ContainerManaInfuserUpgraded> upgradedManaInfuser = new BlockManaInfuserUpgraded(ExtraMachinery.getInstance(), BlockEntityManaInfuserUpgraded.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUpgraded::new));
+    public static final MenuBlockBE<BlockEntityManaInfuserAdvanced, ContainerManaInfuserAdvanced> advancedManaInfuser = new BlockManaInfuserAdvanced(ExtraMachinery.getInstance(), BlockEntityManaInfuserAdvanced.class, BlockEntityMenu.createMenuType(ContainerManaInfuserAdvanced::new));
+    public static final MenuBlockBE<BlockEntityManaInfuserUltimate, ContainerManaInfuserUltimate> ultimateManaInfuser = new BlockManaInfuserUltimate(ExtraMachinery.getInstance(), BlockEntityManaInfuserUltimate.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUltimate::new));
 
     public ModBlocks() {
 
