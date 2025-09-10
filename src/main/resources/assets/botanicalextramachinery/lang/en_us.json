@@ -1,5 +1,5 @@
 {
-  "itemGroup.botanicalextramachinery": "Extra Botanical Machinery",
+  "itemGroup.botanicalextramachinery": "Extra Botanical Machinery Reforged",
 
   "block.botanicalextramachinery.base_mana_pool": "Base Mana Pool",
   "block.botanicalextramachinery.upgraded_mana_pool": "Upgraded Mana Pool",
@@ -168,7 +168,7 @@
   "botanicalextramachinery.tooltip.item.upgradeTickGenMana_1": "§6Increases greenhouse speed by §a25%",
   "botanicalextramachinery.tooltip.item.upgradeTickGenMana_2": "§6Increases greenhouse speed by §a50%",
 
-  "lexicon.botanicalextramachinery.title": "Extra Botanical Machinery",
+  "lexicon.botanicalextramachinery.title": "Extra Botanical Machinery Reforged",
   "lexicon.botanicalextramachinery.description": "An expanded edition of the well-known Botanical Machinery mod. Improved mechanisms up to 4 tiers, as well as new mechanisms that will help you.",
 
   "lexicon.botanicalextramachinery.tiers": "Tiers",
