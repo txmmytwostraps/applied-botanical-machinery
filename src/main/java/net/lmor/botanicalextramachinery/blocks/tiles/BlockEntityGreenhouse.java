@@ -379,7 +379,11 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
                 }
 
                 if (isModAppbot && exportManaME != null&& this.getMainNode() != null && this.getMainNode().getNode() != null && this.getMainNode().isOnline()){
-                    receiveMana(exportManaME.exportManaME(this.getCurrentMana(), this.getMainNode().getNode().getGrid()));
+                    int threshold = (int)(this.getMaxMana() * 0.95);
+                    if (this.getCurrentMana() > threshold) {
+                        int excessMana = this.getCurrentMana() - threshold;
+                        receiveMana(exportManaME.exportManaME(excessMana, this.getMainNode().getNode().getGrid()));
+                    }
                 }
 
                 if (craft && upgrade_heat) {
