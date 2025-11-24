@@ -1,15 +1,62 @@
-name: Build and Release
+name: Auto Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
+      - main
+    paths:
+      - 'gradle.properties'
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.check.outputs.version }}
+      tag_exists: ${{ steps.check.outputs.tag_exists }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if version changed
+        id: check
+        run: |
+          # Get current version
+          CURRENT_VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+          # Check if gradle.properties was modified in this commit
+          if git diff HEAD^ HEAD --name-only | grep -q "gradle.properties"; then
+            # Check if mod_version line changed
+            if git diff HEAD^ HEAD gradle.properties | grep -q "^[+-]mod_version="; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "Version changed to $CURRENT_VERSION"
+            else
+              echo "should_release=false" >> $GITHUB_OUTPUT
+              echo "gradle.properties changed but not mod_version"
+            fi
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "gradle.properties not modified"
+          fi
+
+          # Check if tag already exists
+          if git ls-remote --tags origin | grep -q "refs/tags/v$CURRENT_VERSION$"; then
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+            echo "Tag v$CURRENT_VERSION already exists"
+          else
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-release:
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true' && needs.check-version.outputs.tag_exists == 'false'
     runs-on: ubuntu-latest
 
     steps:
@@ -31,13 +78,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Get version from gradle.properties
-        id: get_version
-        run: |
-          VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
-          echo "mod_version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Building version: $VERSION"
-
       - name: Find JAR file
         id: find_jar
         run: |
@@ -46,14 +86,21 @@ jobs:
           echo "jar_name=$(basename $JAR_PATH)" >> $GITHUB_OUTPUT
           echo "Found JAR: $JAR_PATH"
 
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ needs.check-version.outputs.version }}" -m "Release version ${{ needs.check-version.outputs.version }}"
+          git push origin "v${{ needs.check-version.outputs.version }}"
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.find_jar.outputs.jar_path }}
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ steps.get_version.outputs.mod_version }}
+          tag_name: v${{ needs.check-version.outputs.version }}
+          name: Release ${{ needs.check-version.outputs.version }}
           body: |
-            ## Botanical Extra Machinery Reforged v${{ steps.get_version.outputs.mod_version }}
+            ## Botanical Extra Machinery Reforged v${{ needs.check-version.outputs.version }}
 
             ### Installation
             Download the JAR file below and place it in your `mods` folder.
