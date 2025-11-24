@@ -426,22 +426,32 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     private int[] receiveManaCraft(GenFlowers genFlowers, int flower, ItemStack fuel){
-        int countFlower = flower;
-        int maxMana = this.getMaxMana() - this.getCurrentMana();
+        int manaSpace = this.getMaxMana() - this.getCurrentMana();
+        if (manaSpace <= 0) return null;
 
-        int manaInFlowers = genFlowers.getPerMana(fuel);
+        double heatMultiplier = count_heat >= 10 && count_heat <= 40 ? heatList[(count_heat / 10) - 1] : 1;
+        double manaMultiplier = (upgrade_gen_mana ? 1.25d : 1d) * heatMultiplier;
+        double energyMultiplier = (upgrade_gen_mana ? 2d : 1d) * (upgrade_cost_energy ? 0.5d : 1d);
 
-        while (maxMana < manaInFlowers * countFlower * (upgrade_gen_mana ? 1.25 : 1) * (count_heat <= 40 && count_heat >= 10 ? heatList[(count_heat / 10) - 1] : 1)
-                || this.getEnergyStored() < this.energyCost * countFlower * (upgrade_gen_mana ? 2 : 1) * (upgrade_cost_energy ? 0.5f : 1)){
-            countFlower--;
-        }
+        long manaPerFuel = Math.round(genFlowers.getPerMana(fuel) * manaMultiplier);
+        long energyPerFuel = Math.round(this.energyCost * energyMultiplier);
 
-        if (countFlower == 0) return null;
+        if (manaPerFuel <= 0 || energyPerFuel <= 0 || this.getEnergyStored() < energyPerFuel) return null;
 
-        int fuelCountExtract = Math.min(countFlower, fuel.getCount());
+        int fuelAvailable = Math.min(fuel.getCount(), flower);
 
-        int addMana = (int) (manaInFlowers * fuelCountExtract * (upgrade_gen_mana ? 1.25f : 1) * (count_heat <= 40 && count_heat >= 10 ? heatList[(count_heat / 10) - 1] : 1));
-        int removeEnergy = (int) (this.energyCost * fuelCountExtract * (upgrade_gen_mana ? 2 : 1) * (upgrade_cost_energy ? 0.5f : 1));
+        long craftableByEnergy = this.getEnergyStored() / energyPerFuel;
+        long craftableByMana = manaPerFuel == 0 ? 0 : manaSpace / manaPerFuel;
+
+        long craftCount = manaPerFuel > manaSpace && manaSpace > 0 ? 1 : craftableByMana;
+        craftCount = Math.min(craftCount, craftableByEnergy);
+        craftCount = Math.min(craftCount, fuelAvailable);
+
+        if (craftCount <= 0) return null;
+
+        int fuelCountExtract = (int) craftCount;
+        int addMana = (int) Math.min(manaSpace, manaPerFuel * craftCount);
+        int removeEnergy = (int) Math.min(Integer.MAX_VALUE, energyPerFuel * craftCount);
 
         return new int[] {addMana, fuelCountExtract, removeEnergy};
     }
