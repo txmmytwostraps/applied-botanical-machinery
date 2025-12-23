@@ -161,6 +161,12 @@ public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
         return this.inventory;
     }
 
+    @Override
+    protected java.util.function.BiPredicate<Integer, ItemStack> getInserts(Supplier<IItemHandlerModifiable> supplier) {
+        // Delegate to the centralized insert guard in ExtraBotanicalTile so the "pool full" check is respected.
+        return super.getInserts(supplier);
+    }
+
     protected void updateRecipe(BiConsumer<ItemStack, Integer> usedStacks) {
         this.recipe = null;
         this.checkWithCatalyst = true;

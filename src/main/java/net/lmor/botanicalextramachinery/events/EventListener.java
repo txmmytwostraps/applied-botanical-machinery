@@ -1,6 +1,5 @@
 package net.lmor.botanicalextramachinery.events;
 
-import mythicbotany.register.ModBlocks;
 import net.lmor.botanicalextramachinery.ExtraMachinery;
 import net.lmor.botanicalextramachinery.blocks.flowersGreenhouse.GenFlowers;
 import net.lmor.botanicalextramachinery.blocks.flowersGreenhouse.flowers.*;
@@ -9,11 +8,11 @@ import net.lmor.botanicalextramachinery.blocks.tiles.mechanicalManaPool.BlockEnt
 import net.lmor.botanicalextramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolBase;
 import net.lmor.botanicalextramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolUltimate;
 import net.lmor.botanicalextramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolUpgraded;
+import vazkii.botania.common.block.BotaniaFlowerBlocks;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import vazkii.botania.common.block.BotaniaFlowerBlocks;
 
 @Mod.EventBusSubscriber(modid = ExtraMachinery.MOD_ID)
 public class EventListener {
@@ -40,8 +39,23 @@ public class EventListener {
         GenFlowers.addAllGenFlowers(BotaniaFlowerBlocks.rosaArcana.asItem(), new RosaArcana());
 
         if (ModList.get().isLoaded("mythicbotany")){
-            GenFlowers.addAllGenFlowers(ModBlocks.witherAconite.asItem(), new WitherAconite());
-        }
+            try {
+                Class<?> mbBlocks = Class.forName("mythicbotany.register.ModBlocks");
+                java.lang.reflect.Field f = mbBlocks.getField("witherAconite");
+                Object val = f.get(null);
+                // If it's a RegistryObject or Supplier, try to call get()
+                try {
+                    java.lang.reflect.Method mg = val.getClass().getMethod("get");
+                    val = mg.invoke(val);
+                } catch (Throwable ignored) {}
 
+                if (val instanceof net.minecraft.world.level.block.Block) {
+                    net.minecraft.world.level.block.Block block = (net.minecraft.world.level.block.Block) val;
+                    GenFlowers.addAllGenFlowers(block.asItem(), new WitherAconite());
+                }
+            } catch (Throwable t) {
+                // ignore: if reflection fails, skip adding the flower
+            }
+        }
     }
 }

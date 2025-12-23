@@ -100,8 +100,11 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
         workingTicks = new int[this.countSlotInventory];
 
 
-        this.lazyInventory = ItemCapabilities.create(this.inventory).cast();
-        this.hopperInventory = ItemCapabilities.create(this.inventory, (slot) -> { return this.workingTicks[slot] < 0;}, null).cast();
+        // Disallow insertion into slots that are currently working to prevent automation from inserting
+        // items while the slot is processing (this caused AE2 to keep inserting and void mana/items).
+        BiPredicate<Integer, ItemStack> insertPredicate = (slot, stack) -> this.workingTicks[slot] < 0;
+        this.lazyInventory = ItemCapabilities.create(this.inventory, null, insertPredicate).cast();
+        this.hopperInventory = ItemCapabilities.create(this.inventory, (slot) -> { return this.workingTicks[slot] < 0;}, insertPredicate).cast();
 
         this.setChangedQueued = false;
 
@@ -347,6 +350,10 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
 
         @Nonnull
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            // Prevent external inserts into working slots regardless of ItemCapabilities callers.
+            if (slot >= 0 && slot < workingTicks.length && workingTicks[slot] >= 0) {
+                return stack;
+            }
             return super.insertItem(slot, stack, simulate);
         }
 
@@ -356,13 +363,13 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
                 ItemStack stackInSlot = getInventory().getStackInSlot(slot);
 
                 if (!stackInSlot.isEmpty()) {
-                    int getCountExport = Math.toIntExact(getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
+                     int getCountExport = Math.toIntExact(getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
-                    if (getCountExport > 0) {
+                     if (getCountExport > 0) {
                         stackInSlot.shrink(getCountExport);
                         inventory.setStackInSlot(slot, stackInSlot);
-                    }
-                }
+                     }
+                 }
             }
 
             return super.extractItem(slot, amount, simulate);
