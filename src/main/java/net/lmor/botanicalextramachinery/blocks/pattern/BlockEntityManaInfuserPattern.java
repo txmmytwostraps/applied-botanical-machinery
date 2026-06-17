@@ -40,8 +40,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.world.item.crafting.Recipe<net.minecraft.world.Container>>
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
@@ -61,7 +59,6 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
 
     private boolean isInfinityMana = false;
 
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public BlockEntityManaInfuserPattern(BlockEntityType<?> type, BlockPos pos, BlockState state, int manaCapacity, int countCraft, int[] slots, SettingPattern settingPattern) {
         // Call super first. Use Botania's MANA_INFUSION_TYPE as a safe default for construction.
@@ -96,13 +93,6 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
             // If reflection fails, we keep the original Botania recipeType passed to super and hope validation covers it.
         }
 
-        // Log which recipe type is being used to help debugging recipe matching issues
-        try {
-            if (LOGGER.isDebugEnabled()) LOGGER.debug("BlockEntityManaInfuserPattern using RecipeType: {} (class: {})", finalInfuserType, finalInfuserType.getClass().getName());
-            if (finalInfuserType != vazkii.botania.common.crafting.BotaniaRecipeTypes.MANA_INFUSION_TYPE) {
-                LOGGER.info("BlockEntityManaInfuserPattern: detected non-Botania infuser RecipeType: {}", finalInfuserType);
-            }
-        } catch (Throwable ignored) {}
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 != -1){
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
@@ -371,12 +361,6 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
 
     @Override
     protected boolean matchRecipe(net.minecraft.world.item.crafting.Recipe<net.minecraft.world.Container> recipe, java.util.List<net.minecraft.world.item.ItemStack> stacks) {
-        boolean noMatch = super.matchRecipe(recipe, stacks);
-        try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Testing recipe {}: matched={}, inputs={}", recipe.getId(), !noMatch, stacks);
-            }
-        } catch (Throwable ignored) {}
-        return noMatch;
+        return super.matchRecipe(recipe, stacks);
     }
 }
