@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botanicalextramachinery:catalyst_pattern"
+    },
+    "b": {
+      "item": "minecraft:stone"
+    },
+    "c": {
+      "item": "botania:rune_pride"
+    }
+  },
+  "pattern": [
+    "bcb",
+    "bab",
+    "bcb"
+  ],
+  "result": {
+    "item": "botanicalextramachinery:catalyst_stone_infinity"
+  },
+  "show_notification": true
+}

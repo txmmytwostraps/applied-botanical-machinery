@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botanicalextramachinery:catalyst_pattern"
+    },
+    "b": {
+      "item": "botania:livingrock"
+    },
+    "c": {
+      "item": "botania:runic_altar"
+    },
+    "d": {
+      "item": "botania:rune_envy"
+    }
+  },
+  "pattern": [
+    "bdb",
+    "bab",
+    "bcb"
+  ],
+  "result": {
+    "item": "botanicalextramachinery:catalyst_living_rock_infinity"
+  },
+  "show_notification": true
+}

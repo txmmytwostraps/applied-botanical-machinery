@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botanicalextramachinery:catalyst_pattern"
+    },
+    "b": {
+      "item": "minecraft:redstone_block"
+    },
+    "c": {
+      "item": "botanicalextramachinery:saffron_spark"
+    },
+    "d": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    " c ",
+    "dad",
+    "bbb"
+  ],
+  "result": {
+    "item": "botanicalextramachinery:catalyst_speed"
+  },
+  "show_notification": true
+}
