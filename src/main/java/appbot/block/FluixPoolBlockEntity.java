@@ -16,7 +16,7 @@ import appbot.ABBlocks;
 import appbot.ae2.ManaKey;
 import appbot.ae2.SafeMana;
 import appbot.mixins.ManaPoolBlockEntityAccessor;
-import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
+import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.*;
@@ -79,7 +79,7 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
 
         if (changed) {
             setChanged();
-            markForPotentialSync();
+            markDispatchable();
         }
     }
 
@@ -123,7 +123,7 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
 
         if (oldMana != mana.getMana() || oldManaCap != manaCap) {
             setChanged();
-            markForPotentialSync();
+            markDispatchable();
         }
 
         return Ints.saturatedCast(manaCap);
@@ -250,7 +250,7 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
 
         if (inserted != 0 && mode == Actionable.MODULATE) {
             setChanged();
-            markForPotentialSync();
+            markDispatchable();
         }
 
         return Math.toIntExact(inserted);
@@ -270,7 +270,7 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
 
         if (extracted != 0 && mode == Actionable.MODULATE) {
             setChanged();
-            markForPotentialSync();
+            markDispatchable();
         }
 
         return Math.toIntExact(extracted);

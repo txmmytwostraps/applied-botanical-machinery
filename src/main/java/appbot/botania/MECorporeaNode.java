@@ -13,10 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import vazkii.botania.api.corporea.CorporeaNode;
-import vazkii.botania.api.corporea.CorporeaRequest;
-import vazkii.botania.api.corporea.CorporeaSpark;
-import vazkii.botania.common.impl.corporea.AbstractCorporeaNode;
+import velrondevs.botania.api.corporea.CorporeaNode;
+import velrondevs.botania.api.corporea.CorporeaRequest;
+import velrondevs.botania.api.corporea.CorporeaSpark;
+import velrondevs.botania.common.impl.corporea.AbstractCorporeaNode;
 
 import appeng.api.AECapabilities;
 import appeng.api.config.Actionable;

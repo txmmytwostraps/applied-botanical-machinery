@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import vazkii.botania.client.fx.WispParticleData;
+import velrondevs.botania.client.fx.WispParticleData;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;

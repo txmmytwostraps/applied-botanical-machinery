@@ -7,8 +7,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-import vazkii.botania.api.mana.ManaItem;
-import vazkii.botania.common.handler.BotaniaSounds;
+import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.api.mana.ManaItem;
+import velrondevs.botania.registry.BotaniaSounds;
 
 import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.config.Actionable;
@@ -23,7 +24,7 @@ public class ManaContainerItemStrategy implements ContainerItemStrategy<ManaKey,
             return null;
         }
 
-        var item = ManaItem.LOOKUP.find(stack);
+        var item = stack.getCapability(BotaniaCapabilities.MANA_ITEM);
 
         if (item != null) {
             return new GenericStack(ManaKey.KEY, item.getMana());
@@ -34,12 +35,12 @@ public class ManaContainerItemStrategy implements ContainerItemStrategy<ManaKey,
 
     @Override
     public @Nullable ManaItem findCarriedContext(Player player, AbstractContainerMenu menu) {
-        return ManaItem.LOOKUP.find(menu.getCarried());
+        return menu.getCarried().getCapability(BotaniaCapabilities.MANA_ITEM);
     }
 
     @Override
     public @Nullable ManaItem findPlayerSlotContext(Player player, int slot) {
-        return ManaItem.LOOKUP.find(player.getInventory().getItem(slot));
+        return player.getInventory().getItem(slot).getCapability(BotaniaCapabilities.MANA_ITEM);
     }
 
     @Override

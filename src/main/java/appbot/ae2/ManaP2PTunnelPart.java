@@ -2,19 +2,26 @@ package appbot.ae2;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Predicates;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 import appbot.AppliedBotanics;
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.mana.spark.ManaSpark;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
 
 import appeng.api.config.Actionable;
 import appeng.api.parts.IPartItem;
@@ -29,7 +36,7 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
     private final SparkAttachable sparkAttachable = new P2PSparkAttachable();
 
     public ManaP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, BotaniaForgeCapabilities.getBlockApiLookupById(ManaReceiver.LOOKUP));
+        super(partItem, BotaniaCapabilities.MANA_RECEIVER);
         inputHandler = new InputHandler();
         emptyHandler = new EmptyHandler();
     }
@@ -71,7 +78,19 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
         }
 
         @Override
-        public boolean areIncomingTransfersDone() {
+        public ManaSpark getAttachedSpark() {
+            var sparks = getLevel().getEntitiesOfClass(Entity.class, new AABB(getHost().getLocation().getPos().above()),
+                    Predicates.instanceOf(ManaSpark.class));
+
+            if (sparks.size() == 1) {
+                return (ManaSpark) sparks.get(0);
+            }
+
+            return null;
+        }
+
+        @Override
+        public boolean areIncomingTranfersDone() {
             for (var output : getOutputs()) {
                 try (var guard = output.getAdjacentCapability()) {
                     var receiver = guard.get();
@@ -178,6 +197,15 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
                         }
                     })
                     .reduce(0, Integer::sum);
+        }
+
+        @Override
+        public Optional<DyeColor> getColor() {
+            return Optional.of(DyeColor.PURPLE);
+        }
+
+        @Override
+        public void setColor(Optional<DyeColor> color) {
         }
 
         @Override

@@ -1,9 +1,9 @@
 package appbot.ae2;
 
-import vazkii.botania.api.mana.ManaCollector;
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.api.mana.ManaCollector;
+import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
 
 public class ManaHelper {
 

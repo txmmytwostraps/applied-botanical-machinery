@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import appbot.AppliedBotanics;
-import vazkii.botania.common.block.mana.ManaPoolBlock;
+import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -53,7 +53,7 @@ public class ManaKeyType extends AEKeyType {
 
     @Override
     public int getAmountPerUnit() {
-        return ManaPoolBlock.MAX_MANA;
+        return ManaPoolBlockEntity.MAX_MANA;
     }
 
     @Override

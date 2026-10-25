@@ -15,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import appbot.ae2.ManaP2PTunnelPart;
 import appbot.item.ManaCellItem;
 import appbot.item.PortableManaCellItem;
-import vazkii.botania.common.item.BotaniaItems;
+import velrondevs.botania.registry.BotaniaItems;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.items.IAEItemPowerStorage;

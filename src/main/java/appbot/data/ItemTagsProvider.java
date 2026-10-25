@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper.ResourceType;
 
 import appbot.ABItems;
 import appbot.AppliedBotanics;
-import vazkii.botania.common.lib.BotaniaTags;
+import velrondevs.botania.common.lib.BotaniaTags;
 
 import appeng.api.features.P2PTunnelAttunement;
 

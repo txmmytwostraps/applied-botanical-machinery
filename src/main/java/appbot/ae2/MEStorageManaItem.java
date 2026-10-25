@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import vazkii.botania.api.mana.ManaItem;
+import velrondevs.botania.api.mana.ManaItem;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
@@ -82,22 +82,17 @@ public class MEStorageManaItem implements ManaItem {
     }
 
     @Override
-    public boolean acceptDispatchedManaFromItem(ItemStack otherStack) {
+    public boolean canReceiveManaFromItem(ItemStack otherStack) {
         return true;
     }
 
     @Override
-    public boolean refuseRequestedManaFromItem(ItemStack otherStack) {
-        return false;
-    }
-
-    @Override
-    public boolean canDrainManaToPool(BlockEntity pool) {
+    public boolean canExportManaToPool(BlockEntity pool) {
         return true;
     }
 
     @Override
-    public boolean canSendRequestedManaToItem(ItemStack otherStack) {
+    public boolean canExportManaToItem(ItemStack otherStack) {
         return true;
     }
 

@@ -10,7 +10,7 @@ import appbot.AppliedBotanics;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import vazkii.botania.client.integration.jei.ManaPoolRecipeCategory;
+import velrondevs.botania.client.integration.jei.ManaPoolRecipeCategory;
 
 @JeiPlugin
 public class ABJEIPlugin implements IModPlugin {

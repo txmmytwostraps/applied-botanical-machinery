@@ -1,16 +1,23 @@
 package appbot.ae2;
 
+import java.util.Optional;
+
+import com.google.common.base.Predicates;
 import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.UnknownNullability;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.mana.spark.ManaSpark;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
@@ -83,6 +90,15 @@ public class ManaGenericStackInvStorage implements ManaReceiver, ManaPool, Spark
     }
 
     @Override
+    public Optional<DyeColor> getColor() {
+        return Optional.of(DyeColor.PURPLE);
+    }
+
+    @Override
+    public void setColor(Optional<DyeColor> color) {
+    }
+
+    @Override
     public boolean canAttachSpark(ItemStack stack) {
         return true;
     }
@@ -93,7 +109,19 @@ public class ManaGenericStackInvStorage implements ManaReceiver, ManaPool, Spark
     }
 
     @Override
-    public boolean areIncomingTransfersDone() {
+    public ManaSpark getAttachedSpark() {
+        var sparks = level.getEntitiesOfClass(Entity.class, new AABB(pos.above()),
+                Predicates.instanceOf(ManaSpark.class));
+
+        if (sparks.size() == 1) {
+            return (ManaSpark) sparks.get(0);
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean areIncomingTranfersDone() {
         return !isFull();
     }
 

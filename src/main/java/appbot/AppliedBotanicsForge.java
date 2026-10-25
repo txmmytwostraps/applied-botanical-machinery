@@ -21,12 +21,8 @@ import appbot.ae2.*;
 import appbot.botania.MECorporeaNode;
 import appbot.data.ABDataGenerator;
 import appbot.item.cell.ManaCellHandler;
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.mana.ManaItem;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
-import vazkii.botania.common.block.mana.ManaPoolBlock;
-import vazkii.botania.common.integration.corporea.CorporeaNodeDetectors;
+import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.common.integration.corporea.CorporeaNodeDetectors;
 
 import appeng.api.AECapabilities;
 import appeng.api.behaviors.ContainerItemStrategy;
@@ -81,10 +77,10 @@ public class AppliedBotanicsForge {
         });
         bus.addListener(EventPriority.LOWEST, this::registerGenericAdapters);
         bus.addListener((RegisterPartCapabilitiesEvent event) -> {
-            event.register(BotaniaForgeCapabilities.getBlockApiLookupById(ManaReceiver.LOOKUP),
+            event.register(BotaniaCapabilities.MANA_RECEIVER,
                     (object, context) -> object.getExposedApi(),
                     ManaP2PTunnelPart.class);
-            event.register(BotaniaForgeCapabilities.getBlockApiLookupById(SparkAttachable.LOOKUP),
+            event.register(BotaniaCapabilities.SPARK_ATTACHABLE,
                     (object, context) -> object.getSparkAttachable(),
                     ManaP2PTunnelPart.class);
         });
@@ -94,7 +90,8 @@ public class AppliedBotanicsForge {
         StackWorldBehaviors.registerExternalStorageStrategy(ManaKeyType.TYPE, ManaExternalStorageStrategy::new);
 
         ContainerItemStrategy.register(ManaKeyType.TYPE, ManaKey.class, new ManaContainerItemStrategy());
-        GenericSlotCapacities.register(ManaKeyType.TYPE, (long) ManaPoolBlock.MAX_MANA_DILUTED);
+        // A diluted mana pool's capacity; Botania Revived keeps its own constant private
+        GenericSlotCapacities.register(ManaKeyType.TYPE, 10000L);
 
         bus.addListener((FMLCommonSetupEvent event) -> {
             CorporeaNodeDetectors.register(MECorporeaNode::getNode);
@@ -134,7 +131,7 @@ public class AppliedBotanicsForge {
                 continue;
             }
 
-            event.registerBlock(BotaniaForgeCapabilities.getBlockApiLookupById(ManaReceiver.LOOKUP),
+            event.registerBlock(BotaniaCapabilities.MANA_RECEIVER,
                     (level, pos, state, blockEntity, context) -> {
                         var genericInv = level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, pos, state,
                                 blockEntity,
@@ -144,7 +141,7 @@ public class AppliedBotanicsForge {
                         }
                         return null;
                     }, block);
-            event.registerBlock(BotaniaForgeCapabilities.getBlockApiLookupById(SparkAttachable.LOOKUP),
+            event.registerBlock(BotaniaCapabilities.SPARK_ATTACHABLE,
                     (level, pos, state, blockEntity, context) -> {
                         // assume the spark is accessing the up face (might not work with spark tinkerer)
                         var genericInv = level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, pos, state,
@@ -161,7 +158,7 @@ public class AppliedBotanicsForge {
                 continue;
             }
 
-            event.registerItem(BotaniaForgeCapabilities.getItemApiLookupById(ManaItem.LOOKUP), (object, context) -> {
+            event.registerItem(BotaniaCapabilities.MANA_ITEM, (object, context) -> {
                 return MEStorageManaItem.forItem(object);
             }, item);
         }

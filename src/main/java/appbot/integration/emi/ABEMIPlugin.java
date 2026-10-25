@@ -4,7 +4,7 @@ import appbot.ABBlocks;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
-import vazkii.botania.client.integration.emi.BotaniaEmiPlugin;
+import velrondevs.botania.client.integration.emi.BotaniaEmiPlugin;
 
 public class ABEMIPlugin implements EmiPlugin {
 

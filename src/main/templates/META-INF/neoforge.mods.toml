@@ -33,6 +33,6 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "botania"
 type = "required"
-versionRange = "[454-SNAPSHOT,)"
+versionRange = "[1.0.3,2)"
 ordering = "AFTER"
 side = "BOTH"

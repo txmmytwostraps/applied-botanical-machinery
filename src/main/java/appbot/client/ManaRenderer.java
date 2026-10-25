@@ -1,6 +1,6 @@
 package appbot.client;
 
-import static vazkii.botania.api.BotaniaAPI.botaniaRL;
+import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +41,7 @@ public class ManaRenderer implements AEKeyRenderHandler<ManaKey> {
         if (this.waterSprite == null)
             this.waterSprite = Objects.requireNonNull(
                     Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                            .apply(botaniaRL("block/mana_water")));
+                            .apply(prefix("block/mana_water")));
     }
 
     @Override

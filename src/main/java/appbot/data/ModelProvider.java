@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import appbot.ABBlocks;
 import appbot.ABItems;
 import appbot.AppliedBotanics;
-import vazkii.botania.common.block.BotaniaBlocks;
+import velrondevs.botania.registry.BotaniaBlocks;
 
 import appeng.core.AppEng;
 
@@ -23,7 +23,7 @@ public class ModelProvider extends BlockStateProvider {
     private static final ResourceLocation STORAGE_CELL_LED = AppEng.makeId("item/storage_cell_led");
     private static final ResourceLocation PORTABLE_CELL_LED = AppEng.makeId("item/portable_cell_led");
     private static final ResourceLocation MANASTEEL_BLOCK = ModelLocationUtils
-            .getModelLocation(BotaniaBlocks.MANASTEEL_BLOCK);
+            .getModelLocation(BotaniaBlocks.manasteelBlock);
 
     // copied from ItemModelProvider
     protected static final ExistingFileHelper.ResourceType TEXTURE = new ExistingFileHelper.ResourceType(

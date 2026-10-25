@@ -4,13 +4,13 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import appbot.ae2.ManaHelper;
 import appbot.ae2.SafeMana;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.common.block.block_entity.*;
-import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
-import vazkii.botania.common.block.block_entity.mana.ManaSplitterBlockEntity;
-import vazkii.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
-import vazkii.botania.common.block.block_entity.mana.PowerGeneratorBlockEntity;
-import vazkii.botania.common.block.mana.ManaVoidBlock;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.common.block.block_entity.*;
+import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
+import velrondevs.botania.common.block.block_entity.mana.ManaSplitterBlockEntity;
+import velrondevs.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
+import velrondevs.botania.common.block.block_entity.mana.PowerGeneratorBlockEntity;
+import velrondevs.botania.common.block.mana.ManaVoidBlock;
 
 import appeng.api.config.Actionable;
 
@@ -51,7 +51,7 @@ class TAPBE implements SafeMana {
 }
 
 @Mixin({ ManaSpreaderBlockEntity.class, PowerGeneratorBlockEntity.class, LifeImbuerBlockEntity.class,
-        RunicAltarBlockEntity.class, AvatarBlockEntity.class, BotanicalBreweryBlockEntity.class,
+        RunicAltarBlockEntity.class, AvatarBlockEntity.class, BreweryBlockEntity.class,
         ManaEnchanterBlockEntity.class })
 class ClampedAboveInsertOnly implements SafeMana {
     @Override

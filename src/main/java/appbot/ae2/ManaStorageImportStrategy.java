@@ -7,8 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.api.mana.ManaReceiver;
 
 import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.behaviors.StackTransferContext;
@@ -23,7 +23,7 @@ public class ManaStorageImportStrategy implements StackImportStrategy {
     public ManaStorageImportStrategy(ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
-        this.apiCache = BlockCapabilityCache.create(BotaniaForgeCapabilities.getBlockApiLookupById(ManaReceiver.LOOKUP),
+        this.apiCache = BlockCapabilityCache.create(BotaniaCapabilities.MANA_RECEIVER,
                 level, fromPos, fromSide);
     }
 
