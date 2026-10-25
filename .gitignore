@@ -3,6 +3,8 @@
 .vscode/
 build/
 run/
+run-data/
+run-server/
 
 # Local mod jars (Botania Revived is not ours to redistribute here)
 libs/*.jar
