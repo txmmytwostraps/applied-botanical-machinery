@@ -23,6 +23,10 @@ Botany and JEI are optional.
 
 Report issues with this port here, not to the original authors.
 
+## Building
+
+Run `./gradlew runData`, then `./gradlew build`. The jar lands in `build/libs/`.
+
 ## License
 
 LGPL-3.0. The Botanical Machinery and Extra Machinery code stays under Apache-2.0. Applied Botanics assets are under
