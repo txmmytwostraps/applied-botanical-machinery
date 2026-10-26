@@ -1,0 +1,20 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery.industrial_agglomeration_factory",
+  "category": "botania:appliedbotanicalmachinery",
+  "icon": "appliedbotanicalmachinery:industrial_agglomeration_factory",
+  "entry_color": "aa00aa",
+  "advancement": "botania:main/terrasteel_pickup",
+  "pages": [
+    {
+      "type": "text",
+      "title": "lexicon.appliedbotanicalmachinery.industrial_agglomeration_factory",
+      "text": "lexicon.appliedbotanicalmachinery.industrial_agglomeration_factory.page1"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery.industrial_agglomeration_factory",
+      "text": "lexicon.appliedbotanicalmachinery.industrial_agglomeration_factory.recipe",
+      "recipe": "appliedbotanicalmachinery:industrial_agglomeration_factory"
+    }
+  ]
+}

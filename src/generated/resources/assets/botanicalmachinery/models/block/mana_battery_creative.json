@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "botanicalmachinery:block/mana_battery_creative_front",
-    "side": "botanicalmachinery:block/mana_battery_creative_side",
-    "top": "botanicalmachinery:block/mana_battery_creative_top"
-  }
-}

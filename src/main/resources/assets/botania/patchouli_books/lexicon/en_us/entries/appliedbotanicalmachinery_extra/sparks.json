@@ -1,0 +1,48 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery_extra.sparks",
+  "category": "botania:appliedbotanicalmachinery_extra",
+  "icon": "appliedbotanicalmachinery:base_spark",
+  "entry_color": "cc425e",
+  "pages": [
+    {
+      "type": "text",
+      "title": "lexicon.appliedbotanicalmachinery_extra.sparks",
+      "text": "lexicon.appliedbotanicalmachinery_extra.sparks.page_1"
+    },
+    {
+      "type": "crafting",
+      "title": "item.appliedbotanicalmachinery.base_spark",
+      "recipe": "appliedbotanicalmachinery:base_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.malachite_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/malachite_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.saffron_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/saffron_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.shadow_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/shadow_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.crimson_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/crimson_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.aureate_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/aureate_spark"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "item.appliedbotanicalmachinery.mazarine_spark",
+      "recipe": "appliedbotanicalmachinery:runic_altar/mazarine_spark"
+    }
+  ]
+}

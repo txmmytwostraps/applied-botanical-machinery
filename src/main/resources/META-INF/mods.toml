@@ -4,7 +4,7 @@ issueTrackerURL = "https://github.com/ChaoticTrials/BotanicalMachinery/issues/"
 license="Apache 2.0"
 
 [[mods]]
-modId="botanicalmachinery"
+modId="appliedbotanicalmachinery"
 version="${version}"
 displayName="Botanical Machinery"
 updateJSONURL="https://assets.melanx.de/updates/botanical-machinery.json"
@@ -14,28 +14,28 @@ description='''
 A Minecraft addon mod for Botania which makes automation easier.
 '''
 
-[[dependencies.botanicalmachinery]]
+[[dependencies.appliedbotanicalmachinery]]
     modId="minecraft"
     mandatory=true
     versionRange="[${minecraft}]"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.botanicalmachinery]]
+[[dependencies.appliedbotanicalmachinery]]
     modId="forge"
     mandatory=true
     versionRange="[${forge},)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.botanicalmachinery]]
+[[dependencies.appliedbotanicalmachinery]]
     modId="libx"
     mandatory=true
     versionRange="[1.19.2-4.2.8,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.botanicalmachinery]]
+[[dependencies.appliedbotanicalmachinery]]
     modId="botania"
     mandatory=true
     versionRange="[1.19.2-439,)"

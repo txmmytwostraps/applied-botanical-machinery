@@ -1,0 +1,52 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery_extra.tiers",
+  "category": "botania:appliedbotanicalmachinery_extra",
+  "icon": "appliedbotanicalmachinery:crystal_ingot_block",
+  "entry_color": "cc425e",
+  "pages": [
+    {
+      "type": "text",
+      "title": "lexicon.appliedbotanicalmachinery_extra.tiers",
+      "text": "lexicon.appliedbotanicalmachinery_extra.tiers.page_1"
+    },
+    {
+      "type": "text",
+      "text": "lexicon.appliedbotanicalmachinery_extra.tiers.page_2"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.crystal_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/crystal_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.malachite_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/malachite_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.saffron_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/saffron_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.shadow_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/shadow_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.crimson_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/crimson_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.aureate_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/aureate_ingot"
+    },
+    {
+      "type": "botania:terrasteel",
+      "title": "item.appliedbotanicalmachinery.mazarine_ingot",
+      "recipe": "appliedbotanicalmachinery:terra_plate/mazarine_ingot"
+    }
+  ]
+}

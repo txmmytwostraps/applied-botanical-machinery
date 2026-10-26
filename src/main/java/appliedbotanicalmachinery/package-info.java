@@ -1,0 +1,7 @@
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+package appliedbotanicalmachinery;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import net.minecraft.MethodsReturnNonnullByDefault;

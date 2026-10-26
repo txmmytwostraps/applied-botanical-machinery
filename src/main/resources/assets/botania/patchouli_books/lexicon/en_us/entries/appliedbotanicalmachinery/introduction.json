@@ -1,0 +1,14 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery.introduction",
+  "category": "botania:appliedbotanicalmachinery",
+  "priority": true,
+  "icon": "botania:elementium_ingot",
+  "entry_color": "aa00aa",
+  "advancement": "botania:recipes/decorations/alfheim_portal",
+  "pages": [
+    {
+      "type": "text",
+      "text": "lexicon.appliedbotanicalmachinery.introduction.page1"
+    }
+  ]
+}

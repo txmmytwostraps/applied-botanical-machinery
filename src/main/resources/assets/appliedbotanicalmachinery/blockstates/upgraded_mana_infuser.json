@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "appliedbotanicalmachinery:block/upgraded_mana_infuser",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "appliedbotanicalmachinery:block/upgraded_mana_infuser"
+    },
+    "facing=south": {
+      "model": "appliedbotanicalmachinery:block/upgraded_mana_infuser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "appliedbotanicalmachinery:block/upgraded_mana_infuser",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery.mana_battery",
+  "category": "botania:appliedbotanicalmachinery",
+  "icon": "appliedbotanicalmachinery:mana_battery",
+  "entry_color": "aa00aa",
+  "advancement": "botania:main/gaia_guardian_kill",
+  "pages": [
+    {
+      "type": "text",
+      "text": "lexicon.appliedbotanicalmachinery.mana_battery.page1"
+    },
+    {
+      "type": "crafting",
+      "text": "lexicon.appliedbotanicalmachinery.mana_battery.recipe",
+      "recipe": "appliedbotanicalmachinery:mana_battery"
+    }
+  ]
+}

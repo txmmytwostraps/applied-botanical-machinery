@@ -1,0 +1,81 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery_extra.upgrades",
+  "category": "botania:appliedbotanicalmachinery_extra",
+  "icon": "appliedbotanicalmachinery:greenhouse",
+  "entry_color": "cc425e",
+  "pages": [
+    {
+      "type": "text",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_1"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.slots_flower",
+      "recipe": "appliedbotanicalmachinery:upgrade_flower_4x",
+      "recipe2": "appliedbotanicalmachinery:upgrade_flower_16x"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.slots_flower",
+      "recipe": "appliedbotanicalmachinery:upgrade_flower_32x",
+      "recipe2": "appliedbotanicalmachinery:upgrade_flower_64x"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.gen_mana",
+      "recipe": "appliedbotanicalmachinery:upgrade_gen_mana",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_2"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.heat",
+      "recipe": "appliedbotanicalmachinery:upgrade_heat_greenhouse",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_3"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.slot_add",
+      "recipe": "appliedbotanicalmachinery:upgrade_slot_add",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_4"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.storage_mana",
+      "recipe": "appliedbotanicalmachinery:upgrade_storage_mana_1",
+      "recipe2": "appliedbotanicalmachinery:upgrade_storage_mana_2"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedbotanicalmachinery:upgrade_storage_mana_3",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_5"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.storage_energy",
+      "recipe": "appliedbotanicalmachinery:upgrade_storage_energy_1",
+      "recipe2": "appliedbotanicalmachinery:upgrade_storage_energy_2"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedbotanicalmachinery:upgrade_storage_energy_3",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_6"
+    },
+    {
+      "type": "botania:runic_altar",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.tick_gen_mana",
+      "recipe": "appliedbotanicalmachinery:runic_altar/upgrade_tick_gen_mana_1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "appliedbotanicalmachinery:upgrade_tick_gen_mana_2",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_7"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.upgrades.cost_energy",
+      "recipe": "appliedbotanicalmachinery:upgrade_cost_energy",
+      "text": "lexicon.appliedbotanicalmachinery_extra.upgrades.page_8"
+    }
+  ]
+}

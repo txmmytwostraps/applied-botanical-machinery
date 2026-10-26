@@ -1,0 +1,33 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "mythicbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:terrasteel_block"
+    },
+    "b": {
+      "item": "appliedbotanicalmachinery:saffron_ingot"
+    },
+    "c": {
+      "item": "appliedbotanicalmachinery:base_mana_infuser"
+    },
+    "d": {
+      "item": "appliedbotanicalmachinery:saffron_dragonstone_block"
+    }
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "ddd"
+  ],
+  "result": {
+    "item": "appliedbotanicalmachinery:upgraded_mana_infuser"
+  },
+  "show_notification": true
+}

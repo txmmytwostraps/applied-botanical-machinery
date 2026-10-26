@@ -1,0 +1,32 @@
+{
+  "gui.appliedbotanicalmachinery.mana": "Mana",
+
+  "itemGroup.appliedbotanicalmachinery.tab": "Applied Botanics",
+
+  "block.appliedbotanicalmachinery.fluix_mana_pool": "Fluix Manapool",
+
+  "item.appliedbotanicalmachinery.mana_cell_housing": "ME Mana Zellengehäuse",
+  "item.appliedbotanicalmachinery.creative_mana_cell": "Creative ME Mana Zelle",
+
+  "item.appliedbotanicalmachinery.mana_cell_1k": "1k ME Manaspeicherzelle",
+  "item.appliedbotanicalmachinery.mana_cell_4k": "4k ME Manaspeicherzelle",
+  "item.appliedbotanicalmachinery.mana_cell_16k": "16k ME Manaspeicherzelle",
+  "item.appliedbotanicalmachinery.mana_cell_64k": "64k ME Manaspeicherzelle",
+  "item.appliedbotanicalmachinery.mana_cell_256k": "256k ME Manaspeicherzelle",
+
+  "item.appliedbotanicalmachinery.portable_mana_cell_1k": "1k portable Manazelle",
+  "item.appliedbotanicalmachinery.portable_mana_cell_4k": "4k portable Manazelle",
+  "item.appliedbotanicalmachinery.portable_mana_cell_16k": "16k portable Manazelle",
+  "item.appliedbotanicalmachinery.portable_mana_cell_64k": "64k portable Manazelle",
+  "item.appliedbotanicalmachinery.portable_mana_cell_256k": "256k portable Manazelle",
+
+  "item.appliedbotanicalmachinery.mana_p2p_tunnel": "Mana P2P Tunnel",
+
+  "appliedbotanicalmachinery.entry.fluix_mana_pool": "Fluix Manapool",
+  "appliedbotanicalmachinery.page.fluix_mana_pool0": "Der $(item)Fluix Manapool$(0) arbeitet mit $(thing)Mana$(0) vom angeschlossenen ME System",
+  "appliedbotanicalmachinery.page.fluix_mana_pool1": "ist doch gar nicht so schlimm",
+
+  "appliedbotanicalmachinery.entry.mana_drives": "Manalaufwerk",
+  "appliedbotanicalmachinery.page.mana_drives0": "Wolltest du etwa mit Magie aufhören und realistisch werden? Schäm dich.",
+  "appliedbotanicalmachinery.page.mana_drives1": "genau das, was Vazkii nie wollte"
+}

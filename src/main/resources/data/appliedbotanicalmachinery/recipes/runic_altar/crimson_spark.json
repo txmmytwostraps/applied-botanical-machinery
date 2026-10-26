@@ -1,0 +1,33 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "item": "botania:rune_lust"
+    },
+    {
+      "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:rune_wrath"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "appliedbotanicalmachinery:shadow_spark"
+    },
+    {
+      "item": "appliedbotanicalmachinery:crimson_ingot_block"
+    },
+    {
+      "item": "appliedbotanicalmachinery:crimson_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:crimson_dragonstone_block"
+    }
+  ],
+  "mana": 1000000,
+  "output": {
+    "item": "appliedbotanicalmachinery:crimson_spark"
+  }
+}

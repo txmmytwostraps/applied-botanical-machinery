@@ -1,0 +1,18 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery.mechanical_mana_pool",
+  "category": "botania:appliedbotanicalmachinery",
+  "icon": "appliedbotanicalmachinery:mechanical_mana_pool",
+  "entry_color": "aa00aa",
+  "advancement": "botania:main/mana_pool_pickup",
+  "pages": [
+    {
+      "type": "text",
+      "text": "lexicon.appliedbotanicalmachinery.mechanical_mana_pool.page1"
+    },
+    {
+      "type": "crafting",
+      "text": "lexicon.appliedbotanicalmachinery.mechanical_mana_pool.recipe",
+      "recipe": "appliedbotanicalmachinery:mechanical_mana_pool"
+    }
+  ]
+}

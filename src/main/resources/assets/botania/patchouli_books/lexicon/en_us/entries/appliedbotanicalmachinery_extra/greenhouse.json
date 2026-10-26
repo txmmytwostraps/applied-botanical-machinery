@@ -1,0 +1,22 @@
+{
+  "name": "lexicon.appliedbotanicalmachinery_extra.greenhouse",
+  "category": "botania:appliedbotanicalmachinery_extra",
+  "icon": "appliedbotanicalmachinery:greenhouse",
+  "entry_color": "cc425e",
+  "pages": [
+    {
+      "type": "text",
+      "title": "lexicon.appliedbotanicalmachinery_extra.greenhouse",
+      "text": "lexicon.appliedbotanicalmachinery_extra.greenhouse.page_1"
+    },
+    {
+      "type": "text",
+      "text": "lexicon.appliedbotanicalmachinery_extra.greenhouse.page_2"
+    },
+    {
+      "type": "crafting",
+      "title": "lexicon.appliedbotanicalmachinery_extra.greenhouse",
+      "recipe": "appliedbotanicalmachinery:greenhouse"
+    }
+  ]
+}

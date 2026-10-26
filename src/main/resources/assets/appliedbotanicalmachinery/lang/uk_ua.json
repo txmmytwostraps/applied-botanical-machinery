@@ -1,0 +1,26 @@
+{
+  "gui.appliedbotanicalmachinery.mana": "Мана",
+
+  "itemGroup.appliedbotanicalmachinery.tab": "Applied Botanics",
+
+  "block.appliedbotanicalmachinery.fluix_mana_pool": "Флюїсовий басейн мани",
+  "item.appliedbotanicalmachinery.mana_cell_housing": "МE корпус для мана комірки",
+  "item.appliedbotanicalmachinery.creative_mana_cell": "Творча МЕ мана комірка",
+  "item.appliedbotanicalmachinery.mana_cell_1k": "1K МЕ мана комірка зберігання",
+  "item.appliedbotanicalmachinery.mana_cell_4k": "4K МЕ мана комірка зберігання",
+  "item.appliedbotanicalmachinery.mana_cell_16k": "16K МЕ мана комірка зберігання",
+  "item.appliedbotanicalmachinery.mana_cell_64k": "64K МЕ мана комірка зберігання",
+  "item.appliedbotanicalmachinery.mana_cell_256k": "256K МЕ мана комірка зберігання",
+  "item.appliedbotanicalmachinery.portable_mana_cell_1k": "1K Переносна мана комірка",
+  "item.appliedbotanicalmachinery.portable_mana_cell_4k": "4K Переносна мана комірка",
+  "item.appliedbotanicalmachinery.portable_mana_cell_16k": "16K Переносна мана комірка",
+  "item.appliedbotanicalmachinery.portable_mana_cell_64k": "64K Переносна мана комірка",
+  "item.appliedbotanicalmachinery.portable_mana_cell_256k": "256K Переносна мана комірка",
+  "item.appliedbotanicalmachinery.mana_p2p_tunnel": "Мана P2P тунель",
+  "appliedbotanicalmachinery.entry.fluix_mana_pool": "Флюїсовий басейн мани",
+  "appliedbotanicalmachinery.page.fluix_mana_pool0": "$(item)Флюїсовий басейн мани$(0) працює з $(thing)Маною$(0) із приєднаної до нього МЕ системи",
+  "appliedbotanicalmachinery.page.fluix_mana_pool1": "не так вже й погано",
+  "appliedbotanicalmachinery.entry.mana_drives": "Мана-дисковід",
+  "appliedbotanicalmachinery.page.mana_drives0": "Коли-небудь хотіли кинути магію під шину з метою переходу в цифру? Ганьба Вам",
+  "appliedbotanicalmachinery.page.mana_drives1": "саме те, чого vazkii ніколи не хотів"
+}
