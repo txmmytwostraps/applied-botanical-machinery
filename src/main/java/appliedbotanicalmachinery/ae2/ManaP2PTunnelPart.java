@@ -227,7 +227,7 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
         }
     }
 
-    private class EmptyHandler implements ManaReceiver {
+    private class EmptyHandler implements ManaReceiver, SafeMana {
 
         @Override
         public Level getManaReceiverLevel() {
@@ -256,6 +256,16 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
         @Override
         public boolean canReceiveManaFromBursts() {
             return false;
+        }
+
+        @Override
+        public int insert(int amount, Actionable mode) {
+            return 0;
+        }
+
+        @Override
+        public int extract(int amount, Actionable mode) {
+            return 0;
         }
     }
 }

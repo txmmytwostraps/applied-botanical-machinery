@@ -35,6 +35,10 @@ public class MECorporeaNode extends AbstractCorporeaNode {
 
     @Nullable
     public static CorporeaNode getNode(Level level, CorporeaSpark spark) {
+        if (level.isClientSide()) {
+            return null;
+        }
+
         var accessor = level.getCapability(AECapabilities.ME_STORAGE, spark.getAttachPos(), Direction.UP);
 
         if (accessor != null) {
