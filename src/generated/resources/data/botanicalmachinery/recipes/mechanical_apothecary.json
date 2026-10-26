@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:aura_ring_greater"
+    },
+    "e": {
+      "tag": "botania:elementium_ingots"
+    },
+    "s": {
+      "item": "botania:apothecary_default"
+    },
+    "x": {
+      "tag": "botania:petals"
+    }
+  },
+  "pattern": [
+    "exe",
+    "xax",
+    "ese"
+  ],
+  "result": {
+    "item": "botanicalmachinery:mechanical_apothecary"
+  },
+  "show_notification": true
+}

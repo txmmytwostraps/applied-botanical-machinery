@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:aura_ring_greater"
+    },
+    "e": {
+      "tag": "botania:elementium_ingots"
+    },
+    "s": {
+      "item": "botania:fabulous_pool"
+    },
+    "x": {
+      "item": "botania:alchemy_catalyst"
+    },
+    "y": {
+      "item": "botania:diluted_pool"
+    },
+    "z": {
+      "item": "botania:conjuration_catalyst"
+    }
+  },
+  "pattern": [
+    "eye",
+    "xaz",
+    "ese"
+  ],
+  "result": {
+    "item": "botanicalmachinery:mechanical_mana_pool"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:aura_ring_greater"
+    },
+    "e": {
+      "tag": "botania:elementium_ingots"
+    },
+    "s": {
+      "item": "botania:alfheim_portal"
+    },
+    "x": {
+      "item": "botania:glimmering_livingwood"
+    },
+    "y": {
+      "item": "botania:dreamwood"
+    },
+    "z": {
+      "item": "botania:glimmering_livingwood"
+    }
+  },
+  "pattern": [
+    "eye",
+    "xaz",
+    "ese"
+  ],
+  "result": {
+    "item": "botanicalmachinery:alfheim_market"
+  },
+  "show_notification": true
+}

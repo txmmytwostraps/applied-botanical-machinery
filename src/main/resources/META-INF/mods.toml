@@ -1,0 +1,43 @@
+modLoader="javafml"
+loaderVersion="[${fml},)"
+issueTrackerURL = "https://github.com/ChaoticTrials/BotanicalMachinery/issues/"
+license="Apache 2.0"
+
+[[mods]]
+modId="botanicalmachinery"
+version="${version}"
+displayName="Botanical Machinery"
+updateJSONURL="https://assets.melanx.de/updates/botanical-machinery.json"
+displayURL = "https://wiki.chaotictrials.de/swl/botanical-machinery"
+authors="MelanX"
+description='''
+A Minecraft addon mod for Botania which makes automation easier.
+'''
+
+[[dependencies.botanicalmachinery]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${minecraft}]"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.botanicalmachinery]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${forge},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.botanicalmachinery]]
+    modId="libx"
+    mandatory=true
+    versionRange="[1.19.2-4.2.8,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.botanicalmachinery]]
+    modId="botania"
+    mandatory=true
+    versionRange="[1.19.2-439,)"
+    ordering="NONE"
+    side="BOTH"

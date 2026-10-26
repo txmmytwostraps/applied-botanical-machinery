@@ -1,0 +1,72 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "criterion0": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "botania:dragonstone_gems"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "criterion1": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "botania:gaia_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "criterion2": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "botania:mana_ring_greater"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "criterion3": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "botanicalmachinery:mana_emerald_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "botanicalmachinery:mana_battery"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "criterion0",
+      "criterion1",
+      "criterion2",
+      "criterion3",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "botanicalmachinery:mana_battery"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "botanicalmachinery:mana_emerald_block"
+    },
+    "d": {
+      "tag": "botania:dragonstone_gems"
+    },
+    "g": {
+      "item": "botania:gaia_ingot"
+    },
+    "r": {
+      "item": "botania:mana_ring_greater"
+    }
+  },
+  "pattern": [
+    "dgd",
+    "grg",
+    "dbd"
+  ],
+  "result": {
+    "item": "botanicalmachinery:mana_battery"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:aura_ring_greater"
+    },
+    "e": {
+      "tag": "botania:elementium_ingots"
+    },
+    "s": {
+      "item": "botania:brewery"
+    },
+    "x": {
+      "item": "botania:flask"
+    },
+    "y": {
+      "item": "minecraft:blaze_rod"
+    },
+    "z": {
+      "item": "botania:flask"
+    }
+  },
+  "pattern": [
+    "eye",
+    "xaz",
+    "ese"
+  ],
+  "result": {
+    "item": "botanicalmachinery:mechanical_brewery"
+  },
+  "show_notification": true
+}
