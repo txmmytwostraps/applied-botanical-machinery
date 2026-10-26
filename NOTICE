@@ -1,0 +1,38 @@
+Applied Botanical Machinery
+Copyright (c) 2026 txmmytwostraps
+
+This is an unofficial port. It is not affiliated with, endorsed by or supported by the authors of the mods it is
+based on. Report issues here, not to them.
+
+It combines three mods, ported to Minecraft 1.21.1, NeoForge and Botania Revived, in one mod with the id
+appliedbotanicalmachinery:
+
+- Applied Botanics by ramidzkh
+  https://github.com/ramidzkh/Applied-Botanics
+  Code under the GNU Lesser General Public License v3.0 (LICENSE). Its README states that its assets are under
+  CC BY-NC-SA 3.0 (https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+- Botanical Machinery by MelanX and noeppi_noeppi
+  https://github.com/ChaoticTrials/BotanicalMachinery
+  Apache License 2.0 (licenses/LICENSE-BotanicalMachinery.txt).
+
+- Botanical Machinery Extra Reforked by BOLT_M4G1C (CurseForge project 1415795)
+  https://github.com/BOLTMAGIC/Botanical-Machinery-Extra-Reforked
+  A fork of Botanical Machinery Extra by LMor and nexxx_7
+  https://github.com/lentel27/ExtraMachinery
+  Apache License 2.0 (licenses/LICENSE-BotanicalMachineryExtraReforked.txt). The README of both repos states that
+  the textures of the machine interfaces are reserved by their authors.
+
+The combined work is distributed under the GNU Lesser General Public License v3.0. The Apache-2.0 parts keep their
+own license and notices.
+
+Changes made to the original works:
+- Ported from Minecraft 1.20.1 and Forge (the machinery mods) and from official Botania (Applied Botanics) to
+  Minecraft 1.21.1, NeoForge 21.1 and Botania Revived 1.0.3: data components, recipe inputs, block capabilities,
+  payload networking, the 1.21 data formats and LibX 1.21.
+- Moved every item, block, block entity, recipe, tag, loot table, lang key, texture and config to the
+  appliedbotanicalmachinery namespace, and the Java code to the appliedbotanicalmachinery package.
+- Merged the three mods' entry points, creative tabs and data generators into one.
+- The MythicBotany integration of both machinery mods now uses Masterful Botany, the Botania Revived port of
+  MythicBotany.
+- Restored two Applied Botanics 1.5.2 fixes that the 1.21.1 port had lost.
