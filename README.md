@@ -7,10 +7,10 @@ A Minecraft addon mod for Botania which makes automation easier.
 Unofficial NeoForge 1.21.1 port of Applied Botanics, Botanical Machinery and Botanical Machinery Extra Reforked, in one
 mod, for Botania Revived.
 
-- Applied Botanics: https://github.com/ramidzkh/Applied-Botanics
-- Botanical Machinery: https://github.com/ChaoticTrials/BotanicalMachinery
-- Botanical Machinery Extra Reforked (BOLT_M4G1C): https://github.com/BOLTMAGIC/Botanical-Machinery-Extra-Reforked
-- Botanical Machinery Extra (LMor): https://github.com/lentel27/ExtraMachinery
+- Applied Botanics by ramidzkh: https://github.com/ramidzkh/Applied-Botanics
+- Botanical Machinery by MelanX and noeppi_noeppi: https://github.com/ChaoticTrials/BotanicalMachinery
+- Botanical Machinery Extra Reforked by BOLT_M4G1C: https://github.com/BOLTMAGIC/Botanical-Machinery-Extra-Reforked
+- Botanical Machinery Extra by LMor and nexxx_7: https://github.com/lentel27/ExtraMachinery
 
 ## What's different in this port
 
