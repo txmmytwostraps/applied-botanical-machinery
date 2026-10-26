@@ -179,6 +179,11 @@ dependencies {
 
     runtimeOnly("maven.modrinth:jade:${jade_version}")
 
+    // dev: MEGA Cells, which adds mana cells when Applied Botanics' mod id is present. -Pwithout_megacells leaves it out
+    if (!project.hasProperty("without_megacells")) {
+        runtimeOnly("maven.modrinth:mega:${megacells_version}")
+    }
+
     // Botania Revived's GatherDataEvent listener loads Curios classes unconditionally
     dataMods("top.theillusivec4.curios:curios-neoforge:${curios_version}") {
         transitive = false

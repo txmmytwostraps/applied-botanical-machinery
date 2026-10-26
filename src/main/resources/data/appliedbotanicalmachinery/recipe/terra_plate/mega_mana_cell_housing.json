@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "megacells"
+    }
+  ],
+  "type": "botania:terra_plate",
+  "ingredients": [
+    {
+      "item": "appliedbotanicalmachinery:mana_cell_housing"
+    },
+    {
+      "item": "botania:mana_pearl"
+    },
+    {
+      "item": "botania:mana_diamond"
+    },
+    {
+      "item": "ae2:sky_dust"
+    },
+    {
+      "item": "ae2:quartz_vibrant_glass"
+    }
+  ],
+  "mana": 10000,
+  "result": {
+    "count": 1,
+    "id": "megacells:mega_mana_cell_housing"
+  }
+}

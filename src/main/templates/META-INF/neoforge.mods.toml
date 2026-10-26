@@ -14,6 +14,16 @@ logoFile = "logo.png"
 authors = "ramidzkh (Applied Botanics), MelanX and noeppi_noeppi (Botanical Machinery), BOLT_M4G1C (Botanical Machinery Extra Reforked), LMor and nexxx_7 (Botanical Machinery Extra), txmmytwostraps (port)"
 credits = "Unofficial port. Not affiliated with or supported by the original authors."
 
+# Applied Botanics' mod id, so addons that check for it (MEGA Cells) turn on their mana support. Nothing is
+# registered under it.
+[[mods]]
+modId = "appbot"
+version = "${mod_version}"
+displayName = "Applied Botanics (provided by Applied Botanical Machinery)"
+description = '''
+Compatibility id for addons that check for Applied Botanics. Provided by Applied Botanical Machinery.
+'''
+
 [[mixins]]
 config = "appliedbotanicalmachinery.mixins.json"
 
