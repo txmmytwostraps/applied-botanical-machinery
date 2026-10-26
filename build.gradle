@@ -150,11 +150,16 @@ dependencies {
     implementation("org.moddingx:LibX:${libx_version}")
     implementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
 
-    // Botania Revived and its addons are not published to a maven; keep their release jars in libs/
-    implementation(files("libs/Botania Revived-${minecraft_version}-${botania_version}-NeoForge.jar"))
-    compileOnly(files("libs/MasterfulBotany-${minecraft_version}-${masterfulbotany_version}-NeoForge.jar"))
-    runtimeOnly(files("libs/MasterfulBotany-${minecraft_version}-${masterfulbotany_version}-NeoForge.jar"))
-    runtimeOnly(files("libs/ExtraBotany-${minecraft_version}-${extrabotany_version}-NeoForge.jar"))
+    // Botania Revived 1.0.3 and Masterful Botany 1.0.0
+    implementation("curse.maven:botania-revived-1725641:${botania_revived_id}")
+    compileOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
+    runtimeOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
+
+    // dev: Extra Botany Revived is not on a maven. Put its release jar in libs/ to run with it
+    def extraBotany = file("libs/ExtraBotany-${minecraft_version}-${extrabotany_version}-NeoForge.jar")
+    if (extraBotany.exists()) {
+        runtimeOnly(files(extraBotany))
+    }
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}")
     runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
