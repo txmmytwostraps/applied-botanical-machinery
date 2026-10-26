@@ -1,6 +1,5 @@
 {
   "gui.appliedbotanicalmachinery.mana": "マナ",
-  "itemGroup.appliedbotanicalmachinery.tab": "Applied Botanics",
   "block.appliedbotanicalmachinery.fluix_mana_pool": "フルーシュマナプール",
   "item.appliedbotanicalmachinery.mana_cell_housing": "MEマナセル筐体",
   "item.appliedbotanicalmachinery.creative_mana_cell": "クリエイティブMEマナセル",
@@ -21,7 +20,6 @@
   "appliedbotanicalmachinery.entry.mana_drives": "マナドライブ",
   "appliedbotanicalmachinery.page.mana_drives0": "バスの下に魔法を投げて数字になりたいと思ったことはありませんか？恥ずかしい",
   "appliedbotanicalmachinery.page.mana_drives1": "vazkiiが決して望んでいなかったもの",
-  "itemGroup.appliedbotanicalmachinery": "Botanical Machinery",
   "item.appliedbotanicalmachinery.mana_emerald": "マナエメラルド",
   "block.appliedbotanicalmachinery.mana_emerald_block": "マナエメラルドブロック",
   "block.appliedbotanicalmachinery.alfheim_market": "アルフヘイムマーケット",
@@ -70,7 +68,6 @@
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary": "工業的調合所",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.recipe": "花のことならおまかせ",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.page1": "$(l:botania:basics/apothecary)花びらの調合所$()の強化版です。水、種、素材を入れて欲望のままに花を作成しましょう。",
-  "itemGroup.appliedbotanicalmachinery.extra": "Extra Botanical Machinery",
   "block.appliedbotanicalmachinery.base_mana_pool": "基本マナプール",
   "block.appliedbotanicalmachinery.upgraded_mana_pool": "発展マナプール",
   "block.appliedbotanicalmachinery.advanced_mana_pool": "精密マナプール",

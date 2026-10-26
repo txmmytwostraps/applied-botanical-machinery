@@ -2,7 +2,7 @@ package appliedbotanicalmachinery.extramachinery.client;
 
 import appliedbotanicalmachinery.extramachinery.Items.render.*;
 import appliedbotanicalmachinery.extramachinery.ModEntities;
-import vazkii.botania.client.render.entity.EntityRenderers.EntityRendererConsumer;
+import velrondevs.botania.client.render.entity.EntityRenderers.EntityRendererConsumer;
 
 public class EntityRenderers {
 

@@ -13,9 +13,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.moddingx.libx.render.block.RotatedBlockRenderer;
-import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.common.lib.ResourceLocationHelper;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.common.lib.ResourceLocationHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -63,7 +63,7 @@ public class IndustrialAgglomerationFactoryRenderer extends RotatedBlockRenderer
 
             poseStack.mulPose(Axis.XP.rotationDegrees(90));
             poseStack.translate(0, 0, -0.18850000202655792);
-            VertexConsumer vertex = buffer.getBuffer(vazkii.botania.client.core.helper.RenderHelper.TERRA_PLATE);
+            VertexConsumer vertex = buffer.getBuffer(velrondevs.botania.client.core.helper.RenderHelper.TERRA_PLATE);
             RenderHelper.renderIconFullBright(poseStack, vertex, this.overlaySprite, 1);
 
             poseStack.popPose();

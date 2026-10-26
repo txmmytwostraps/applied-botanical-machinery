@@ -3,16 +3,17 @@ package appliedbotanicalmachinery.extramachinery.data;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.moddingx.libx.datagen.DatagenContext;
 import org.moddingx.libx.datagen.provider.recipe.RecipeProviderBase;
 import org.moddingx.libx.datagen.provider.recipe.crafting.CompressionExtension;
 import org.moddingx.libx.datagen.provider.recipe.crafting.CraftingExtension;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.block.BotaniaFlowerBlocks;
-import vazkii.botania.common.item.BotaniaItems;
-import vazkii.botania.common.lib.BotaniaTags;
+import velrondevs.botania.registry.BotaniaBlocks;
+import velrondevs.botania.registry.BotaniaFlowerBlocks;
+import velrondevs.botania.registry.BotaniaItems;
+import velrondevs.botania.common.lib.BotaniaTags;
 
 public class Recipes extends RecipeProviderBase implements CraftingExtension, CompressionExtension  {
     public Recipes(DatagenContext context) {
@@ -21,6 +22,26 @@ public class Recipes extends RecipeProviderBase implements CraftingExtension, Co
 
     @Override
     protected void setup() {
+        this.shaped(BotaniaItems.manaTablet, "SSS", "SPS", "SSS", 'S', BotaniaBlocks.livingrock, 'P', appliedbotanicalmachinery.machinery.ModItems.manaEmerald);
+        this.shaped(BotaniaBlocks.runeAltar, "SSS", "SPS", 'S', BotaniaBlocks.livingrock, 'P', appliedbotanicalmachinery.machinery.ModItems.manaEmerald);
+        this.compress(appliedbotanicalmachinery.machinery.ModItems.manaEmerald, appliedbotanicalmachinery.machinery.ModBlocks.manaEmeraldBlock);
+        this.shaped(appliedbotanicalmachinery.machinery.ModBlocks.manaBattery, "dgd", "grg", "dbd", 'd', BotaniaTags.Items.GEMS_DRAGONSTONE, 'g', BotaniaItems.gaiaIngot, 'r', BotaniaItems.manaRingGreater, 'b', appliedbotanicalmachinery.machinery.ModBlocks.manaEmeraldBlock);
+        this.shaped(appliedbotanicalmachinery.machinery.ModBlocks.mechanicalDaisy, " d ", "eae", 'e', BotaniaTags.Items.BLOCKS_ELEMENTIUM, 'a', BotaniaItems.auraRingGreater, 'd', BotaniaFlowerBlocks.pureDaisyFloating);
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.alfheimMarket, BotaniaBlocks.alfPortal, BotaniaBlocks.livingwoodGlimmering, BotaniaBlocks.dreamwood, BotaniaBlocks.livingwoodGlimmering);
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.industrialAgglomerationFactory, BotaniaBlocks.terraPlate, BotaniaTags.Items.GEMS_MANA_DIAMOND, BotaniaTags.Items.INGOTS_MANASTEEL, BotaniaItems.manaPearl);
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.mechanicalManaPool, BotaniaBlocks.fabulousPool, BotaniaBlocks.alchemyCatalyst, BotaniaBlocks.dilutedPool, BotaniaBlocks.conjurationCatalyst);
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.mechanicalRunicAltar, BotaniaBlocks.runeAltar, Ingredient.of(
+                BotaniaItems.runeLust,
+                BotaniaItems.runeGluttony,
+                BotaniaItems.runeGreed,
+                BotaniaItems.runeSloth,
+                BotaniaItems.runeWrath,
+                BotaniaItems.runeEnvy,
+                BotaniaItems.runePride)
+        );
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.mechanicalBrewery, BotaniaBlocks.brewery, BotaniaItems.flask, Items.BLAZE_ROD, BotaniaItems.flask);
+        this.defaultMachine(appliedbotanicalmachinery.machinery.ModBlocks.mechanicalApothecary, BotaniaBlocks.defaultAltar, BotaniaTags.Items.PETALS);
+
         this.compress(ModItems.malachiteDragonstone, ModBlocks.malachiteDragonstoneBlock);
         this.compress(ModItems.saffronDragonstone, ModBlocks.saffronDragonstoneBlock);
         this.compress(ModItems.shadowDragonstone, ModBlocks.shadowDragonstoneBlock);
@@ -110,6 +131,34 @@ public class Recipes extends RecipeProviderBase implements CraftingExtension, Co
         this.shaped(ModItems.baseSpark, " a ", "bcb", " a ", 'a', BotaniaTags.Items.PETALS, 'b', Items.BLAZE_POWDER, 'c', Items.GOLD_NUGGET);
 
         this.shaped(ModBlocks.greenhouse, "aea", "dbd", "fcf", 'a', ModItems.crimsonIngot, 'b', Blocks.DIRT, 'c', ModBlocks.crimsonIngotBlock, 'd', ModItems.crimsonDragonstone, 'e', Blocks.GLASS, 'f', Blocks.NETHERITE_BLOCK);
+    }
+
+    private void defaultMachine(Object output, Object special1, Object special2, Object special3, Object special4) {
+        this.shaped(
+                output,
+                "eye",
+                "xaz",
+                "ese",
+                'e', BotaniaTags.Items.INGOTS_ELEMENTIUM,
+                'a', BotaniaItems.auraRingGreater,
+                's', special1,
+                'x', special2,
+                'y', special3,
+                'z', special4
+        );
+    }
+
+    private void defaultMachine(Object output, Object special1, Object special2) {
+        this.shaped(
+                output,
+                "exe",
+                "xax",
+                "ese",
+                'e', BotaniaTags.Items.INGOTS_ELEMENTIUM,
+                'a', BotaniaItems.auraRingGreater,
+                's', special1,
+                'x', special2
+        );
     }
 
     private void machine(Object output, Object special1, Object special2, Object special3, Object special4) {

@@ -1,6 +1,6 @@
 package appliedbotanicalmachinery.extramachinery.core;
 
-import appliedbotanicalmachinery.extramachinery.ExtraMachinery;
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import net.minecraft.resources.ResourceLocation;
 
 public class LibResources {
@@ -83,12 +83,12 @@ public class LibResources {
     }
 
     private static ResourceLocation loc(String id) {
-        return new ResourceLocation(ExtraMachinery.getInstance().modid, id + ".png");
+        return ResourceLocation.fromNamespaceAndPath(AppliedBotanicalMachinery.getInstance().modid, id + ".png");
     }
     private static ResourceLocation model(String id) {
-        return new ResourceLocation(ExtraMachinery.getInstance().modid, id + ".geo.json");
+        return ResourceLocation.fromNamespaceAndPath(AppliedBotanicalMachinery.getInstance().modid, id + ".geo.json");
     }
     private static ResourceLocation animation(String id) {
-        return new ResourceLocation(ExtraMachinery.getInstance().modid, id + ".animation.json");
+        return ResourceLocation.fromNamespaceAndPath(AppliedBotanicalMachinery.getInstance().modid, id + ".animation.json");
     }
 }

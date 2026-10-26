@@ -1,12 +1,10 @@
 package appliedbotanicalmachinery;
 
+import java.util.Collection;
+
 import net.minecraft.Util;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -17,8 +15,6 @@ import appliedbotanicalmachinery.item.ManaCellItem;
 import appliedbotanicalmachinery.item.PortableManaCellItem;
 import velrondevs.botania.registry.BotaniaItems;
 
-import appeng.api.config.Actionable;
-import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.parts.PartModels;
 import appeng.core.definitions.AEItems;
 import appeng.items.parts.PartItem;
@@ -27,10 +23,6 @@ import appeng.items.parts.PartModelsHelper;
 public class ABItems {
 
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AppliedBotanics.MOD_ID);
-
-    private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(
-            BuiltInRegistries.CREATIVE_MODE_TAB.key(),
-            AppliedBotanics.MOD_ID);
 
     public static final DeferredItem<Item> FLUIX_MANA_POOL = ITEMS.register("fluix_mana_pool",
             () -> new BlockItem(ABBlocks.FLUIX_MANA_POOL.get(), BotaniaItems.defaultBuilder()));
@@ -81,28 +73,12 @@ public class ABItems {
                 () -> new PartItem<>(new Item.Properties(), ManaP2PTunnelPart.class, ManaP2PTunnelPart::new));
     });
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_MODE_TABS.register(
-            "tab",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.appliedbotanicalmachinery.tab"))
-                    .icon(() -> new ItemStack(ABItems.FLUIX_MANA_POOL.get()))
-                    .displayItems((context, entries) -> {
-                        for (var holder : ITEMS.getEntries()) {
-                            var item = holder.get();
-                            entries.accept(item);
-
-                            if (item instanceof IAEItemPowerStorage storage) {
-                                var stack = new ItemStack(item);
-                                storage.injectAEPower(stack, storage.getAEMaxPower(stack), Actionable.MODULATE);
-                                entries.accept(stack);
-                            }
-                        }
-                    })
-                    .build());
-
     public static void initialize(IEventBus bus) {
         ITEMS.register(bus);
-        CREATIVE_MODE_TABS.register(bus);
+    }
+
+    public static Collection<DeferredHolder<Item, ? extends Item>> getEntries() {
+        return ITEMS.getEntries();
     }
 
     public static DeferredItem<Item> get(Tier tier) {

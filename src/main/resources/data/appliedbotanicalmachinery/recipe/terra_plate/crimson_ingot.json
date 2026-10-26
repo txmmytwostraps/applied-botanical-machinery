@@ -1,0 +1,28 @@
+{
+  "type": "botania:terra_plate",
+  "ingredients": [
+    {
+      "item": "appliedbotanicalmachinery:shadow_ingot"
+    },
+    {
+      "item": "botania:gaia_ingot"
+    },
+    {
+      "item": "botania:gaia_ingot"
+    },
+    {
+      "item": "botania:gaia_ingot"
+    },
+    {
+      "item": "botania:gaia_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot_block"
+    }
+  ],
+  "mana": 2000000,
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:crimson_ingot"
+  }
+}

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -23,8 +23,8 @@ public class ContainerGreenhouse extends BlockEntityMenu<BlockEntityGreenhouse> 
     public final static int HEIGHT_GUI = 136;
 
 
-    public ContainerGreenhouse(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Inventory playerContainer, Player player) {
-        super(type, windowId, level, pos, playerContainer, player, INVENTORY_SLOT, INVENTORY_SLOT);
+    public ContainerGreenhouse(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
+        super(type, windowId, level, pos, player, playerContainer, INVENTORY_SLOT, INVENTORY_SLOT);
 
         this.addSlotBox(this.getBlockEntity().getFlowerInventory(), 0, 46, 23, 7, 18, 1, 18);
         this.addSlotBox(this.getBlockEntity().getInventory(), 0, 46, 45, 7, 18, 3, 18);

@@ -21,29 +21,31 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalAlfheimMa
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.ElvenTradeRecipe;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import velrondevs.botania.api.recipe.ElvenTradeRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityAlfheimMarketPattern extends WorkingTile<ElvenTradeRecipe>
+public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, ElvenTradeRecipe>
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     public static final int MAX_MANA_PER_TICK = LibXServerConfig.AlfheimMarketSettings.workingDuration;
@@ -200,39 +202,39 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<ElvenTradeRecip
         return this.currentOutput;
     }
 
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        this.currentInput = ItemStack.of(nbt.getCompound("currentInput"));
-        this.currentOutput = ItemStack.of(nbt.getCompound("currentOutput"));
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
+        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound("currentInput"));
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
         this.getMainNode().loadFromNBT(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.put("currentInput", this.currentInput.serializeNBT());
-        nbt.put("currentOutput", this.currentOutput.serializeNBT());
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put("currentInput", this.currentInput.saveOptional(registries));
+        nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
         this.getMainNode().saveToNBT(nbt);
     }
 
-    public void handleUpdateTag(CompoundTag nbt) {
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         if (this.level == null || this.level.isClientSide) {
-            super.handleUpdateTag(nbt);
-            this.currentInput = ItemStack.of(nbt.getCompound("currentInput"));
-            this.currentOutput = ItemStack.of(nbt.getCompound("currentOutput"));
+            super.handleUpdateTag(nbt, registries);
+            this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound("currentInput"));
+            this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
         }
     }
 
     @Nonnull
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
-            nbt.put("currentInput", this.currentInput.serializeNBT());
-            nbt.put("currentOutput", this.currentOutput.serializeNBT());
+            CompoundTag nbt = super.getUpdateTag(registries);
+            nbt.put("currentInput", this.currentInput.saveOptional(registries));
+            nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
             return nbt;
         }
     }

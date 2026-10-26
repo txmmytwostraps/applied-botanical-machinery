@@ -6,26 +6,30 @@ import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.brew.BrewItem;
-import vazkii.botania.api.recipe.BotanicalBreweryRecipe;
-import vazkii.botania.client.fx.WispParticleData;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.item.BotaniaItems;
+import velrondevs.botania.api.brew.BrewItem;
+import velrondevs.botania.api.recipe.BotanicalBreweryRecipe;
+import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.registry.BotaniaItems;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityMechanicalBrewery extends WorkingTile<BotanicalBreweryRecipe> {
+public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, BotanicalBreweryRecipe> {
 
     public static final int MAX_MANA_PER_TICK = 50;
     public static final List<Item> BREW_CONTAINER = List.of(BotaniaItems.vial.asItem(), BotaniaItems.flask.asItem(), BotaniaItems.incenseStick.asItem(), BotaniaItems.bloodPendant.asItem());
@@ -37,7 +41,7 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<BotanicalBreweryRe
     public BlockEntityMechanicalBrewery(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, BotaniaRecipeTypes.BREW_TYPE, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalBrewery, 1, 7);
         this.inventory = BaseItemStackHandler.builder(8)
-                .validator(stack -> BREW_CONTAINER.contains(stack.getItem()) && (stack.getTag() == null || !stack.getTag().contains("brewKey")), 0)
+                .validator(stack -> BREW_CONTAINER.contains(stack.getItem()) && !stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("brewKey"), 0)
                 .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.BREW_TYPE, stack), Range.closedOpen(1, 7))
                 .output(7)
                 .contentsChanged(() -> {
@@ -126,34 +130,34 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<BotanicalBreweryRe
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        this.currentOutput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_OUTPUT));
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         CompoundTag tankTag = new CompoundTag();
         nbt.put(TileTags.FLUID, tankTag);
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.serializeNBT());
+        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level != null && !this.level.isClientSide) return;
-        this.currentOutput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_OUTPUT));
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
         final CompoundTag tankTag = new CompoundTag();
         nbt.put(TileTags.FLUID, tankTag);
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.serializeNBT());
+        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
         return nbt;
     }
 }

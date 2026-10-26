@@ -21,27 +21,29 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalIndustria
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.TerrestrialAgglomerationRecipe;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import velrondevs.botania.api.recipe.TerrestrialAgglomerationRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityIndustrialAgglomerationFactoryPattern extends WorkingTile<TerrestrialAgglomerationRecipe>
+public class BlockEntityIndustrialAgglomerationFactoryPattern extends WorkingTile<RecipeInput, TerrestrialAgglomerationRecipe>
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     public static final int MAX_MANA_PER_TICK = LibXServerConfig.IndustrialAgglomerationFactorySettings.workingDuration;
 
@@ -136,8 +138,8 @@ public class BlockEntityIndustrialAgglomerationFactoryPattern extends WorkingTil
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.getMainNode().loadFromNBT(nbt);
 
         this.setChanged();
@@ -145,8 +147,8 @@ public class BlockEntityIndustrialAgglomerationFactoryPattern extends WorkingTil
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         this.getMainNode().saveToNBT(nbt);
     }
 

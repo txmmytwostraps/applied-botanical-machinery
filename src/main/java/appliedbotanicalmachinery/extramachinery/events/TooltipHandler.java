@@ -1,17 +1,19 @@
 package appliedbotanicalmachinery.extramachinery.events;
 
-import appliedbotanicalmachinery.extramachinery.ExtraMachinery;
+import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.entities.manaSpark.*;
 import appliedbotanicalmachinery.extramachinery.util.NumberFormatter;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.item.component.CustomData;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.Map;
 import static appliedbotanicalmachinery.extramachinery.ModBlocks.*;
 import static appliedbotanicalmachinery.extramachinery.ModItems.*;
 
-@Mod.EventBusSubscriber(modid = ExtraMachinery.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = AppliedBotanics.MOD_ID)
 public class TooltipHandler {
 
     public static final List<Item> tooltipManaAllBlocks = new ArrayList<>();
@@ -110,29 +112,30 @@ public class TooltipHandler {
 
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty()){
-            CompoundTag tag = stack.getTag();
+            CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+            CompoundTag tag = data == null ? new CompoundTag() : data.copyTag();
 
-            if (tooltipManaAllBlocks.contains(stack.getItem()) && stack.hasTag()){
-                if (tag.getCompound("BlockEntityTag").contains("mana")){
-                    int mana = tag.getCompound("BlockEntityTag").getInt("mana");
+            if (tooltipManaAllBlocks.contains(stack.getItem())){
+                if (tag.contains("mana")){
+                    int mana = tag.getInt("mana");
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.mana", NumberFormatter.formatInteger(mana)));
                 }
             }
 
-            if (tooltipWaterAllBlocks.contains(stack.getItem()) && stack.hasTag()){
+            if (tooltipWaterAllBlocks.contains(stack.getItem())){
 
-                if (tag.getCompound("BlockEntityTag").contains("fluid")){
-                    int water = tag.getCompound("BlockEntityTag").getCompound("fluid").getInt("Amount");
+                if (tag.contains("fluid")){
+                    int water = tag.getCompound("fluid").getInt("amount");
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.water", NumberFormatter.formatIntegerWater(water)));
                 }
             }
 
-            if (tooltipEnergyAllBlocks.contains(stack.getItem()) && stack.hasTag()){
+            if (tooltipEnergyAllBlocks.contains(stack.getItem())){
 
-                if (tag.getCompound("BlockEntityTag").contains("energyStorage")){
-                    int energy = tag.getCompound("BlockEntityTag").getInt("energyStorage");
+                if (tag.contains("energyStorage")){
+                    int energy = tag.getInt("energyStorage");
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.energy", NumberFormatter.formatInteger(energy)));
                 }

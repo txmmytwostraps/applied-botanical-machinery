@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "appliedbotanicalmachinery:malachite_ingot_block"
+    },
+    "b": {
+      "item": "appliedbotanicalmachinery:shadow_ingot"
+    },
+    "c": {
+      "item": "appliedbotanicalmachinery:upgraded_mana_infuser"
+    },
+    "d": {
+      "item": "appliedbotanicalmachinery:shadow_dragonstone_block"
+    }
+  },
+  "pattern": ["aba", "bcb", "ddd"],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:advanced_mana_infuser"
+  },
+  "show_notification": true
+}

@@ -29,25 +29,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vazkii.botania.api.BotaniaAPI;
-import vazkii.botania.api.block.WandHUD;
-import vazkii.botania.api.mana.ManaItem;
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.ManaSpark;
-import vazkii.botania.api.mana.spark.SparkAttachable;
-import vazkii.botania.api.mana.spark.SparkHelper;
-import vazkii.botania.api.mana.spark.SparkUpgradeType;
-import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.common.entity.SparkBaseEntity;
-import vazkii.botania.common.helper.ColorHelper;
-import vazkii.botania.common.helper.VecHelper;
-import vazkii.botania.common.item.BotaniaItems;
-import vazkii.botania.common.item.SparkAugmentItem;
-import vazkii.botania.common.item.WandOfTheForestItem;
-import vazkii.botania.network.EffectType;
-import vazkii.botania.network.clientbound.BotaniaEffectPacket;
-import vazkii.botania.xplat.XplatAbstractions;
+import velrondevs.botania.api.BotaniaAPI;
+import velrondevs.botania.api.block.WandHUD;
+import velrondevs.botania.api.mana.ManaItem;
+import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.mana.spark.ManaSpark;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.api.mana.spark.SparkHelper;
+import velrondevs.botania.api.mana.spark.SparkUpgradeType;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.common.entity.SparkBaseEntity;
+import velrondevs.botania.common.helper.ColorHelper;
+import velrondevs.botania.common.helper.VecHelper;
+import velrondevs.botania.registry.BotaniaItems;
+import velrondevs.botania.common.item.SparkAugmentItem;
+import velrondevs.botania.common.item.WandOfTheForestItem;
+import velrondevs.botania.network.EffectType;
+import velrondevs.botania.network.clientbound.BotaniaEffectPacket;
+import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.*;
 
@@ -74,9 +74,10 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
         this.firstTick = true;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(UPGRADE, 0);
+    @Override
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(UPGRADE, 0);
     }
 
     public @NotNull ItemStack getPickResult() {

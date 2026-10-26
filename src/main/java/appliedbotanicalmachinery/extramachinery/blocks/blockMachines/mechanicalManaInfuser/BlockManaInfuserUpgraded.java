@@ -1,41 +1,47 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalManaInfuser;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalManaInfuser.ContainerManaInfuserUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalManaInfuser.ScreenManaInfuserUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaInfuser.RenderManaInfuserUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaInfuser.BlockEntityManaInfuserUpgraded;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.block.RotationShape;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 import javax.annotation.Nonnull;
 
 public class BlockManaInfuserUpgraded extends ExtraBotanicalBlock<BlockEntityManaInfuserUpgraded, ContainerManaInfuserUpgraded> {
     public static final RotationShape SHAPE;
 
-    public BlockManaInfuserUpgraded(ModX mod, Class<BlockEntityManaInfuserUpgraded> teClass, MenuType<ContainerManaInfuserUpgraded> menu) {
+    public BlockManaInfuserUpgraded(ModX mod, Class<BlockEntityManaInfuserUpgraded> teClass, AdvancedMenuType<ContainerManaInfuserUpgraded, BlockPos> menu) {
         super(mod, teClass, menu, false, true);
     }
 
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenManaInfuserUpgraded::new));
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
-        super.registerClient(ctx);
-        MenuScreens.register(ModBlocks.upgradedManaInfuser.menu, ScreenManaInfuserUpgraded::new);
+    @Override
+    public void setupClient(SetupContext ctx) {
+        super.setupClient(ctx);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RenderManaInfuserUpgraded();
         });

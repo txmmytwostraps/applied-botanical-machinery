@@ -6,7 +6,7 @@ import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
@@ -15,32 +15,27 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.lwjgl.opengl.GL11;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
-import org.moddingx.libx.capability.ItemCapabilities;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.BotaniaForgeClientCapabilities;
-import vazkii.botania.api.block.WandHUD;
-import vazkii.botania.api.item.SparkEntity;
-import vazkii.botania.api.mana.KeyLocked;
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.spark.ManaSpark;
-import vazkii.botania.api.mana.spark.SparkAttachable;
-import vazkii.botania.client.core.helper.RenderHelper;
-import vazkii.botania.client.gui.HUDHandler;
-import vazkii.botania.common.block.block_entity.mana.ThrottledPacket;
+import org.moddingx.libx.inventory.FilterItemHandler;
+import velrondevs.botania.api.block.WandHUD;
+import velrondevs.botania.api.item.SparkEntity;
+import velrondevs.botania.api.mana.KeyLocked;
+import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.api.mana.spark.ManaSpark;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.client.gui.HUDHandler;
+import velrondevs.botania.common.block.block_entity.mana.ThrottledPacket;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -55,7 +50,8 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     private String inputKey = "";
     private String outputKey = "";
 
-    private final LazyOptional<IAdvancedItemHandlerModifiable> capability = this.createCap(this::getInventory);
+    @Nullable
+    private IItemHandler itemHandler;
 
     public BotanicalTile(BlockEntityType<?> blockEntityTypeIn, BlockPos pos, BlockState state, int manaCap) {
         super(blockEntityTypeIn, pos, state);
@@ -63,12 +59,22 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     }
 
     /**
-     * This can be used to add canExtract or canInsert to the wrapper used as capability. You may not call the supplier
-     * now. Always use IItemHandlerModifiable.createLazy. You may call the supplier inside the canExtract and canInsert
-     * lambda.
+     * The item handler exposed as capability. It is created on first use, as the inventory does not exist while
+     * the constructors run.
      */
-    protected LazyOptional<IAdvancedItemHandlerModifiable> createCap(Supplier<IItemHandlerModifiable> inventory) {
-        return ItemCapabilities.create(inventory, this.getExtracts(inventory), this.getInserts(inventory));
+    public IItemHandler getItemHandler() {
+        if (this.itemHandler == null) {
+            this.itemHandler = this.createItemHandler(this::getInventory);
+        }
+        return this.itemHandler;
+    }
+
+    /**
+     * This can be used to add canExtract or canInsert to the wrapper used as capability. You may call the supplier
+     * inside the canExtract and canInsert lambda.
+     */
+    protected IItemHandler createItemHandler(Supplier<IItemHandlerModifiable> inventory) {
+        return new FilterItemHandler(inventory.get(), this.getExtracts(inventory), this.getInserts(inventory));
     }
 
     protected abstract Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory);
@@ -90,44 +96,28 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
         }
     }
 
-    @Nonnull
     @Override
-    public <X> LazyOptional<X> getCapability(@Nonnull Capability<X> cap, Direction direction) {
-        if (!this.remove && cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.capability.cast();
-        } else if (!this.remove && this.actAsMana() && (cap == BotaniaForgeCapabilities.MANA_RECEIVER || cap == BotaniaForgeCapabilities.SPARK_ATTACHABLE)) {
-            return LazyOptional.of(() -> this).cast();
-        }
-        return DistExecutor.unsafeRunForDist(() -> () -> {
-            if (!this.remove && this.actAsMana() && cap == BotaniaForgeClientCapabilities.WAND_HUD) {
-                return LazyOptional.of(() -> this).cast();
-            }
-            return super.getCapability(cap, direction);
-        }, () -> () -> super.getCapability(cap, direction));
-    }
-
-    @Override
-    public void load(@Nonnull CompoundTag tag) {
-        super.load(tag);
-        this.getInventory().deserializeNBT(tag.getCompound(TileTags.INVENTORY));
+    protected void loadAdditional(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.getInventory().deserializeNBT(registries, tag.getCompound(TileTags.INVENTORY));
         this.mana = tag.getInt(TileTags.MANA);
         if (tag.contains(TileTags.INPUT_KEY)) this.inputKey = tag.getString(TileTags.INPUT_KEY);
         if (tag.contains(TileTags.OUTPUT_KEY)) this.outputKey = tag.getString(TileTags.OUTPUT_KEY);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT());
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT(registries));
         nbt.putInt(TileTags.MANA, this.getCurrentMana());
         nbt.putString(TileTags.INPUT_KEY, this.inputKey);
         nbt.putString(TileTags.OUTPUT_KEY, this.outputKey);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
         if (this.level != null && !this.level.isClientSide) return;
-        this.getInventory().deserializeNBT(tag.getCompound(TileTags.INVENTORY));
+        this.getInventory().deserializeNBT(registries, tag.getCompound(TileTags.INVENTORY));
         this.mana = tag.getInt(TileTags.MANA);
         if (tag.contains(TileTags.INPUT_KEY)) this.inputKey = tag.getString(TileTags.INPUT_KEY);
         if (tag.contains(TileTags.OUTPUT_KEY)) this.outputKey = tag.getString(TileTags.OUTPUT_KEY);
@@ -135,10 +125,10 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
-        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT());
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
+        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT(registries));
         nbt.putInt(TileTags.MANA, this.getCurrentMana());
         nbt.putString(TileTags.INPUT_KEY, this.inputKey);
         nbt.putString(TileTags.OUTPUT_KEY, this.outputKey);
@@ -187,7 +177,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     public ManaSpark getAttachedSpark() {
         if (!this.actAsMana()) return null;
         //noinspection ConstantConditions
-        List<Entity> sparks = this.level.getEntitiesOfClass(Entity.class, new AABB(this.worldPosition.above(), this.worldPosition.above().offset(1, 1, 1)), Predicates.instanceOf(SparkEntity.class));
+        List<Entity> sparks = this.level.getEntitiesOfClass(Entity.class, new AABB(this.worldPosition.above()), Predicates.instanceOf(SparkEntity.class));
         if (sparks.size() == 1) {
             Entity entity = sparks.get(0);
             return (ManaSpark) entity;
@@ -259,7 +249,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     public BlockPos getManaReceiverPos() {
         return this.getBlockPos();
     }
-    
+
     public boolean actAsMana() {
         return true;
     }

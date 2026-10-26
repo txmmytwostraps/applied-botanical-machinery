@@ -10,11 +10,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
 import javax.annotation.Nonnull;
@@ -24,8 +24,8 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
 
     private final BlockEntityMechanicalDaisy.InventoryHandler inventory;
 
-    public ContainerMenuMechanicalDaisy(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Inventory playerContainer, Player player) {
-        super(type, windowId, level, pos, playerContainer, player, 8, 8);
+    public ContainerMenuMechanicalDaisy(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
+        super(type, windowId, level, pos, player, playerContainer, 8, 8);
 
         this.inventory = this.blockEntity.getInventory();
         this.addSlot(new ItemAndFluidSlot(this.inventory, 0, 79, 16));
@@ -47,7 +47,7 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
 
             //noinspection ConstantConditions
             @Nullable
-            IFluidHandlerItem fluidCap = inMouse.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
+            IFluidHandlerItem fluidCap = inMouse.getCapability(Capabilities.FluidHandler.ITEM);
 
             //noinspection ConstantConditions
             if (inMouse.getItem() instanceof BlockItem || fluidCap == null || fluidCap.getTanks() != 1) {
@@ -104,7 +104,7 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
                 slot.onQuickCraft(stack, itemstack);
             } else {
                 //noinspection ConstantConditions
-                IFluidHandlerItem fluidCap = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).orElse(null);
+                IFluidHandlerItem fluidCap = stack.getCapability(Capabilities.FluidHandler.ITEM);
                 //noinspection ConstantConditions
                 if (fluidCap != null && fluidCap.getTanks() == 1) {
                     this.getSlot(index).set(this.tryToDepositFluid(fluidCap));
@@ -150,7 +150,7 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
 
                 Slot slot = this.slots.get(i);
                 ItemStack itemstack = slot.getItem();
-                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemstack) && slot.mayPlace(stack) && (i >= 8 || this.inventory.getFluidInTank(i).isEmpty())) {
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemstack) && slot.mayPlace(stack) && (i >= 8 || this.inventory.getFluidInTank(i).isEmpty())) {
                     int j = itemstack.getCount() + stack.getCount();
                     int maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
                     if (j <= maxSize) {

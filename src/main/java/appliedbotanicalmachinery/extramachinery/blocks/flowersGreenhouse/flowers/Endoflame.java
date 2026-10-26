@@ -3,8 +3,8 @@ package appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.flower
 import appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.GenFlowers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import vazkii.botania.common.block.mana.ManaSpreaderBlock;
-import vazkii.botania.xplat.XplatAbstractions;
+import velrondevs.botania.common.block.mana.ManaSpreaderBlock;
+import velrondevs.botania.xplat.XplatAbstractions;
 
 public class Endoflame extends GenFlowers {
     @Override

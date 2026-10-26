@@ -1,0 +1,17 @@
+{
+  "type": "botania:elven_trade",
+  "ingredients": [
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:malachite_dragonstone"
+    }
+  ],
+  "output": [
+    {
+      "count": 1,
+      "id": "appliedbotanicalmachinery:saffron_dragonstone"
+    }
+  ]
+}

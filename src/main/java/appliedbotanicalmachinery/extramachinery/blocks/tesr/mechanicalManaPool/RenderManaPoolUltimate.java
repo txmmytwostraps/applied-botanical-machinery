@@ -17,10 +17,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.moddingx.libx.render.block.RotatedBlockRenderer;
-import vazkii.botania.api.mana.PoolOverlayProvider;
-import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.client.core.handler.MiscellaneousModels;
-import vazkii.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.api.mana.PoolOverlayProvider;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.handler.MiscellaneousModels;
+import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
 
@@ -110,6 +110,6 @@ public class RenderManaPoolUltimate extends RotatedBlockRenderer<BlockEntityMana
     }
 
     static {
-        MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation("botania", "block/mana_water"));
+        MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.fromNamespaceAndPath("botania", "block/mana_water"));
     }
 }

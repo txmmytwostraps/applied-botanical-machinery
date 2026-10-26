@@ -12,6 +12,8 @@ public class CommonTags extends CommonTagsProviderBase {
     }
 
     public void setup() {
+        this.block(BlockTags.NEEDS_IRON_TOOL).add(appliedbotanicalmachinery.machinery.ModBlocks.manaEmeraldBlock);
+
         this.block(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.malachiteDragonstoneBlock);
         this.block(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.saffronDragonstoneBlock);
         this.block(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.crystalDragonstoneBlock);

@@ -4,9 +4,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mythicbotany.infuser.InfuserRecipe;
-import mythicbotany.jei.InfusionCategory;
-import mythicbotany.register.ModRecipes;
+import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketBase;
@@ -42,9 +40,10 @@ import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAl
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarUpgraded;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
-import vazkii.botania.client.integration.jei.*;
-import vazkii.botania.client.integration.jei.orechid.OrechidRecipeCategory;
+import net.neoforged.fml.ModList;
+import velrondevs.botania.client.integration.jei.*;
+import velrondevs.botania.client.integration.jei.orechid.OrechidRecipeCategory;
+import velrondevs.masterfulbotany.integration.jei.InfusionCategory;
 
 import javax.annotation.Nonnull;
 
@@ -55,7 +54,7 @@ public class jei implements IModPlugin {
 
     @Nonnull
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation("appliedbotanicalmachinery", "jei_plugin");
+        return AppliedBotanics.id("extra_machinery");
     }
 
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
@@ -85,7 +84,7 @@ public class jei implements IModPlugin {
         registration.addRecipeClickArea(ScreenIndustrialAgglomerationFactoryAdvanced.class, 78, 57, 40, 16, TerrestrialAgglomerationRecipeCategory.TYPE);
         registration.addRecipeClickArea(ScreenIndustrialAgglomerationFactoryUltimate.class, 88, 69, 40, 16, TerrestrialAgglomerationRecipeCategory.TYPE);
 
-        if (ModList.get().isLoaded("mythicbotany")) {
+        if (ModList.get().isLoaded("masterfulbotany")) {
             registration.addRecipeClickArea(ScreenManaInfuserBase.class, 78, 57, 40, 16, InfusionCategory.TYPE);
             registration.addRecipeClickArea(ScreenManaInfuserUpgraded.class, 78, 57, 40, 16, InfusionCategory.TYPE);
             registration.addRecipeClickArea(ScreenManaInfuserAdvanced.class, 78, 57, 40, 16, InfusionCategory.TYPE);
@@ -130,7 +129,7 @@ public class jei implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.advancedIndustrialAgglomerationFactory), TerrestrialAgglomerationRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.ultimateIndustrialAgglomerationFactory), TerrestrialAgglomerationRecipeCategory.TYPE);
 
-        if (ModList.get().isLoaded("mythicbotany")) {
+        if (ModList.get().isLoaded("masterfulbotany")) {
             registration.addRecipeCatalyst(new ItemStack(ModBlocks.baseManaInfuser), InfusionCategory.TYPE);
             registration.addRecipeCatalyst(new ItemStack(ModBlocks.upgradedManaInfuser), InfusionCategory.TYPE);
             registration.addRecipeCatalyst(new ItemStack(ModBlocks.advancedManaInfuser), InfusionCategory.TYPE);

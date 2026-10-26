@@ -1,26 +1,26 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalAlfheimMarket;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalAlfheimMarket.ContainerAlfheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalAlfheimMarket.RenderAlpheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalAlfheimMarket.BlockEntityAlfheimMarketUpgraded;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.block.RotationShape;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 import javax.annotation.Nonnull;
 
@@ -28,14 +28,20 @@ public class
 BlockAlfheimMarketUpgraded extends ExtraBotanicalBlock<BlockEntityAlfheimMarketUpgraded, ContainerAlfheimMarketUpgraded> {
     public static final RotationShape SHAPE;
 
-    public BlockAlfheimMarketUpgraded(ModX mod, Class<BlockEntityAlfheimMarketUpgraded> teClass, MenuType<ContainerAlfheimMarketUpgraded> menu) {
+    public BlockAlfheimMarketUpgraded(ModX mod, Class<BlockEntityAlfheimMarketUpgraded> teClass, AdvancedMenuType<ContainerAlfheimMarketUpgraded, BlockPos> menu) {
         super(mod, teClass, menu, false, true);
     }
 
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenAlfheimMarketUpgraded::new));
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
-        super.registerClient(ctx);
-        MenuScreens.register(ModBlocks.upgradedAlfheimMarket.menu, ScreenAlfheimMarketUpgraded::new);
+    @Override
+    public void setupClient(SetupContext ctx) {
+        super.setupClient(ctx);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> new RenderAlpheimMarketUpgraded());
     }
 

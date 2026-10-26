@@ -2,7 +2,6 @@ package appliedbotanicalmachinery.machinery.blocks.base;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.gui.ManaBar;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -30,17 +29,16 @@ public abstract class ScreenBase<X extends BlockEntityMenu<?>> extends AbstractC
     }
 
     @Override
-    public void init(@Nonnull Minecraft minecraft, int width, int height) {
-        super.init(minecraft, width, height);
-        this.relX = (width - this.imageWidth) / 2;
-        this.relY = (height - this.imageHeight) / 2;
+    protected void init() {
+        super.init();
+        this.relX = (this.width - this.imageWidth) / 2;
+        this.relY = (this.height - this.imageHeight) / 2;
     }
 
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.manaBar.guiTop = this.topPos;
         this.manaBar.guiLeft = this.leftPos;
-        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         if (this.menu.getBlockEntity() instanceof BotanicalTile botanicalTile) {

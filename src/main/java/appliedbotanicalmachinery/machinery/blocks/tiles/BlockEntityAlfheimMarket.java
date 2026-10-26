@@ -4,25 +4,27 @@ import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.ElvenTradeRecipe;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import velrondevs.botania.api.recipe.ElvenTradeRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityAlfheimMarket extends WorkingTile<ElvenTradeRecipe> {
+public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTradeRecipe> {
 
     public static final int MAX_MANA_PER_TICK = 25;
 
@@ -106,34 +108,34 @@ public class BlockEntityAlfheimMarket extends WorkingTile<ElvenTradeRecipe> {
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        this.currentInput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_INPUT));
-        this.currentOutput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_OUTPUT));
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
+        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_INPUT));
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.serializeNBT());
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.serializeNBT());
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.saveOptional(registries));
+        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         if (this.level != null && !this.level.isClientSide) return;
-        super.handleUpdateTag(nbt);
-        this.currentInput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_INPUT));
-        this.currentOutput = ItemStack.of(nbt.getCompound(TileTags.CURRENT_OUTPUT));
+        super.handleUpdateTag(nbt, registries);
+        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_INPUT));
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
-        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.serializeNBT());
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.serializeNBT());
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
+        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.saveOptional(registries));
+        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
         return nbt;
     }
 }

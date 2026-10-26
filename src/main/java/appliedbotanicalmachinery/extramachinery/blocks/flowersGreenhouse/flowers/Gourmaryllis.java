@@ -7,12 +7,12 @@ public class Gourmaryllis extends GenFlowers {
 
     @Override
     public boolean availableFuel(ItemStack fuel) {
-        return fuel.getItem().isEdible();
+        return fuel.getFoodProperties(null) != null;
     }
 
     @Override
     public int getPerMana(ItemStack fuel) {
-        int food = Math.min(12, fuel.getItem().getFoodProperties().getNutrition());
+        int food = Math.min(12, fuel.getFoodProperties(null).nutrition());
 
         return (int)((double)(food * food * 70) * 1.8);
     }

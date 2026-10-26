@@ -1,15 +1,12 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.ContainerGreenhouse;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.ScreenGreenhouse;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.RenderGreenhouse;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -18,26 +15,43 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.block.RotationShape;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.CapabilityInfo;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 import javax.annotation.Nonnull;
 
 public class BlockGreenhouse extends ExtraBotanicalBlock<BlockEntityGreenhouse, ContainerGreenhouse> {
     public static final RotationShape SHAPE;
 
-    public BlockGreenhouse(ModX mod, Class<BlockEntityGreenhouse> teClass, MenuType<ContainerGreenhouse> menu) {
+    public BlockGreenhouse(ModX mod, Class<BlockEntityGreenhouse> teClass, AdvancedMenuType<ContainerGreenhouse, BlockPos> menu) {
         super(mod, teClass, menu, false, true);
     }
 
+    @Override
+    public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerAdditional(ctx, builder);
+        builder.registerNamed(null, "energy_storage", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.EnergyStorage.BLOCK, (tile, side) -> tile));
+    }
+
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenGreenhouse::new));
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
-        super.registerClient(ctx);
-        MenuScreens.register(ModBlocks.greenhouse.menu, ScreenGreenhouse::new);
+    @Override
+    public void setupClient(SetupContext ctx) {
+        super.setupClient(ctx);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RenderGreenhouse();
         });

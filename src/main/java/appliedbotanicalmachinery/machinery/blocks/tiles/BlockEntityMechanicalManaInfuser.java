@@ -3,21 +3,22 @@ package appliedbotanicalmachinery.machinery.blocks.tiles;
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
-import mythicbotany.infuser.InfuserRecipe;
-import mythicbotany.register.ModRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.client.fx.WispParticleData;
+import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
+import velrondevs.masterfulbotany.common.crafting.StackListInput;
+import velrondevs.masterfulbotany.registry.ModRecipes;
 
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityMechanicalManaInfuser extends WorkingTile<InfuserRecipe> {
+public class BlockEntityMechanicalManaInfuser extends WorkingTile<StackListInput, InfuserRecipe> {
 
     public static final int MAX_MANA_PER_TICK = 50000;
 

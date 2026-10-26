@@ -4,7 +4,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.GenFlow
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import vazkii.botania.xplat.XplatAbstractions;
+import velrondevs.botania.xplat.XplatAbstractions;
 
 public class Narslimmus extends GenFlowers {
     @Override

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-import vazkii.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import java.util.List;
 

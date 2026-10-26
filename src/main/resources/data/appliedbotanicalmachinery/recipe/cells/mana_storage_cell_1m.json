@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:dragonstone"
+    },
+    "b": {
+      "item": "appliedbotanicalmachinery:crystal_ingot"
+    },
+    "c": {
+      "item": "botania:gaia_ingot"
+    }
+  },
+  "pattern": ["aba", "bcb", "aba"],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:cell_component_1m"
+  },
+  "show_notification": true
+}

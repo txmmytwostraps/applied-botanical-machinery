@@ -27,7 +27,7 @@ public class ScreenMechanicalManaInfuser extends ScreenBase<ContainerMenuMechani
         if (blockEntity.getProgress() > 0) {
             float pct = Math.min(blockEntity.getProgress() / (float) blockEntity.getMaxProgress(), 1.0F);
             int height = Math.round(25 * pct);
-            vazkii.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_MANA_INFUSER_GUI, this.relX + 73, this.relY + 76 - height, 176, 25 - height, 30, height);
+            velrondevs.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_MANA_INFUSER_GUI, this.relX + 73, this.relY + 76 - height, 176, 25 - height, 30, height);
         }
     }
 }

@@ -5,7 +5,6 @@ import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechan
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.GhostItemRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Holder;
@@ -14,8 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.Tags;
 import org.moddingx.libx.render.RenderHelperFluid;
 
 import javax.annotation.Nonnull;
@@ -38,15 +37,14 @@ public class ScreenMechanicalApothecary extends AbstractContainerScreen<Containe
     }
 
     @Override
-    public void init(@Nonnull Minecraft minecraft, int width, int height) {
-        super.init(minecraft, width, height);
-        this.relX = (width - this.imageWidth) / 2;
-        this.relY = (height - this.imageHeight) / 2;
+    protected void init() {
+        super.init();
+        this.relX = (this.width - this.imageWidth) / 2;
+        this.relY = (this.height - this.imageHeight) / 2;
     }
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        this.renderBackground(guiGraphics);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         guiGraphics.blit(LibResources.MECHANICAL_APOTHECARY_GUI, this.relX, this.relY, 0, 0, this.imageWidth, this.imageHeight);
@@ -60,7 +58,7 @@ public class ScreenMechanicalApothecary extends AbstractContainerScreen<Containe
         if (this.tile.getProgress() > 0) {
             float pctProgress = Math.min(this.tile.getProgress() / (float) this.tile.getMaxProgress(), 1.0F);
             RenderSystem.setShaderTexture(0, LibResources.MECHANICAL_APOTHECARY_GUI);
-            vazkii.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_APOTHECARY_GUI, this.relX + 87, this.relY + 64, this.imageWidth, 0, Math.round(22 * pctProgress), 16);
+            velrondevs.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_APOTHECARY_GUI, this.relX + 87, this.relY + 64, this.imageWidth, 0, Math.round(22 * pctProgress), 16);
         }
     }
 

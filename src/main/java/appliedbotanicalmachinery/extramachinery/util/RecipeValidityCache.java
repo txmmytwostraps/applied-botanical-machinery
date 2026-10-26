@@ -2,6 +2,8 @@ package appliedbotanicalmachinery.extramachinery.util;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.moddingx.libx.crafting.RecipeHelper;
@@ -23,11 +25,11 @@ public final class RecipeValidityCache {
 
     private RecipeValidityCache() {}
 
-    public static boolean isItemValidInput(RecipeManager manager, RecipeType<?> type, ItemStack stack) {
+    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(RecipeManager manager, RecipeType<T> type, ItemStack stack) {
         if (stack == null || stack.isEmpty()) return false;
 
         // If stack contains NBT, don't cache — Ingredients may match based on NBT
-        if (stack.hasTag()) {
+        if (!stack.getComponentsPatch().isEmpty()) {
             return RecipeHelper.isItemValidInput(manager, type, stack);
         }
 

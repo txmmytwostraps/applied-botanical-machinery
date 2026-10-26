@@ -1,7 +1,6 @@
 package appliedbotanicalmachinery.extramachinery.events;
 
-import mythicbotany.register.ModBlocks;
-import appliedbotanicalmachinery.extramachinery.ExtraMachinery;
+import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.GenFlowers;
 import appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.flowers.*;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
@@ -9,13 +8,14 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolUpgraded;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import vazkii.botania.common.block.BotaniaFlowerBlocks;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.EventBusSubscriber;
+import velrondevs.botania.registry.BotaniaFlowerBlocks;
+import velrondevs.masterfulbotany.registry.ModBlocks;
 
-@Mod.EventBusSubscriber(modid = ExtraMachinery.MOD_ID)
+@EventBusSubscriber(modid = AppliedBotanics.MOD_ID)
 public class EventListener {
     public EventListener() {
     }
@@ -39,7 +39,7 @@ public class EventListener {
         GenFlowers.addAllGenFlowers(BotaniaFlowerBlocks.rafflowsia.asItem(), new Rafflowsia());
         GenFlowers.addAllGenFlowers(BotaniaFlowerBlocks.rosaArcana.asItem(), new RosaArcana());
 
-        if (ModList.get().isLoaded("mythicbotany")){
+        if (ModList.get().isLoaded("masterfulbotany")){
             GenFlowers.addAllGenFlowers(ModBlocks.witherAconite.asItem(), new WitherAconite());
         }
 

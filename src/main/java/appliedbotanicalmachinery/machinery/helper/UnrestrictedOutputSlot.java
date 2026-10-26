@@ -1,6 +1,6 @@
 package appliedbotanicalmachinery.machinery.helper;
 
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import org.moddingx.libx.menu.slot.OutputSlot;
 

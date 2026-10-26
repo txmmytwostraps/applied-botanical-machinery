@@ -1,0 +1,19 @@
+{
+  "type": "botania:terra_plate",
+  "ingredients": [
+    {
+      "item": "botania:terrasteel_ingot"
+    },
+    {
+      "item": "botania:life_essence"
+    },
+    {
+      "item": "botania:elementium_ingot"
+    }
+  ],
+  "mana": 750000,
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:malachite_ingot"
+  }
+}

@@ -1,12 +1,11 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
-import appliedbotanicalmachinery.machinery.BotanicalMachinery;
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuManaBattery;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.SoundHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -27,8 +26,8 @@ public class ScreenManaBattery extends ScreenBase<ContainerMenuManaBattery> {
     }
 
     @Override
-    public void init(@Nonnull Minecraft mc, int x, int y) {
-        super.init(mc, x, y);
+    protected void init() {
+        super.init();
         this.xB1 = this.relX + 51;
         this.yB1 = this.relY + 49;
         this.xB2 = this.relX + 105;
@@ -65,13 +64,13 @@ public class ScreenManaBattery extends ScreenBase<ContainerMenuManaBattery> {
 
             if (mouseX >= this.xB1 && mouseX < this.xB1 + 20 && mouseY >= this.yB1 && mouseY < this.yB1 + 20) {
                 blockEntity.setSlot1Locked(!blockEntity.isSlot1Locked());
-                BotanicalMachinery.getNetwork().updateLockedState(blockEntity);
+                AppliedBotanicalMachinery.getNetwork().updateLockedState(blockEntity);
                 SoundHelper.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
 
             if (mouseX >= this.xB2 && mouseX < this.xB2 + 20 && mouseY >= this.yB2 && mouseY < this.yB2 + 20) {
                 blockEntity.setSlot2Locked(!blockEntity.isSlot2Locked());
-                BotanicalMachinery.getNetwork().updateLockedState(blockEntity);
+                AppliedBotanicalMachinery.getNetwork().updateLockedState(blockEntity);
                 SoundHelper.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }

@@ -4,7 +4,7 @@ import org.moddingx.libx.annotation.config.RegisterConfig;
 import org.moddingx.libx.config.Config;
 import org.moddingx.libx.config.Group;
 
-@RegisterConfig(value = "client", client = true)
+@RegisterConfig(value = "machinery/client", client = true)
 public class LibXClientConfig {
 
     @Config("Should mana in GUIs be displayed with numbers?")

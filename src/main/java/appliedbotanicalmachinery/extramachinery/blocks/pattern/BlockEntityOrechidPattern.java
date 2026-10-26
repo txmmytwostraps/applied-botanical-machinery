@@ -21,6 +21,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalOrechid.B
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.random.WeightedEntry;
@@ -28,17 +29,18 @@ import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.crafting.OrechidRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.common.crafting.OrechidRecipe;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -239,8 +241,8 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.cooldown = nbt.getInt("cooldown");
         this.getMainNode().loadFromNBT(nbt);
 
@@ -249,15 +251,15 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt("cooldown", this.cooldown);
         this.getMainNode().saveToNBT(nbt);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level == null || this.level.isClientSide) {
             this.cooldown = nbt.getInt("cooldown");
 
@@ -266,11 +268,11 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
+            CompoundTag nbt = super.getUpdateTag(registries);
             nbt.putInt("cooldown", this.cooldown);
 
             return nbt;
@@ -283,7 +285,7 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
                 if (STATIC_ORECHID_OUTPUTS == null) {
                     Set<Item> outputs = new LinkedHashSet<>();
                     if (this.level != null) {
-                        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).forEach(recipe -> {
+                        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).stream().map(RecipeHolder::value).forEach(recipe -> {
                             if (recipe.getOutput() != null) {
                                 recipe.getOutput().getDisplayedStacks().stream().map(ItemStack::getItem).forEach(outputs::add);
                             }
@@ -302,7 +304,7 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
                 if (STATIC_ORECHID_INPUTS == null) {
                     Set<Item> inputs = new LinkedHashSet<>();
                     if (this.level != null) {
-                        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).forEach(recipe -> {
+                        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).stream().map(RecipeHolder::value).forEach(recipe -> {
                             if (recipe.getInput() != null) {
                                 recipe.getInput().getDisplayedStacks().stream().map(ItemStack::getItem).forEach(inputs::add);
                             }
@@ -325,16 +327,16 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
         List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
 
         assert this.level != null;
-        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).forEach((recipe) -> values.add(WeightedEntry.wrap(recipe, recipe.getWeight())));
+        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).stream().map(RecipeHolder::value).forEach((recipe) -> values.add(WeightedEntry.wrap(recipe, recipe.getWeight())));
 
-        return WeightedRandom.getRandomItem(this.level.random, values).map(WeightedEntry.Wrapper::getData).orElse(null);
+        return WeightedRandom.getRandomItem(this.level.random, values).map(WeightedEntry.Wrapper::data).orElse(null);
     }
 
     public @Nullable OrechidRecipe getRecipeOrechidFilter(){
         List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
 
         assert this.level != null;
-        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).forEach((recipe) -> recipe.getOutput().getDisplayedStacks().forEach(itemStack -> {
+        this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ORECHID_TYPE).stream().map(RecipeHolder::value).forEach((recipe) -> recipe.getOutput().getDisplayedStacks().forEach(itemStack -> {
             for (int index: FILTER_SLOTS){
                 if (inventory.getStackInSlot(index).getItem() == itemStack.getItem()){
                     values.add(WeightedEntry.wrap(recipe, recipe.getWeight()));
@@ -342,7 +344,7 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
             }
         }));
 
-        return WeightedRandom.getRandomItem(this.level.random, values).map(WeightedEntry.Wrapper::getData).orElse(null);
+        return WeightedRandom.getRandomItem(this.level.random, values).map(WeightedEntry.Wrapper::data).orElse(null);
     }
     //endregion
 

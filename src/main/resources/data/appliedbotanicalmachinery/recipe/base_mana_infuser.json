@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:mana_ring_greater"
+    },
+    "b": {
+      "item": "appliedbotanicalmachinery:malachite_ingot"
+    },
+    "c": {
+      "item": "masterfulbotany:mana_infuser"
+    },
+    "d": {
+      "item": "appliedbotanicalmachinery:malachite_dragonstone_block"
+    }
+  },
+  "pattern": ["aba", "bcb", "ddd"],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:base_mana_infuser"
+  },
+  "show_notification": true
+}

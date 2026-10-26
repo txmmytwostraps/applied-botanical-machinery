@@ -31,7 +31,7 @@ public class ScreenMechanicalBrewery extends ScreenBase<ContainerMenuMechanicalB
 
         if (blockEntity.getProgress() > 0) {
             float pct = Math.min(blockEntity.getProgress() / (float) blockEntity.getMaxProgress(), 1.0F);
-            vazkii.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_BREWERY_GUI, this.relX + 96, this.relY + 48, 176, 0, Math.round(22 * pct), 16);
+            velrondevs.botania.client.core.helper.RenderHelper.drawTexturedModalRect(guiGraphics, LibResources.MECHANICAL_BREWERY_GUI, this.relX + 96, this.relY + 48, 176, 0, Math.round(22 * pct), 16);
         }
     }
 }

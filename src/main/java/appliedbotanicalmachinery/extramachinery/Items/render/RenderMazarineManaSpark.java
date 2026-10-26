@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import vazkii.botania.client.render.entity.BaseSparkRenderer;
-import vazkii.botania.common.lib.ResourceLocationHelper;
+import velrondevs.botania.client.render.entity.BaseSparkRenderer;
+import velrondevs.botania.common.lib.ResourceLocationHelper;
 
 import java.util.Objects;
 import java.util.function.Function;

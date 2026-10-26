@@ -2,13 +2,14 @@ package appliedbotanicalmachinery.extramachinery.blocks.tesr;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import appliedbotanicalmachinery.extramachinery.ExtraMachinery;
+import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,15 +21,15 @@ import javax.annotation.Nullable;
 
 public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhouse> {
 
-    BakedModel pylonsModel = Minecraft.getInstance().getModelManager().getModel(new ResourceLocation(ExtraMachinery.MOD_ID, "block/greenhouse/pylons"));
+    BakedModel pylonsModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/pylons")));
 
     BakedModel[] circleModels = new BakedModel[] {
-            Minecraft.getInstance().getModelManager().getModel(new ResourceLocation(ExtraMachinery.MOD_ID, "block/greenhouse/circle_3")),
-            Minecraft.getInstance().getModelManager().getModel(new ResourceLocation(ExtraMachinery.MOD_ID, "block/greenhouse/circle_2")),
-            Minecraft.getInstance().getModelManager().getModel(new ResourceLocation(ExtraMachinery.MOD_ID, "block/greenhouse/circle_1"))
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_3"))),
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_2"))),
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_1")))
     };
 
-    BakedModel gardenBedModel = Minecraft.getInstance().getModelManager().getModel(new ResourceLocation(ExtraMachinery.MOD_ID, "block/greenhouse/garden_bed"));
+    BakedModel gardenBedModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/garden_bed")));
 
     public RenderGreenhouse() {
     }

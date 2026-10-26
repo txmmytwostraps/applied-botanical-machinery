@@ -1,43 +1,48 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalRunicAltar;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalRunicAltar.ContainerRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalRunicAltar.RendererRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarUpgraded;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.block.RotationShape;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 import javax.annotation.Nonnull;
 
 public class BlockRunicAltarUpgraded extends ExtraBotanicalBlock<BlockEntityRunicAltarUpgraded, ContainerRunicAltarUpgraded> {
     public static final RotationShape SHAPE;
 
-    public BlockRunicAltarUpgraded(ModX mod, Class<BlockEntityRunicAltarUpgraded> teClass, MenuType<ContainerRunicAltarUpgraded> menu) {
+    public BlockRunicAltarUpgraded(ModX mod, Class<BlockEntityRunicAltarUpgraded> teClass, AdvancedMenuType<ContainerRunicAltarUpgraded, BlockPos> menu) {
         super(mod, teClass, menu, false, true);
     }
 
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenRunicAltarUpgraded::new));
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
-        super.registerClient(ctx);
-        MenuScreens.register(ModBlocks.upgradedRunicAltar.menu, ScreenRunicAltarUpgraded::new);
+    @Override
+    public void setupClient(SetupContext ctx) {
+        super.setupClient(ctx);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RendererRunicAltarUpgraded();
         });

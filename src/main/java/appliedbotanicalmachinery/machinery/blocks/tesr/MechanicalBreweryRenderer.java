@@ -14,13 +14,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.joml.Quaternionf;
 import org.moddingx.libx.render.RenderHelper;
 import org.moddingx.libx.render.block.RotatedBlockRenderer;
-import vazkii.botania.api.brew.BrewItem;
-import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.common.item.BotaniaItems;
+import velrondevs.botania.api.brew.BrewItem;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.registry.BotaniaItems;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

@@ -1,14 +1,12 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalOrechid;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
+import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalOrechid.ContainerOrechidAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid.ScreenOrechidAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalOrechid.RenderOrechidAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalOrechid.BlockEntityOrechidAdvanced;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
@@ -17,38 +15,47 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.base.tile.MenuBlockBE;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 public class BlockOrechidAdvanced extends MenuBlockBE<BlockEntityOrechidAdvanced, ContainerOrechidAdvanced> {
 
     private static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape SHAPE;
 
-    public BlockOrechidAdvanced(ModX mod, Class<BlockEntityOrechidAdvanced> teClass, MenuType<ContainerOrechidAdvanced> menu) {
-        super(mod, teClass, menu, Properties.copy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockOrechidAdvanced(ModX mod, Class<BlockEntityOrechidAdvanced> teClass, AdvancedMenuType<ContainerOrechidAdvanced, BlockPos> menu) {
+        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    }
+
+    @Override
+    public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerAdditional(ctx, builder);
+        ExtraBotanicalBlock.registerTileCapabilities(this.getBlockEntityType(), builder);
+    }
+
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenOrechidAdvanced::new));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
+    @Override
+    public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        MenuScreens.register(ModBlocks.advancedOrechid.menu, ScreenOrechidAdvanced::new);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RenderOrechidAdvanced();
         });
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void initializeItemClient(@Nonnull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ItemStackRenderer.createProperties());
     }
 
     public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {

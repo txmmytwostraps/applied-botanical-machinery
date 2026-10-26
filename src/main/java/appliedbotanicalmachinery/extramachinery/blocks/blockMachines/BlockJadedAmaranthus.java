@@ -1,57 +1,63 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
+import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.ContainerJadedAmaranthus;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.ScreenJadedAmaranthus;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.RenderJadedAmaranthus;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityJadedAmaranthus;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.tile.MenuBlockBE;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 public class BlockJadedAmaranthus extends MenuBlockBE<BlockEntityJadedAmaranthus, ContainerJadedAmaranthus> {
 
     private static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape SHAPE;
 
-    public BlockJadedAmaranthus(ModX mod, Class<BlockEntityJadedAmaranthus> teClass, MenuType<ContainerJadedAmaranthus> menu) {
-        super(mod, teClass, menu, Properties.copy(Blocks.STONE).strength(2.0F, 5.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockJadedAmaranthus(ModX mod, Class<BlockEntityJadedAmaranthus> teClass, AdvancedMenuType<ContainerJadedAmaranthus, BlockPos> menu) {
+        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 5.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    }
+
+    @Override
+    public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerAdditional(ctx, builder);
+        ExtraBotanicalBlock.registerTileCapabilities(this.getBlockEntityType(), builder);
+    }
+
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenJadedAmaranthus::new));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
+    @Override
+    public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        MenuScreens.register(ModBlocks.jadedAmaranthus.menu, ScreenJadedAmaranthus::new);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RenderJadedAmaranthus();
         });
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void initializeItemClient(@Nonnull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ItemStackRenderer.createProperties());
     }
 
     public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {

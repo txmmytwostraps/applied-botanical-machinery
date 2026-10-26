@@ -7,13 +7,13 @@ import org.moddingx.libx.config.Group;
 import org.moddingx.libx.config.validate.IntRange;
 import org.moddingx.libx.util.data.ResourceList;
 
-@RegisterConfig("server")
+@RegisterConfig("machinery/server")
 public class LibXServerConfig {
 
     @Config
     public static ResourceList autoExportAllowed = new ResourceList(true, builder -> {
-        builder.simple(new ResourceLocation("ae2", "pattern_provider"));
-        builder.simple(new ResourceLocation("ae2", "cable_bus"));
+        builder.simple(ResourceLocation.fromNamespaceAndPath("ae2", "pattern_provider"));
+        builder.simple(ResourceLocation.fromNamespaceAndPath("ae2", "cable_bus"));
     });
 
     @Group("The amount of mana used in alfheim market to trade items [Default: 500]")

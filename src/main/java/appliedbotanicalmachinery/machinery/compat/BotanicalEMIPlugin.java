@@ -5,7 +5,7 @@ import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
-import vazkii.botania.client.integration.emi.BotaniaEmiPlugin;
+import velrondevs.botania.client.integration.emi.BotaniaEmiPlugin;
 
 @EmiEntrypoint
 public class BotanicalEMIPlugin implements EmiPlugin {

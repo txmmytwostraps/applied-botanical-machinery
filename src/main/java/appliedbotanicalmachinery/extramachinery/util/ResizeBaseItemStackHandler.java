@@ -6,10 +6,8 @@ import com.google.common.collect.Range;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
-import org.moddingx.libx.capability.ItemCapabilities;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.VanillaWrapper;
 
@@ -107,18 +105,6 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
         return this.unrestricted;
     }
 
-    public LazyOptional<IAdvancedItemHandlerModifiable> createCapability() {
-        return ItemCapabilities.create(this);
-    }
-
-    public LazyOptional<IAdvancedItemHandlerModifiable> createUnrestrictedCapability() {
-        return ItemCapabilities.create(this::getUnrestricted);
-    }
-
-    public LazyOptional<IAdvancedItemHandlerModifiable> createCapability(@Nullable Predicate<Integer> extract, @Nullable BiPredicate<Integer, ItemStack> insert) {
-        return ItemCapabilities.create(this, extract, insert);
-    }
-
     public static Builder builder(int size) {
         return new Builder(size);
     }
@@ -149,7 +135,7 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
                 ItemStack current = ResizeBaseItemStackHandler.this.stacks.get(slot);
                 int amount = ResizeBaseItemStackHandler.this.getStackLimit(slot, stack);
                 if (!current.isEmpty()) {
-                    if (!ItemHandlerHelper.canItemStacksStack(stack, current)) {
+                    if (!ItemStack.isSameItemSameComponents(stack, current)) {
                         return stack;
                     }
 
@@ -161,7 +147,7 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
                 } else {
                     if (!simulate) {
                         if (current.isEmpty()) {
-                            ResizeBaseItemStackHandler.this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(stack, Math.min(stack.getCount(), amount)));
+                            ResizeBaseItemStackHandler.this.stacks.set(slot, stack.copyWithCount(Math.min(stack.getCount(), amount)));
                         } else {
                             current.grow(Math.min(stack.getCount(), amount));
                         }
@@ -169,7 +155,7 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
                         ResizeBaseItemStackHandler.this.onContentsChanged(slot);
                     }
 
-                    return ItemHandlerHelper.copyStackWithSize(stack, Math.max(0, stack.getCount() - amount));
+                    return stack.copyWithCount(Math.max(0, stack.getCount() - amount));
                 }
             }
         }
@@ -186,11 +172,11 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
                 } else {
                     int count = Math.min(current.getCount(), Math.min(amount, current.getMaxStackSize()));
                     if (!simulate) {
-                        ResizeBaseItemStackHandler.this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(current, Math.max(0, current.getCount() - count)));
+                        ResizeBaseItemStackHandler.this.stacks.set(slot, current.copyWithCount(Math.max(0, current.getCount() - count)));
                         ResizeBaseItemStackHandler.this.onContentsChanged(slot);
                     }
 
-                    return ItemHandlerHelper.copyStackWithSize(current, count);
+                    return current.copyWithCount(count);
                 }
             }
         }

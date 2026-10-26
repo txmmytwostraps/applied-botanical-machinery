@@ -12,7 +12,6 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.google.common.collect.Range;
-import appliedbotanicalmachinery.machinery.data.CommonTags;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.WorkingTile;
@@ -23,6 +22,7 @@ import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -31,26 +31,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.CustomApothecaryColor;
-import vazkii.botania.api.recipe.PetalApothecaryRecipe;
-import vazkii.botania.client.fx.SparkleParticleData;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.handler.BotaniaSounds;
+import velrondevs.botania.api.recipe.CustomApothecaryColor;
+import velrondevs.botania.api.recipe.PetalApothecaryRecipe;
+import velrondevs.botania.client.fx.SparkleParticleData;
+import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.registry.BotaniaSounds;
 
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
@@ -60,7 +59,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 
-public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRecipe>
+public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, PetalApothecaryRecipe>
         implements TickingBlock, IInWorldGridNodeHost, IGridConnectedBlockEntity {
     public static final int WORKING_DURATION = LibXServerConfig.ApothecarySettings.workingDuration;
     public final int FLUID_CAPACITY;
@@ -76,7 +75,6 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
 
     private final BaseItemStackHandler inventory;
     private final BlockEntityApothecaryPattern.ApothecaryFluidTank fluidInventory;
-    private final LazyOptional<IFluidHandler> fluidHandler;
     private ItemStack currentOutput;
 
     private int timeCheckOutputSlot = LibXServerConfig.tickOutputSlots;
@@ -111,11 +109,10 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
         fluidInventory = new BlockEntityApothecaryPattern.ApothecaryFluidTank(FLUID_CAPACITY, (fluidStack) -> {
             return Fluids.WATER.isSame(fluidStack.getFluid());
         });
-        fluidHandler = LazyOptional.of(() -> {return this.fluidInventory;});
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 == -1){
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
-                    .validator( (stack) -> { return stack.is(CommonTags.MECHANICAL_APOTHECARY_CATALYSTS);}, SEEDS_SLOT)
+                    .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
                     .validator( (stack) -> {return (stack.getItem() == ModItems.catalystSeedInfinity.asItem());}, UPGRADE_SLOT_1)
                     .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1)
@@ -123,7 +120,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
                     .build();
         } else if (UPGRADE_SLOT_1 != -1){
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
-                    .validator( (stack) -> { return stack.is(CommonTags.MECHANICAL_APOTHECARY_CATALYSTS);}, SEEDS_SLOT)
+                    .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
                     .validator( (stack) -> {return (stack.getItem() == ModItems.catalystSeedInfinity.asItem() || stack.getItem() == ModItems.catalystWaterInfinity.asItem());}, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
                     .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
@@ -131,7 +128,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
                     .build();
         } else {
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
-                    .validator( (stack) -> { return stack.is(CommonTags.MECHANICAL_APOTHECARY_CATALYSTS);}, SEEDS_SLOT)
+                    .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
                     .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
@@ -329,15 +326,10 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
         return this.currentOutput;
     }
 
-    @Nonnull
-    public <X> LazyOptional<X> getCapability(@Nonnull Capability<X> cap, @Nullable Direction side) {
-        return cap == ForgeCapabilities.FLUID_HANDLER ? this.fluidHandler.cast() : super.getCapability(cap, side);
-    }
-
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
-        this.fluidInventory.setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluid")));
-        this.currentOutput = ItemStack.of(nbt.getCompound("currentOutput"));
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
+        this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound("fluid")));
+        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
         this.seedBuffer = nbt.getInt("seedBuffer");
         this.getMainNode().loadFromNBT(nbt);
 
@@ -345,35 +337,31 @@ public class BlockEntityApothecaryPattern extends WorkingTile<PetalApothecaryRec
         this.setDispatchable();
     }
 
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        CompoundTag tankTag = new CompoundTag();
-        this.getFluidInventory().getFluid().writeToNBT(tankTag);
-        nbt.put("fluid", tankTag);
-        nbt.put("currentOutput", this.currentOutput.serializeNBT());
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put("fluid", this.getFluidInventory().getFluid().saveOptional(registries));
+        nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
         nbt.putInt("seedBuffer", this.seedBuffer);
         this.getMainNode().saveToNBT(nbt);
     }
 
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level == null || this.level.isClientSide) {
-            this.fluidInventory.setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound("fluid")));
-            this.currentOutput = ItemStack.of(nbt.getCompound("currentOutput"));
+            this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound("fluid")));
+            this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
             this.seedBuffer = nbt.getInt("seedBuffer");
         }
     }
 
     @Nonnull
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
-            CompoundTag tankTag = new CompoundTag();
-            this.getFluidInventory().getFluid().writeToNBT(tankTag);
-            nbt.put("fluid", tankTag);
-            nbt.put("currentOutput", this.currentOutput.serializeNBT());
+            CompoundTag nbt = super.getUpdateTag(registries);
+            nbt.put("fluid", this.getFluidInventory().getFluid().saveOptional(registries));
+            nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
             nbt.putInt("seedBuffer", this.seedBuffer);
             return nbt;
         }

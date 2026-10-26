@@ -3,7 +3,7 @@ package appliedbotanicalmachinery.extramachinery.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import vazkii.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import java.util.List;
 

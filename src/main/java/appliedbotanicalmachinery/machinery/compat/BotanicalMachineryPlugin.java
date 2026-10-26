@@ -1,15 +1,16 @@
 package appliedbotanicalmachinery.machinery.compat;
 
+import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.machinery.ModBlocks;
 import appliedbotanicalmachinery.machinery.blocks.screens.*;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mythicbotany.jei.InfusionCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import vazkii.botania.client.integration.jei.*;
+import velrondevs.botania.client.integration.jei.*;
+import velrondevs.masterfulbotany.integration.jei.InfusionCategory;
 
 import javax.annotation.Nonnull;
 
@@ -19,9 +20,9 @@ public class BotanicalMachineryPlugin implements IModPlugin {
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation("appliedbotanicalmachinery", "jei_plugin");
+        return AppliedBotanics.id("machinery");
     }
-    
+
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(ScreenAlfheimMarket.class, 77, 36, 22, 15, ElvenTradeRecipeCategory.TYPE);
@@ -31,7 +32,9 @@ public class BotanicalMachineryPlugin implements IModPlugin {
         registration.addRecipeClickArea(ScreenMechanicalManaPool.class, 77, 36, 22, 15, ManaPoolRecipeCategory.TYPE);
         registration.addRecipeClickArea(ScreenMechanicalRunicAltar.class, 87, 65, 22, 15, RunicAltarRecipeCategory.TYPE);
         registration.addRecipeClickArea(ScreenIndustrialAgglomerationFactory.class, 73, 51, 30, 25, TerrestrialAgglomerationRecipeCategory.TYPE);
-        registration.addRecipeClickArea(ScreenMechanicalManaInfuser.class, 73, 51, 30, 25, InfusionCategory.TYPE);
+        if (MasterfulBotanyCompat.isLoaded()) {
+            registration.addRecipeClickArea(ScreenMechanicalManaInfuser.class, 73, 51, 30, 25, InfusionCategory.TYPE);
+        }
     }
 
     @Override
@@ -43,6 +46,8 @@ public class BotanicalMachineryPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.mechanicalManaPool), ManaPoolRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.mechanicalRunicAltar), RunicAltarRecipeCategory.TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.industrialAgglomerationFactory), TerrestrialAgglomerationRecipeCategory.TYPE);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.mechanicalManaInfuser), InfusionCategory.TYPE);
+        if (MasterfulBotanyCompat.isLoaded()) {
+            registration.addRecipeCatalyst(new ItemStack(ModBlocks.mechanicalManaInfuser), InfusionCategory.TYPE);
+        }
     }
 }

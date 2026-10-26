@@ -1,14 +1,13 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalDaisy;
 
-import appliedbotanicalmachinery.extramachinery.ModBlocks;
+import appeng.api.AECapabilities;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalDaisy.ContainerDaisyBase;
+import appliedbotanicalmachinery.extramachinery.blocks.pattern.BlockEntityDaisyPattern;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalDaisy.ScreenDaisyBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalDaisy.RenderDaisyBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalDaisy.BlockEntityDaisyBase;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,38 +18,51 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.tile.MenuBlockBE;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.CapabilityInfo;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 public class BlockDaisyBase extends MenuBlockBE<BlockEntityDaisyBase, ContainerDaisyBase> {
     private static final VoxelShape COLLISION_SHAPE;
     private static final VoxelShape SHAPE;
 
-    public BlockDaisyBase(ModX mod, Class<BlockEntityDaisyBase> teClass, MenuType<ContainerDaisyBase> menu) {
-        super(mod, teClass, menu, Properties.copy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockDaisyBase(ModX mod, Class<BlockEntityDaisyBase> teClass, AdvancedMenuType<ContainerDaisyBase, BlockPos> menu) {
+        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    }
+
+    @Override
+    public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerAdditional(ctx, builder);
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, BlockEntityDaisyPattern::getItemHandler));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getFluidHandler()));
+        builder.registerNamed(null, "grid_node_host", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), AECapabilities.IN_WORLD_GRID_NODE_HOST, (tile, side) -> tile));
+    }
+
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenDaisyBase::new));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void registerClient(SetupContext ctx) {
+    @Override
+    public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        MenuScreens.register(ModBlocks.baseDaisy.menu, ScreenDaisyBase::new);
         BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
             return new RenderDaisyBase();
         });
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void initializeItemClient(@Nonnull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ItemStackRenderer.createProperties());
     }
 
     public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {

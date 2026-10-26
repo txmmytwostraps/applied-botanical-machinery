@@ -1,17 +1,14 @@
 package appliedbotanicalmachinery.machinery.blocks;
 
-import appliedbotanicalmachinery.machinery.ModBlocks;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.blocks.screens.ScreenMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.blocks.tesr.MechanicalApothecaryRenderer;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalApothecary;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,72 +16,74 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidUtil;
-import org.moddingx.libx.base.tile.BlockEntityBase;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidActionResult;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import org.moddingx.libx.base.tile.MenuBlockBE;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
+import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
+import org.moddingx.libx.registration.util.CapabilityInfo;
+import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanicalApothecary, ContainerMenuMechanicalApothecary> {
 
-    public BlockMechanicalApothecary(ModX mod, Class<BlockEntityMechanicalApothecary> teClass, MenuType<ContainerMenuMechanicalApothecary> menu) {
-        super(mod, teClass, menu, Properties.copy(Blocks.STONE).strength(2, 10).dynamicShape().forceSolidOn(), new Item.Properties());
+    public BlockMechanicalApothecary(ModX mod, Class<BlockEntityMechanicalApothecary> teClass, AdvancedMenuType<ContainerMenuMechanicalApothecary, BlockPos> menu) {
+        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2, 10).dynamicShape().forceSolidOn(), new Item.Properties());
+    }
+
+    @Override
+    public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerAdditional(ctx, builder);
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, (tile, side) -> tile.getItemHandler()));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getFluidInventory()));
+    }
+
+    @Override
+    public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
+        super.registerClientAdditional(ctx, builder);
+        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
+        builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenMechanicalApothecary::new));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void registerClient(SetupContext ctx) {
+    public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        MenuScreens.register(ModBlocks.mechanicalApothecary.menu, ScreenMechanicalApothecary::new);
         BlockEntityRenderers.register(this.getBlockEntityType(), context -> new MechanicalApothecaryRenderer());
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeItemClient(@Nonnull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ItemStackRenderer.createProperties());
     }
 
     @Nonnull
     @Override
-    public InteractionResult use(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
         if (!level.isClientSide) {
-            BlockEntity tile = level.getBlockEntity(pos);
+            BlockEntityMechanicalApothecary tile = this.getBlockEntity(level, pos);
 
             ItemStack held = player.getMainHandItem();
-            @SuppressWarnings("ConstantConditions")
-            FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainer(held, tile.getCapability(ForgeCapabilities.FLUID_HANDLER, null).orElse(null), 1000, player, true);
+            FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainer(held, tile.getFluidInventory(), 1000, player, true);
             if (fluidActionResult.isSuccess()) {
-                if (tile instanceof BlockEntityBase) {
-                    ((BlockEntityBase) tile).setDispatchable();
-                }
+                tile.setDispatchable();
 
                 if (!player.isCreative()) {
                     player.setItemInHand(hand, fluidActionResult.getResult());
                 }
 
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
-
-            super.use(state, level, pos, player, hand, hit);
         }
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
@@ -98,20 +97,18 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    protected int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
         return 0;
     }
 
     @Override
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    protected boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
+    protected boolean useShapeForLightOcclusion(@Nonnull BlockState state) {
         return true;
     }
 

@@ -1,11 +1,11 @@
 package appliedbotanicalmachinery.machinery;
 
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalManaPool;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = "appliedbotanicalmachinery")
+@EventBusSubscriber(modid = "appliedbotanicalmachinery")
 public class EventListener {
 
     @SubscribeEvent

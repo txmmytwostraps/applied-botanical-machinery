@@ -7,7 +7,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 @EmiEntrypoint
 public class emi implements EmiPlugin {
@@ -16,50 +16,50 @@ public class emi implements EmiPlugin {
     public void register(EmiRegistry registry) {
         // Botania categories — only add if present
         // Use Botania's category constants directly
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.baseManaPool)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.upgradedManaPool)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.advancedManaPool)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.ultimateManaPool)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.baseManaPool)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.upgradedManaPool)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.advancedManaPool)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.MANA_INFUSION, EmiStack.of(new ItemStack(ModBlocks.ultimateManaPool)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.baseRunicAltar)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.upgradedRunicAltar)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.advancedRunicAltar)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.ultimateRunicAltar)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.baseRunicAltar)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.upgradedRunicAltar)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.advancedRunicAltar)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.RUNIC_ALTAR, EmiStack.of(new ItemStack(ModBlocks.ultimateRunicAltar)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.baseApothecary)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.upgradedApothecary)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.advancedApothecary)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.ultimateApothecary)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.baseApothecary)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.upgradedApothecary)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.advancedApothecary)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PETAL_APOTHECARY, EmiStack.of(new ItemStack(ModBlocks.ultimateApothecary)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.baseIndustrialAgglomerationFactory)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.upgradedIndustrialAgglomerationFactory)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.advancedIndustrialAgglomerationFactory)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.ultimateIndustrialAgglomerationFactory)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.baseIndustrialAgglomerationFactory)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.upgradedIndustrialAgglomerationFactory)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.advancedIndustrialAgglomerationFactory)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.TERRESTRIAL_AGGLOMERATION, EmiStack.of(new ItemStack(ModBlocks.ultimateIndustrialAgglomerationFactory)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.baseAlfheimMarket)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.upgradedAlfheimMarket)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.advancedAlfheimMarket)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.ultimateAlfheimMarket)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.baseAlfheimMarket)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.upgradedAlfheimMarket)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.advancedAlfheimMarket)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ELVEN_TRADE, EmiStack.of(new ItemStack(ModBlocks.ultimateAlfheimMarket)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.baseDaisy)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.upgradedDaisy)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.advancedDaisy)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.ultimateDaisy)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.baseDaisy)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.upgradedDaisy)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.advancedDaisy)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.PURE_DAISY, EmiStack.of(new ItemStack(ModBlocks.ultimateDaisy)));
 
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.baseOrechid)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.upgradedOrechid)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.advancedOrechid)));
-        registry.addWorkstation(vazkii.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.ultimateOrechid)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.baseOrechid)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.upgradedOrechid)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.advancedOrechid)));
+        registry.addWorkstation(velrondevs.botania.client.integration.emi.BotaniaEmiPlugin.ORECHID, EmiStack.of(new ItemStack(ModBlocks.ultimateOrechid)));
 
-        // MythicBotany infusion (optional dependency)
-        if (ModList.get().isLoaded("mythicbotany") &&
+        // Masterful Botany infusion (optional dependency)
+        if (ModList.get().isLoaded("masterfulbotany") &&
                 ModBlocks.baseManaInfuser != null &&
                 ModBlocks.upgradedManaInfuser != null &&
                 ModBlocks.advancedManaInfuser != null &&
                 ModBlocks.ultimateManaInfuser != null) {
-            // MythicBotany EMI may not exist; if present, its category id is likely mythicbotany:infuser
+            // Masterful Botany has no EMI plugin of its own; attach only if one shows up as masterfulbotany:infuser
             // Try to attach by scanning for a matching category id at runtime.
-            tryAttachById(registry, new ResourceLocation("mythicbotany", "infuser"),
+            tryAttachById(registry, ResourceLocation.fromNamespaceAndPath("masterfulbotany", "infuser"),
                     new ItemStack(ModBlocks.baseManaInfuser),
                     new ItemStack(ModBlocks.upgradedManaInfuser),
                     new ItemStack(ModBlocks.advancedManaInfuser),

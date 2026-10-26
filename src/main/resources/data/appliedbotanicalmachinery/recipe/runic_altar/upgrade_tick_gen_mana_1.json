@@ -1,0 +1,28 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "item": "botania:rune_greed"
+    },
+    {
+      "item": "botania:rune_wrath"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:upgrade_pattern"
+    }
+  ],
+  "mana": 100000,
+  "output": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:upgrade_tick_gen_mana_1"
+  }
+}

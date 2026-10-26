@@ -19,24 +19,27 @@ import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 import appliedbotanicalmachinery.extramachinery.util.RecipeValidityCache;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.ManaInfusionRecipe;
-import vazkii.botania.client.fx.WispParticleData;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import velrondevs.botania.api.recipe.ManaInfusionRecipe;
+import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.botania.registry.BotaniaBlocks;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -45,7 +48,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
+public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfusionRecipe>
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     private static List<Item> CACHED_CATALYSTS;
@@ -249,8 +252,8 @@ public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
         return this.inventory.getStackInSlot(CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem() ? this.getMaxMana() : super.getAvailableSpaceForMana();
     }
 
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.cooldown = nbt.getInt("cooldown");
         this.getMainNode().loadFromNBT(nbt);
 
@@ -259,14 +262,14 @@ public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
 
     }
 
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt("cooldown", this.cooldown);
         this.getMainNode().saveToNBT(nbt);
     }
 
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level == null || this.level.isClientSide) {
             this.cooldown = nbt.getInt("cooldown");
 
@@ -274,11 +277,11 @@ public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
     }
 
     @Nonnull
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
+            CompoundTag nbt = super.getUpdateTag(registries);
             nbt.putInt("cooldown", this.cooldown);
 
             return nbt;
@@ -296,7 +299,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<ManaInfusionRecipe>
             }
 
             List<Item> catalysts = new ArrayList();
-            this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.MANA_INFUSION_TYPE).forEach((recipe) -> {
+            this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.MANA_INFUSION_TYPE).stream().map(RecipeHolder::value).forEach((recipe) -> {
                 if (recipe.getRecipeCatalyst() != null) {
                     recipe.getRecipeCatalyst().getDisplayedStacks().stream().map(ItemStack::getItem).forEach((item) -> {
                         if (!catalysts.contains(item)) {

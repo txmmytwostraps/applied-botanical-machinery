@@ -10,8 +10,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.ItemBase;
 import org.moddingx.libx.mod.ModX;
-import vazkii.botania.api.mana.spark.SparkAttachable;
-import vazkii.botania.xplat.XplatAbstractions;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.xplat.XplatAbstractions;
 
 public class ItemCrimsonManaSpark extends ItemBase {
 

@@ -1,6 +1,6 @@
 {
   "gui.appliedbotanicalmachinery.mana": "Mana",
-  "itemGroup.appliedbotanicalmachinery.tab": "Applied Botanics",
+  "itemGroup.appliedbotanicalmachinery": "Applied Botanical Machinery",
   "block.appliedbotanicalmachinery.fluix_mana_pool": "Fluix Mana Pool",
   "item.appliedbotanicalmachinery.mana_cell_housing": "ME Mana Cell Housing",
   "item.appliedbotanicalmachinery.creative_mana_cell": "Creative ME Mana Cell",
@@ -21,7 +21,6 @@
   "appliedbotanicalmachinery.entry.mana_drives": "Mana Drives",
   "appliedbotanicalmachinery.page.mana_drives0": "Ever wanted to throw magic under the bus and go numerical? shame on you",
   "appliedbotanicalmachinery.page.mana_drives1": "just what vazkii never wanted",
-  "itemGroup.appliedbotanicalmachinery": "Botanical Machinery",
   "item.appliedbotanicalmachinery.mana_emerald": "Mana Emerald",
   "block.appliedbotanicalmachinery.mana_emerald_block": "Mana Emerald Block",
   "block.appliedbotanicalmachinery.alfheim_market": "Alfheim Market",
@@ -75,7 +74,6 @@
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary": "Mechanical Apothecary",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.recipe": "Give me all the flowers",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.page1": "An improved version of the $(l:botania:basics/apothecary)Apothecary$() that uses water, seeds and ingredients to create all the flowers your heart desires.",
-  "itemGroup.appliedbotanicalmachinery.extra": "Extra Botanical Machinery Reforged",
   "block.appliedbotanicalmachinery.base_mana_pool": "Base Mana Pool",
   "block.appliedbotanicalmachinery.upgraded_mana_pool": "Upgraded Mana Pool",
   "block.appliedbotanicalmachinery.advanced_mana_pool": "Advanced Mana Pool",

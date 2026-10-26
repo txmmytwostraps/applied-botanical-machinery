@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -17,8 +17,8 @@ public class ContainerIndustrialAgglomerationFactoryUpgraded extends BlockEntity
     public final static int WIDTH_GUI = 196;
     public final static int HEIGHT_GUI = 131;
 
-    public ContainerIndustrialAgglomerationFactoryUpgraded(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Inventory playerContainer, Player player) {
-        super(type, windowId, level, pos, playerContainer, player, 5, 11);
+    public ContainerIndustrialAgglomerationFactoryUpgraded(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
+        super(type, windowId, level, pos, player, playerContainer, 5, 11);
         IItemHandlerModifiable inventory = this.blockEntity.getInventory();
 
 

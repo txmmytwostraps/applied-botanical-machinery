@@ -4,20 +4,21 @@ import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.TerrestrialAgglomerationRecipe;
-import vazkii.botania.client.fx.WispParticleData;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import velrondevs.botania.api.recipe.TerrestrialAgglomerationRecipe;
+import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityIndustrialAgglomerationFactory extends WorkingTile<TerrestrialAgglomerationRecipe> {
+public class BlockEntityIndustrialAgglomerationFactory extends WorkingTile<RecipeInput, TerrestrialAgglomerationRecipe> {
 
     public static final int MAX_MANA_PER_TICK = 5000;
 

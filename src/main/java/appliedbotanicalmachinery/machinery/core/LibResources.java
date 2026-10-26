@@ -1,6 +1,6 @@
 package appliedbotanicalmachinery.machinery.core;
 
-import appliedbotanicalmachinery.machinery.BotanicalMachinery;
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import net.minecraft.resources.ResourceLocation;
 
 public class LibResources {
@@ -25,6 +25,6 @@ public class LibResources {
     }
 
     private static ResourceLocation loc(String id) {
-        return BotanicalMachinery.getInstance().resource(id + ".png");
+        return AppliedBotanicalMachinery.getInstance().resource(id + ".png");
     }
 }

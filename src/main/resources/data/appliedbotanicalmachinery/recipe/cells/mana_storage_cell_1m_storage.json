@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "appliedbotanicalmachinery:mana_cell_housing"
+    },
+    {
+      "item": "appliedbotanicalmachinery:cell_component_1m"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:mana_storage_cell_1m"
+  }
+}

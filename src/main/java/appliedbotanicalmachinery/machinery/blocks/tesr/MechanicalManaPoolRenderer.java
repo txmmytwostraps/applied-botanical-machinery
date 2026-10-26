@@ -15,9 +15,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.moddingx.libx.render.block.RotatedBlockRenderer;
-import vazkii.botania.api.mana.PoolOverlayProvider;
-import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.api.mana.PoolOverlayProvider;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +26,7 @@ public class MechanicalManaPoolRenderer extends RotatedBlockRenderer<BlockEntity
     public static final double INNER_POOL_HEIGHT = 4.5 / 16;
     public static final double POOL_BOTTOM_HEIGHT = 1.15 / 16;
     private static final TextureAtlasSprite MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-            .apply(new ResourceLocation("botania", "block/mana_water"));
+            .apply(ResourceLocation.fromNamespaceAndPath("botania", "block/mana_water"));
 
     @Override
     protected void doRender(@Nonnull BlockEntityMechanicalManaPool tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {

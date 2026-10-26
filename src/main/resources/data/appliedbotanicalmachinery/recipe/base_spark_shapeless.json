@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "botania:spark"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:base_spark"
+  }
+}

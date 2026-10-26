@@ -1,0 +1,37 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "item": "botania:rune_spring"
+    },
+    {
+      "item": "botania:rune_summer"
+    },
+    {
+      "item": "botania:rune_autumn"
+    },
+    {
+      "item": "botania:rune_winter"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "appliedbotanicalmachinery:malachite_spark"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot_block"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_ingot"
+    },
+    {
+      "item": "appliedbotanicalmachinery:saffron_dragonstone_block"
+    }
+  ],
+  "mana": 150000,
+  "output": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:saffron_spark"
+  }
+}

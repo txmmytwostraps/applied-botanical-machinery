@@ -3,20 +3,22 @@ package appliedbotanicalmachinery.extramachinery.blocks.base;
 import com.google.common.collect.Streams;
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.lib.BotaniaTags;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.common.lib.BotaniaTags;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -24,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public abstract class RecipeTile<T extends Recipe<Container>> extends ExtraBotanicalTile {
+public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> extends ExtraBotanicalTile {
     private final RecipeType<T> recipeType;
     private final int firstInputSlot;
     private final int firstOutputSlot;
@@ -86,7 +88,8 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends ExtraBotan
                 // most ingredients; on a tie the first one in recipe order wins.
                 boolean largestFirst = LibXServerConfig.largestRecipeFirst;
                 Recipe recipe = null;
-                for (T candidate : this.level.getRecipeManager().getAllRecipesFor(this.recipeType)) {
+                for (RecipeHolder<T> holder : this.level.getRecipeManager().getAllRecipesFor(this.recipeType)) {
+                    T candidate = holder.value();
                     // Skip recipes that cannot beat the current pick before the costlier match check
                     if (recipe != null && candidate.getIngredients().size() <= recipe.getIngredients().size()) continue;
 
@@ -116,7 +119,7 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends ExtraBotan
                     Item[] arr = new Item[items.length];
                     for (int i = 0; i < items.length; i++) {
                         ItemStack is = items[i];
-                        if (is == null || is.hasTag()) {
+                        if (is == null || !is.getComponentsPatch().isEmpty()) {
                             simple = false;
                             break;
                         }
@@ -398,8 +401,9 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends ExtraBotan
         this.needsRecipeUpdate = true;
     }
 
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    @Override
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.needsRecipeUpdate = true;
     }
 }

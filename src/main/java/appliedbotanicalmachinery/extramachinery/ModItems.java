@@ -1,12 +1,13 @@
 package appliedbotanicalmachinery.extramachinery;
 
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import appliedbotanicalmachinery.extramachinery.Items.*;
 import net.minecraft.world.item.Item;
 import org.moddingx.libx.annotation.registration.RegisterClass;
 import org.moddingx.libx.base.ItemBase;
 
 
-@RegisterClass(registry = "ITEMS", priority = 1)
+@RegisterClass(registry = "ITEM", priority = 1)
 public class ModItems {
 
     public static final Item malachiteDragonstone;
@@ -69,57 +70,57 @@ public class ModItems {
 
     static {
 
-        baseSpark = new ItemBaseManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        malachiteSpark = new ItemMalachiteManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        saffronSpark = new ItemSaffronManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        shadowSpark = new ItemShadowManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        crimsonSpark = new ItemCrimsonManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        aureateSpark = new ItemAureateManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
-        mazarineSpark = new ItemMazarineManaSpark(ExtraMachinery.getInstance(), new Item.Properties());
+        baseSpark = new ItemBaseManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        malachiteSpark = new ItemMalachiteManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        saffronSpark = new ItemSaffronManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        shadowSpark = new ItemShadowManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        crimsonSpark = new ItemCrimsonManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        aureateSpark = new ItemAureateManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        mazarineSpark = new ItemMazarineManaSpark(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
 
-        malachiteDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        saffronDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        shadowDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        crimsonDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        crystalDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        aureateDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        mazarineDragonstone = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
+        malachiteDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        saffronDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        shadowDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        crimsonDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        crystalDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        aureateDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        mazarineDragonstone = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
 
-        malachiteIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        saffronIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        shadowIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        crimsonIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        crystalIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        aureateIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        mazarineIngot = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
+        malachiteIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        saffronIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        shadowIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        crimsonIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        crystalIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        aureateIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        mazarineIngot = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
 
-        catalystPattern = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystManaInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystLivingRockInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystWaterInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystSeedInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystSpeed = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystStoneInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystWoodInfinity = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystPetal = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        catalystPetalBlock = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
+        catalystPattern = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystManaInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystLivingRockInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystWaterInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystSeedInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystSpeed = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystStoneInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystWoodInfinity = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystPetal = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        catalystPetalBlock = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
 
-        upgradePattern = new ItemBase(ExtraMachinery.getInstance(), new Item.Properties());
-        upgradeCostEnergy = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 0);
-        upgradeFlower_4x = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 4);
-        upgradeFlower_16x = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 16);
-        upgradeFlower_32x = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 32);
-        upgradeFlower_64x = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 64);
-        upgradeGenMana = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 0);
-        upgradeHeatGreenhouse = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 0);
-        upgradeSlotAdd = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 0);
-        upgradeStorageMana_1 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 10);
-        upgradeStorageMana_2 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 100);
-        upgradeStorageMana_3 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 1000);
-        upgradeStorageEnergy_1 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 10);
-        upgradeStorageEnergy_2 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 100);
-        upgradeStorageEnergy_3 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 1000);
-        upgradeTickGenMana_1 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 25);
-        upgradeTickGenMana_2 = new ItemUpgrade(ExtraMachinery.getInstance(), new Item.Properties(), 50);
+        upgradePattern = new ItemBase(AppliedBotanicalMachinery.getInstance(), new Item.Properties());
+        upgradeCostEnergy = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 0);
+        upgradeFlower_4x = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 4);
+        upgradeFlower_16x = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 16);
+        upgradeFlower_32x = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 32);
+        upgradeFlower_64x = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 64);
+        upgradeGenMana = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 0);
+        upgradeHeatGreenhouse = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 0);
+        upgradeSlotAdd = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 0);
+        upgradeStorageMana_1 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 10);
+        upgradeStorageMana_2 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 100);
+        upgradeStorageMana_3 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 1000);
+        upgradeStorageEnergy_1 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 10);
+        upgradeStorageEnergy_2 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 100);
+        upgradeStorageEnergy_3 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 1000);
+        upgradeTickGenMana_1 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 25);
+        upgradeTickGenMana_2 = new ItemUpgrade(AppliedBotanicalMachinery.getInstance(), new Item.Properties(), 50);
     }
 }

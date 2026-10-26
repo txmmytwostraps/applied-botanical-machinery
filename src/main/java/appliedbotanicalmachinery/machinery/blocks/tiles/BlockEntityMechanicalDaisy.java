@@ -5,30 +5,28 @@ import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
-import org.moddingx.libx.capability.ItemCapabilities;
-import vazkii.botania.api.internal.VanillaPacketDispatcher;
-import vazkii.botania.api.recipe.PureDaisyRecipe;
-import vazkii.botania.client.fx.WispParticleData;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
+import org.moddingx.libx.inventory.FilterItemHandler;
+import velrondevs.botania.api.internal.VanillaPacketDispatcher;
+import velrondevs.botania.api.recipe.PureDaisyRecipe;
+import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,21 +40,18 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
     private int[] workingTicks = new int[8];
     private final InventoryHandler inventory = new InventoryHandler();
 
-    private final LazyOptional<IItemHandlerModifiable> lazyInventory = ItemCapabilities.create(this.inventory).cast();
-
     // The canExtract function makes it so that hoppers can only extract items when the recipe is done.
-    private final LazyOptional<IItemHandlerModifiable> hopperInventory = ItemCapabilities.create(this.inventory, slot -> this.workingTicks[slot] < 0, null).cast();
-    private final LazyOptional<IFluidHandler> fluidInventory = LazyOptional.of(() -> this.inventory);
+    private final IItemHandler hopperInventory = new FilterItemHandler(this.inventory, slot -> this.workingTicks[slot] < 0, null);
 
     public BlockEntityMechanicalDaisy(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         if (nbt.contains(TileTags.INVENTORY)) {
-            this.inventory.deserializeNBT(nbt.getCompound(TileTags.INVENTORY));
+            this.inventory.deserializeNBT(registries, nbt.getCompound(TileTags.INVENTORY));
         }
         if (nbt.contains(TileTags.WORKING_TICKS)) {
             this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS);
@@ -144,11 +139,9 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         if (this.level == null)
             return null;
 
-        for (Recipe<?> genericRecipe : this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
-            if (genericRecipe instanceof PureDaisyRecipe recipe) {
-                if (recipe.matches(this.level, this.worldPosition, null, state)) {
-                    return recipe;
-                }
+        for (RecipeHolder<PureDaisyRecipe> holder : this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
+            if (holder.value().matches(this.level, this.worldPosition, null, state)) {
+                return holder.value();
             }
         }
         return null;
@@ -158,34 +151,25 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         return this.inventory;
     }
 
-    @Nonnull
-    @Override
-    public <X> LazyOptional<X> getCapability(@Nonnull Capability<X> cap, @Nullable Direction side) {
-        if (!this.remove && (cap == ForgeCapabilities.ITEM_HANDLER)) {
-            // If the side is null (e.g we're in the gui) we return the normal inventory.
-            // For world interactions (direction != null) we return the inventory that block slots of not finished recipes.
-            //noinspection unchecked
-            return (LazyOptional<X>) (side == null ? this.lazyInventory : this.hopperInventory);
-        } else if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            //noinspection unchecked
-            return (LazyOptional<X>) this.fluidInventory;
-        }
-        return super.getCapability(cap, side);
+    public IItemHandler getItemHandler(@Nullable Direction side) {
+        // If the side is null (e.g we're in the gui) we return the normal inventory.
+        // For world interactions (direction != null) we return the inventory that block slots of not finished recipes.
+        return side == null ? this.inventory : this.hopperInventory;
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT());
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT(registries));
         nbt.putIntArray(TileTags.WORKING_TICKS, this.workingTicks);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         if (this.level != null && !this.level.isClientSide) return;
-        super.handleUpdateTag(nbt);
+        super.handleUpdateTag(nbt, registries);
         if (nbt.contains(TileTags.INVENTORY)) {
-            this.inventory.deserializeNBT(nbt.getCompound(TileTags.INVENTORY));
+            this.inventory.deserializeNBT(registries, nbt.getCompound(TileTags.INVENTORY));
         }
         if (nbt.contains(TileTags.WORKING_TICKS)) {
             this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS);
@@ -194,10 +178,10 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
-        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT());
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
+        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT(registries));
         nbt.putIntArray(TileTags.WORKING_TICKS, this.workingTicks);
         return nbt;
     }
@@ -391,26 +375,24 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         }
 
         @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag nbt = super.serializeNBT();
+        public CompoundTag serializeNBT(@Nonnull HolderLookup.Provider registries) {
+            CompoundTag nbt = super.serializeNBT(registries);
             ListTag tag = new ListTag();
             for (int i = 0; i < 8; i++) {
-                CompoundTag fluidNbt = new CompoundTag();
-                this.fluids.get(i).writeToNBT(fluidNbt);
-                tag.add(i, fluidNbt);
+                tag.add(i, this.fluids.get(i).saveOptional(registries));
             }
             nbt.put("fluids", tag);
             return nbt;
         }
 
         @Override
-        public void deserializeNBT(CompoundTag nbt) {
-            super.deserializeNBT(nbt);
+        public void deserializeNBT(@Nonnull HolderLookup.Provider registries, @Nonnull CompoundTag nbt) {
+            super.deserializeNBT(registries, nbt);
             if (nbt.contains("fluids")) {
                 ListTag tag = nbt.getList("fluids", CompoundTag.TAG_COMPOUND);
                 for (int i = 0; i < 8; i++) {
                     CompoundTag fluidNbt = tag.getCompound(i);
-                    this.fluids.set(i, FluidStack.loadFluidStackFromNBT(fluidNbt));
+                    this.fluids.set(i, FluidStack.parseOptional(registries, fluidNbt));
                 }
             }
         }

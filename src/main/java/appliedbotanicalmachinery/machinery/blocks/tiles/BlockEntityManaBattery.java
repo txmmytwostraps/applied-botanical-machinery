@@ -5,18 +5,19 @@ import appliedbotanicalmachinery.machinery.blocks.base.BotanicalTile;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.mana.ManaItem;
-import vazkii.botania.common.item.BlackLotusItem;
-import vazkii.botania.common.item.BotaniaItems;
+import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.api.mana.ManaItem;
+import velrondevs.botania.common.item.BlackLotusItem;
+import velrondevs.botania.registry.BotaniaItems;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -34,8 +35,8 @@ public class BlockEntityManaBattery extends BotanicalTile {
     public BlockEntityManaBattery(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state, LibXServerConfig.MaxManaCapacity.manaBattery);
         this.inventory = BaseItemStackHandler.builder(2)
-                .validator(stack -> !this.slot1Locked && stack.getCapability(BotaniaForgeCapabilities.MANA_ITEM).resolve().map(manaItem -> manaItem.getMana() < manaItem.getMaxMana() && manaItem.canReceiveManaFromPool(this)).orElse(false), 0)
-                .validator(stack -> !this.slot2Locked && stack.getCapability(BotaniaForgeCapabilities.MANA_ITEM).resolve().map(manaItem -> manaItem.getMana() > 0 && manaItem.canExportManaToPool(this))
+                .validator(stack -> !this.slot1Locked && Optional.ofNullable(stack.getCapability(BotaniaCapabilities.MANA_ITEM)).map(manaItem -> manaItem.getMana() < manaItem.getMaxMana() && manaItem.canReceiveManaFromPool(this)).orElse(false), 0)
+                .validator(stack -> !this.slot2Locked && Optional.ofNullable(stack.getCapability(BotaniaCapabilities.MANA_ITEM)).map(manaItem -> manaItem.getMana() > 0 && manaItem.canExportManaToPool(this))
                         .orElse(stack.getItem() instanceof BlackLotusItem), 1)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -61,7 +62,7 @@ public class BlockEntityManaBattery extends BotanicalTile {
             ItemStack minus = this.inventory.getStackInSlot(0);
             ItemStack plus = this.inventory.getStackInSlot(1);
             if (!minus.isEmpty()) {
-                minus.getCapability(BotaniaForgeCapabilities.MANA_ITEM).ifPresent(manaItem -> {
+                Optional.ofNullable(minus.getCapability(BotaniaCapabilities.MANA_ITEM)).ifPresent(manaItem -> {
                     if (manaItem.canReceiveManaFromPool(this)) {
                         int maxManaValue = ((BlockManaBattery) this.getBlockState().getBlock()).variant == BlockManaBattery.Variant.NORMAL ? MANA_TRANSFER_RATE : Integer.MAX_VALUE;
                         int manaValue = Math.min(maxManaValue, Math.min(this.getCurrentMana(), manaItem.getMaxMana() - manaItem.getMana()));
@@ -73,7 +74,7 @@ public class BlockEntityManaBattery extends BotanicalTile {
                 });
             }
             if (!plus.isEmpty()) {
-                plus.getCapability(BotaniaForgeCapabilities.MANA_ITEM).ifPresent(manaItem -> {
+                Optional.ofNullable(plus.getCapability(BotaniaCapabilities.MANA_ITEM)).ifPresent(manaItem -> {
                     if (manaItem.canExportManaToPool(this)) {
                         int maxManaValue = ((BlockManaBattery) this.getBlockState().getBlock()).variant == BlockManaBattery.Variant.NORMAL ? MANA_TRANSFER_RATE : Integer.MAX_VALUE;
                         int manaValue = Math.min(maxManaValue, Math.min(this.getMaxMana() - this.getCurrentMana(), manaItem.getMana()));
@@ -148,10 +149,10 @@ public class BlockEntityManaBattery extends BotanicalTile {
             ItemStack minus = inventory.get().getStackInSlot(0);
             ItemStack plus = inventory.get().getStackInSlot(1);
             if (slot == 0) {
-                Optional<ManaItem> manaItem = minus.getCapability(BotaniaForgeCapabilities.MANA_ITEM).resolve();
+                Optional<ManaItem> manaItem = Optional.ofNullable(minus.getCapability(BotaniaCapabilities.MANA_ITEM));
                 return manaItem.map(item -> item.getMana() >= item.getMaxMana()).orElse(true);
             } else if (slot == 1 && plus.getItem() instanceof ManaItem) {
-                Optional<ManaItem> manaItem = plus.getCapability(BotaniaForgeCapabilities.MANA_ITEM).resolve();
+                Optional<ManaItem> manaItem = Optional.ofNullable(plus.getCapability(BotaniaCapabilities.MANA_ITEM));
                 return manaItem.map(item -> item.getMana() <= 0).orElse(true);
             }
 
@@ -160,22 +161,22 @@ public class BlockEntityManaBattery extends BotanicalTile {
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.slot1Locked = nbt.getBoolean(TileTags.SLOT_1_LOCKED);
         this.slot2Locked = nbt.getBoolean(TileTags.SLOT_2_LOCKED);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putBoolean(TileTags.SLOT_1_LOCKED, this.slot1Locked);
         nbt.putBoolean(TileTags.SLOT_2_LOCKED, this.slot2Locked);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level != null && !this.level.isClientSide) return;
         this.slot1Locked = nbt.getBoolean(TileTags.SLOT_1_LOCKED);
         this.slot2Locked = nbt.getBoolean(TileTags.SLOT_2_LOCKED);
@@ -183,9 +184,9 @@ public class BlockEntityManaBattery extends BotanicalTile {
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
         nbt.putBoolean(TileTags.SLOT_1_LOCKED, this.slot1Locked);
         nbt.putBoolean(TileTags.SLOT_2_LOCKED, this.slot2Locked);
         return nbt;

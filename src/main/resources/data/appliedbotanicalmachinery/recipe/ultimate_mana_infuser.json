@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "appliedbotanicalmachinery:saffron_ingot_block"
+    },
+    "b": {
+      "item": "appliedbotanicalmachinery:crimson_ingot"
+    },
+    "c": {
+      "item": "appliedbotanicalmachinery:advanced_mana_infuser"
+    },
+    "d": {
+      "item": "appliedbotanicalmachinery:crimson_dragonstone_block"
+    }
+  },
+  "pattern": ["aba", "bcb", "ddd"],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:ultimate_mana_infuser"
+  },
+  "show_notification": true
+}

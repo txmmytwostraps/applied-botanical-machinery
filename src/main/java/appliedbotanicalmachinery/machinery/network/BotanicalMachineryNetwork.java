@@ -1,7 +1,7 @@
 package appliedbotanicalmachinery.machinery.network;
 
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.network.NetworkX;
 
@@ -9,21 +9,18 @@ public class BotanicalMachineryNetwork extends NetworkX {
 
     public BotanicalMachineryNetwork(ModX mod) {
         super(mod);
+
+        this.register(new ManaBatteryLockedMessage.Handler());
     }
 
     @Override
-    protected Protocol getProtocol() {
-        return Protocol.of("3");
-    }
-
-    @Override
-    protected void registerPackets() {
-        this.registerGame(NetworkDirection.PLAY_TO_SERVER, new ManaBatteryLockedMessage.Serializer(), () -> ManaBatteryLockedMessage.Handler::new);
+    protected String getVersion() {
+        return "3";
     }
 
     public void updateLockedState(BlockEntityManaBattery tile) {
         if (tile.getLevel() != null && tile.getLevel().isClientSide) {
-            this.channel.sendToServer(new ManaBatteryLockedMessage(tile.getBlockPos(), tile.isSlot1Locked(), tile.isSlot2Locked()));
+            PacketDistributor.sendToServer(new ManaBatteryLockedMessage(tile.getBlockPos(), tile.isSlot1Locked(), tile.isSlot2Locked()));
         }
     }
 }

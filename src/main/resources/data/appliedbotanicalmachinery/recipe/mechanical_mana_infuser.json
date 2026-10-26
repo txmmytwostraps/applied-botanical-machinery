@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "botania:aura_ring_greater"
+    },
+    "e": {
+      "tag": "botania:elementium_ingots"
+    },
+    "s": {
+      "item": "masterfulbotany:alfsteel_ingot"
+    },
+    "x": {
+      "tag": "botania:elementium_ingots"
+    },
+    "y": {
+      "tag": "botania:dragonstone_gems"
+    },
+    "z": {
+      "item": "botania:pixie_dust"
+    }
+  },
+  "pattern": ["eye", "xaz", "ese"],
+  "result": {
+    "count": 1,
+    "id": "appliedbotanicalmachinery:mechanical_mana_infuser"
+  },
+  "show_notification": true
+}

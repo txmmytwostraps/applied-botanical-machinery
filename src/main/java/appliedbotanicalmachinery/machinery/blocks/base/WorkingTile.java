@@ -2,10 +2,11 @@ package appliedbotanicalmachinery.machinery.blocks.base;
 
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import java.util.function.BiConsumer;
 
-public abstract class WorkingTile<T extends Recipe<Container>> extends RecipeTile<T> {
+public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> extends RecipeTile<I, T> {
 
     private int progress;
     private int maxProgress;
@@ -80,32 +81,32 @@ public abstract class WorkingTile<T extends Recipe<Container>> extends RecipeTil
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.progress = nbt.getInt(TileTags.PROGRESS);
         this.maxProgress = nbt.getInt(TileTags.MAX_PROGRESS);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt(TileTags.PROGRESS, this.progress);
         nbt.putInt(TileTags.MAX_PROGRESS, this.maxProgress);
     }
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
         nbt.putInt(TileTags.PROGRESS, this.progress);
         nbt.putInt(TileTags.MAX_PROGRESS, this.maxProgress);
         return nbt;
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(tag, registries);
         if (this.level != null && !this.level.isClientSide) return;
         this.progress = tag.getInt(TileTags.PROGRESS);
         this.maxProgress = tag.getInt(TileTags.MAX_PROGRESS);

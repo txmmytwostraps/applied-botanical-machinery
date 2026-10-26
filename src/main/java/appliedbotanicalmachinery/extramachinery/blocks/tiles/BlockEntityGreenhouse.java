@@ -19,6 +19,7 @@ import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.ExportManaME;
 import appliedbotanicalmachinery.extramachinery.util.ResizeBaseItemStackHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -27,17 +28,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
-import vazkii.botania.client.fx.WispParticleData;
+import velrondevs.botania.client.fx.WispParticleData;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -80,9 +77,8 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
     private int greenhouseSleep;
 
-    private static final boolean isModAppbot = ModList.get().isLoaded("appliedbotanicalmachinery");
 
-    private static final ExportManaME exportManaME = ModList.get().isLoaded("appliedbotanicalmachinery") ? new ExportManaME() : null;
+    private static final ExportManaME exportManaME = new ExportManaME();
 
     public BlockEntityGreenhouse(BlockEntityType<?> blockEntityTypeIn, BlockPos pos, BlockState state) {
         super(blockEntityTypeIn, pos, state, baseManaStorage);
@@ -310,15 +306,6 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         } else fuelSlots.remove(slot);
     }
 
-    @NotNull
-    @Override
-    public <X> LazyOptional<X> getCapability(@NotNull Capability<X> cap, Direction direction) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return LazyOptional.of(() -> this).cast();
-        }
-        return super.getCapability(cap, direction);
-    }
-
     @Override
     public void tick() {
         if (this.level != null && !this.level.isClientSide) {
@@ -333,7 +320,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
             greenhouseSleep--;
 
             // Export available mana to AE2 grid even when not working
-            if (isModAppbot && exportManaME != null&& this.getMainNode() != null && this.getMainNode().getNode() != null && this.getMainNode().isOnline()){
+            if (this.getMainNode().getNode() != null && this.getMainNode().isOnline()){
                 // Export all available mana, not just excess
                 if (this.getCurrentMana() > 0) {
                     int manaToExport = this.getCurrentMana();
@@ -378,7 +365,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
                     }
                 }
 
-                if (isModAppbot && exportManaME != null&& this.getMainNode() != null && this.getMainNode().getNode() != null && this.getMainNode().isOnline()){
+                if (this.getMainNode().getNode() != null && this.getMainNode().isOnline()){
                     if (this.getCurrentMana() > 0) {
                         int manaToExport = this.getCurrentMana();
                         receiveMana(exportManaME.exportManaME(manaToExport, this.getMainNode().getNode().getGrid()));
@@ -483,11 +470,11 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
 
-        this.getFlowerInventory().deserializeNBT(nbt.getCompound("invFlower"));
-        this.getUpgradeInventory().deserializeNBT(nbt.getCompound("invUpgrade"));
+        this.getFlowerInventory().deserializeNBT(registries, nbt.getCompound("invFlower"));
+        this.getUpgradeInventory().deserializeNBT(registries, nbt.getCompound("invUpgrade"));
         this.fuelInventoryEmpty = nbt.getBoolean("fuelInventoryEmpty");
         this.energy = nbt.getInt("energyStorage");
         this.energy_capacity = nbt.getInt("energyCapacity");
@@ -509,11 +496,11 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
-        nbt.put("invFlower", this.getFlowerInventory().serializeNBT());
-        nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT());
+        nbt.put("invFlower", this.getFlowerInventory().serializeNBT(registries));
+        nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT(registries));
         nbt.putBoolean("fuelInventoryEmpty", this.fuelInventoryEmpty);
         nbt.putInt("energyStorage", this.energy);
         nbt.putInt("energyCapacity", this.energy_capacity);
@@ -522,11 +509,11 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level == null || this.level.isClientSide) {
-            this.getFlowerInventory().deserializeNBT(nbt.getCompound("invFlower"));
-            this.getUpgradeInventory().deserializeNBT(nbt.getCompound("invUpgrade"));
+            this.getFlowerInventory().deserializeNBT(registries, nbt.getCompound("invFlower"));
+            this.getUpgradeInventory().deserializeNBT(registries, nbt.getCompound("invUpgrade"));
             this.fuelInventoryEmpty = nbt.getBoolean("fuelInventoryEmpty");
             this.energy = nbt.getInt("energyStorage");
             this.energy_capacity = nbt.getInt("energyCapacity");
@@ -540,13 +527,13 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
-            nbt.put("invFlower", this.getFlowerInventory().serializeNBT());
-            nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT());
+            CompoundTag nbt = super.getUpdateTag(registries);
+            nbt.put("invFlower", this.getFlowerInventory().serializeNBT(registries));
+            nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT(registries));
             nbt.putBoolean("fuelInventoryEmpty", this.fuelInventoryEmpty);
             nbt.putInt("energyStorage", this.energy);
             nbt.putInt("energyCapacity", this.energy_capacity);
@@ -659,7 +646,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
     private boolean setChangedQueued;
 
-    private final IManagedGridNode mainNode = ModList.get().isLoaded("appliedbotanicalmachinery") ? this.createMainNode().setVisualRepresentation(this.getItemFromBlockEntity()).setInWorldNode(true).setTagName("proxy") : null;
+    private final IManagedGridNode mainNode = this.createMainNode().setVisualRepresentation(this.getItemFromBlockEntity()).setInWorldNode(true).setTagName("proxy");
 
 
     protected IManagedGridNode createMainNode() {

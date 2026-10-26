@@ -7,18 +7,20 @@ import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.api.recipe.RunicAltarRecipe;
-import vazkii.botania.client.fx.SparkleParticleData;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.lib.BotaniaTags;
+import velrondevs.botania.api.recipe.RunicAltarRecipe;
+import velrondevs.botania.client.fx.SparkleParticleData;
+import velrondevs.botania.registry.BotaniaBlocks;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.common.lib.BotaniaTags;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BlockEntityMechanicalRunicAltar extends WorkingTile<RunicAltarRecipe> {
+public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, RunicAltarRecipe> {
 
     public static final int MAX_MANA_PER_TICK = 100;
 
@@ -108,21 +110,21 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RunicAltarRecip
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.slotsUsed.clear();
         this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED)).boxed().toList());
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level != null && !this.level.isClientSide) return;
         this.slotsUsed.clear();
         this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED)).boxed().toList());
@@ -130,9 +132,9 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RunicAltarRecip
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag();
-        CompoundTag nbt = super.getUpdateTag();
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        CompoundTag nbt = super.getUpdateTag(registries);
         nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed);
         return nbt;
     }

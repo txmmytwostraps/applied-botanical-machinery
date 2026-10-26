@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import vazkii.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import java.util.ArrayList;
 import java.util.List;

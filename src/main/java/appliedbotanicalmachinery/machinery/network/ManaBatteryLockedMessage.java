@@ -1,69 +1,62 @@
 package appliedbotanicalmachinery.machinery.network;
 
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.registration.HandlerThread;
 import org.moddingx.libx.LibX;
 import org.moddingx.libx.network.PacketHandler;
-import org.moddingx.libx.network.PacketSerializer;
 
-import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
-public record ManaBatteryLockedMessage(BlockPos pos, boolean locked1, boolean locked2) {
+public record ManaBatteryLockedMessage(BlockPos pos, boolean locked1, boolean locked2) implements CustomPacketPayload {
 
-    public static class Handler implements PacketHandler<ManaBatteryLockedMessage> {
+    public static final Type<ManaBatteryLockedMessage> TYPE = new Type<>(AppliedBotanicalMachinery.getInstance().resource("mana_battery_locked"));
 
-        @Override
-        public Target target() {
-            return Target.MAIN_THREAD;
-        }
+    public static final StreamCodec<RegistryFriendlyByteBuf, ManaBatteryLockedMessage> CODEC = StreamCodec.of(
+            (buffer, msg) -> {
+                buffer.writeBlockPos(msg.pos);
+                buffer.writeBoolean(msg.locked1);
+                buffer.writeBoolean(msg.locked2);
+            }, buffer -> new ManaBatteryLockedMessage(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean())
+    );
 
-        @Override
-        public boolean handle(ManaBatteryLockedMessage msg, Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() -> {
-                ServerPlayer player = ctx.get().getSender();
-                if (player == null) {
-                    return;
-                }
-
-                ServerLevel level = (ServerLevel) player.level();
-                //noinspection deprecation
-                if (level.hasChunkAt(msg.pos)) {
-                    BlockEntity te = level.getBlockEntity(msg.pos);
-                    if (te instanceof BlockEntityManaBattery) {
-                        ((BlockEntityManaBattery) te).setSlot1Locked(msg.locked1);
-                        ((BlockEntityManaBattery) te).setSlot2Locked(msg.locked2);
-                        LibX.getNetwork().updateBE(level, msg.pos);
-                    }
-                }
-            });
-
-            ctx.get().setPacketHandled(true);
-            return true;
-        }
+    @Nonnull
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public static class Serializer implements PacketSerializer<ManaBatteryLockedMessage> {
+    public static class Handler extends PacketHandler<ManaBatteryLockedMessage> {
 
-        @Override
-        public Class<ManaBatteryLockedMessage> messageClass() {
-            return ManaBatteryLockedMessage.class;
+        public Handler() {
+            super(TYPE, PacketFlow.SERVERBOUND, CODEC, HandlerThread.MAIN);
         }
 
         @Override
-        public void encode(ManaBatteryLockedMessage msg, FriendlyByteBuf buffer) {
-            buffer.writeBlockPos(msg.pos);
-            buffer.writeBoolean(msg.locked1);
-            buffer.writeBoolean(msg.locked2);
-        }
+        public void handle(ManaBatteryLockedMessage msg, IPayloadContext ctx) {
+            if (!(ctx.player() instanceof ServerPlayer player)) {
+                return;
+            }
 
-        @Override
-        public ManaBatteryLockedMessage decode(FriendlyByteBuf buffer) {
-            return new ManaBatteryLockedMessage(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean());
+            ServerLevel level = (ServerLevel) player.level();
+            //noinspection deprecation
+            if (level.hasChunkAt(msg.pos)) {
+                BlockEntity te = level.getBlockEntity(msg.pos);
+                if (te instanceof BlockEntityManaBattery) {
+                    ((BlockEntityManaBattery) te).setSlot1Locked(msg.locked1);
+                    ((BlockEntityManaBattery) te).setSlot2Locked(msg.locked2);
+                    LibX.getNetwork().updateBE(level, msg.pos);
+                }
+            }
         }
     }
 }

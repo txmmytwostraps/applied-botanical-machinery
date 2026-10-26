@@ -10,7 +10,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -39,7 +38,6 @@ import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.parts.automation.StackWorldBehaviors;
 
-@Mod(AppliedBotanics.MOD_ID)
 @SuppressWarnings("UnstableApiUsage")
 public class AppliedBotanicsForge {
 

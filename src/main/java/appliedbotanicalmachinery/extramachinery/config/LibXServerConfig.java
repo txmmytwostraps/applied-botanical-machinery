@@ -5,7 +5,7 @@ import org.moddingx.libx.config.Config;
 import org.moddingx.libx.config.Group;
 import org.moddingx.libx.config.validate.IntRange;
 
-@RegisterConfig("server")
+@RegisterConfig("extramachinery/server")
 public class LibXServerConfig {
     public LibXServerConfig() {
     }
@@ -310,7 +310,7 @@ public class LibXServerConfig {
         public IndustrialAgglomerationFactorySettings() {}
     }
 
-    @Group({"ManaInfuser for all types (For request mod Mythical Botany)"})
+    @Group({"ManaInfuser for all types (needs Masterful Botany)"})
     public static class ManaInfuserSettings {
 
         @Config({"Maximum mana output per recipe per tick. Total speed is calculated as workingDuration * craftTime"})

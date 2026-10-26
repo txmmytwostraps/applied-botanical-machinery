@@ -5,6 +5,12 @@ build/
 run/
 run-data/
 run-server/
+runs/
+logs/
+crash-reports/
+*.log
+.DS_Store
+Thumbs.db
 
-# Local mod jars (Botania Revived is not ours to redistribute here)
+# Release jars of mods that are not on a maven
 libs/*.jar

@@ -10,8 +10,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -22,8 +22,8 @@ public class ContainerDaisyBase extends BlockEntityMenu<BlockEntityDaisyBase> {
     public final static int WIDTH_GUI = 196;
     public final static int HEIGHT_GUI = 124;
 
-    public ContainerDaisyBase(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Inventory playerContainer, Player player) {
-        super(type, windowId, level, pos, playerContainer, player, SIZE_INVENTORY, SIZE_INVENTORY);
+    public ContainerDaisyBase(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
+        super(type, windowId, level, pos, player, playerContainer, SIZE_INVENTORY, SIZE_INVENTORY);
 
         IItemHandlerModifiable inventory = this.blockEntity.getInventory();
 

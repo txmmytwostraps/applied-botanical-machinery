@@ -11,6 +11,7 @@ import appeng.api.util.AECableType;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import appliedbotanicalmachinery.machinery.compat.MasterfulBotanyCompat;
 import com.google.common.collect.Range;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.ModItems;
@@ -21,6 +22,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaInfus
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.extramachinery.util.SettingPattern;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
@@ -29,19 +31,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
+import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
+import velrondevs.masterfulbotany.common.crafting.StackListInput;
+import velrondevs.masterfulbotany.registry.ModRecipes;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 
-public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.world.item.crafting.Recipe<net.minecraft.world.Container>>
+public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, InfuserRecipe>
         implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     public static final int MAX_MANA_PER_TICK = LibXServerConfig.ManaInfuserSettings.workingDuration;
 
@@ -61,9 +67,8 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
 
 
     public BlockEntityManaInfuserPattern(BlockEntityType<?> type, BlockPos pos, BlockState state, int manaCapacity, int countCraft, int[] slots, SettingPattern settingPattern) {
-        // Call super first. Use Botania's MANA_INFUSION_TYPE as a safe default for construction.
-        //noinspection unchecked,rawtypes
-        super(type, (net.minecraft.world.item.crafting.RecipeType) vazkii.botania.common.crafting.BotaniaRecipeTypes.MANA_INFUSION_TYPE, pos, state, manaCapacity, slots[0], slots[2], countCraft);
+        // Infuser recipes come from Masterful Botany; without it the infuser matches nothing
+        super(type, MasterfulBotanyCompat.isLoaded() ? ModRecipes.infuser : null, pos, state, manaCapacity, slots[0], slots[2], countCraft);
 
         int FIRST_INPUT_SLOT = slots[0];
         int LAST_INPUT_SLOT = slots[1];
@@ -77,26 +82,10 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
 
         this.settingPattern = settingPattern;
 
-        // Try to obtain the MythicBotany infuser RecipeType via reflection. If not available, fall back
-        // to Botania's infusion type. We do this after calling super because super must be the first
-        // statement in the constructor.
-        final net.minecraft.world.item.crafting.RecipeType<?> finalInfuserType = findInfuserRecipeType();
-
-        // If we found a different recipe type (e.g. MythicBotany's), set the parent RecipeTile.recipeType
-        // reflectively so that recipe lookups in the superclass use the correct RecipeType.
-        try {
-            java.lang.reflect.Field f = appliedbotanicalmachinery.extramachinery.blocks.base.RecipeTile.class.getDeclaredField("recipeType");
-            f.setAccessible(true);
-            // suppress unchecked warning: runtime type fits RecipeType<?>
-            f.set(this, finalInfuserType);
-        } catch (Throwable ignored) {
-            // If reflection fails, we keep the original Botania recipeType passed to super and hope validation covers it.
-        }
-
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 != -1){
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), finalInfuserType, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .validator((stack) -> (stack.getItem() == ModItems.catalystSpeed.asItem() || stack.getItem() == ModItems.catalystManaInfinity.asItem()), UPGRADE_SLOT_1, UPGRADE_SLOT_2)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
@@ -105,73 +94,13 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
         }
         else {
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), finalInfuserType, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .contentsChanged(() -> { this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         }
 
         this.setChangedQueued = false;
-    }
-
-    /**
-     * Try several known MythicBotany class/field/method names to retrieve the infuser RecipeType via reflection.
-     * If none found, return Botania's default MANA_INFUSION_TYPE. Keeps MythicBotany optional at runtime.
-     */
-    private static net.minecraft.world.item.crafting.RecipeType<?> findInfuserRecipeType() {
-        net.minecraft.world.item.crafting.RecipeType<?> botaniaType = vazkii.botania.common.crafting.BotaniaRecipeTypes.MANA_INFUSION_TYPE;
-
-        String[] candidateClasses = new String[]{
-                "mythicbotany.register.ModRecipes",
-                "mythicbotany.ModRecipes",
-                "mythicbotany.init.ModRecipes",
-                "mythicbotany.common.register.ModRecipes"
-        };
-
-        String[] candidateFields = new String[]{"infuser", "INFUSER", "INFUSER_TYPE", "INFUSER_RECIPE_TYPE"};
-        String[] candidateMethods = new String[]{"infuser", "getInfuser", "getInfuserRecipeType", "infuserRecipeType"};
-
-        for (String clsName : candidateClasses) {
-            try {
-                Class<?> cls = Class.forName(clsName);
-                // try fields
-                for (String fName : candidateFields) {
-                    try {
-                        java.lang.reflect.Field f = cls.getField(fName);
-                        Object val = f.get(null);
-                        if (val instanceof net.minecraft.world.item.crafting.RecipeType) return (net.minecraft.world.item.crafting.RecipeType<?>) val;
-                    } catch (NoSuchFieldException nsf) {
-                        // try declared field (private)
-                        try {
-                            java.lang.reflect.Field f = cls.getDeclaredField(fName);
-                            f.setAccessible(true);
-                            Object val = f.get(null);
-                            if (val instanceof net.minecraft.world.item.crafting.RecipeType) return (net.minecraft.world.item.crafting.RecipeType<?>) val;
-                        } catch (Throwable ignored) {}
-                    } catch (Throwable ignored) {}
-                }
-
-                // try static methods
-                for (String mName : candidateMethods) {
-                    try {
-                        java.lang.reflect.Method m = cls.getMethod(mName);
-                        Object val = m.invoke(null);
-                        if (val instanceof net.minecraft.world.item.crafting.RecipeType) return (net.minecraft.world.item.crafting.RecipeType<?>) val;
-                    } catch (NoSuchMethodException nsme) {
-                        try {
-                            java.lang.reflect.Method m = cls.getDeclaredMethod(mName);
-                            m.setAccessible(true);
-                            Object val = m.invoke(null);
-                            if (val instanceof net.minecraft.world.item.crafting.RecipeType) return (net.minecraft.world.item.crafting.RecipeType<?>) val;
-                        } catch (Throwable ignored) {}
-                    } catch (Throwable ignored) {}
-                }
-            } catch (Throwable ignored) {
-                // class not present or other issue - try next candidate
-            }
-        }
-
-        return botaniaType;
     }
 
     //region Base
@@ -214,8 +143,8 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.getMainNode().loadFromNBT(nbt);
 
         this.setChanged();
@@ -223,8 +152,8 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         this.getMainNode().saveToNBT(nbt);
     }
 
@@ -237,16 +166,13 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
         return this.inventory;
     }
 
-    protected int getMaxProgress(net.minecraft.world.item.crafting.Recipe<net.minecraft.world.Container> recipe) {
-        // Try to call InfuserRecipe.getManaUsage() via reflection if available
-        try {
-            java.lang.reflect.Method m = recipe.getClass().getMethod("getManaUsage");
-            Object val = m.invoke(recipe);
-            if (val instanceof Integer) return (Integer) val;
-        } catch (Throwable ignored) {
-        }
-        // fallback: no mana usage info available
-        return 0;
+    protected int getMaxProgress(InfuserRecipe recipe) {
+        return recipe.getManaUsage();
+    }
+
+    @Override
+    protected boolean canMatchRecipes() {
+        return MasterfulBotanyCompat.isLoaded();
     }
 
     public int getMaxManaPerTick() {
@@ -360,7 +286,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<net.minecraft.wor
     //endregion
 
     @Override
-    protected boolean matchRecipe(net.minecraft.world.item.crafting.Recipe<net.minecraft.world.Container> recipe, java.util.List<net.minecraft.world.item.ItemStack> stacks) {
+    protected boolean matchRecipe(InfuserRecipe recipe, List<ItemStack> stacks) {
         return super.matchRecipe(recipe, stacks);
     }
 }

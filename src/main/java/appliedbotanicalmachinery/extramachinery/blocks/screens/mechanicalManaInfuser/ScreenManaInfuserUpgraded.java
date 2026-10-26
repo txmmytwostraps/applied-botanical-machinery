@@ -12,9 +12,9 @@ import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import vazkii.botania.client.core.helper.RenderHelper;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
 

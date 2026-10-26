@@ -1,6 +1,5 @@
 {
   "gui.appliedbotanicalmachinery.mana": "Мана",
-  "itemGroup.appliedbotanicalmachinery.tab": "Applied Botanics",
   "block.appliedbotanicalmachinery.fluix_mana_pool": "Флюисовый бассейн маны",
   "item.appliedbotanicalmachinery.mana_cell_housing": "МЭ корпус для мана ячейки",
   "item.appliedbotanicalmachinery.creative_mana_cell": "Творческая МЭ мана ячейка",
@@ -21,7 +20,6 @@
   "appliedbotanicalmachinery.entry.mana_drives": "Мана-дисковод",
   "appliedbotanicalmachinery.page.mana_drives0": "Когда-нибудь хотели бросить магию под шину с целью перехода в цифру? Позор Вам",
   "appliedbotanicalmachinery.page.mana_drives1": "именно то, чего vazkii никогда не хотел",
-  "itemGroup.appliedbotanicalmachinery": "Ботанические механизмы",
   "item.appliedbotanicalmachinery.mana_emerald": "Манаизумруд",
   "block.appliedbotanicalmachinery.mana_emerald_block": "Блок манаизумрудов",
   "block.appliedbotanicalmachinery.alfheim_market": "Обменник Альфхейма",
@@ -75,7 +73,6 @@
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary": "Механический аптекарь",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.recipe": "Отдай все свои цветы",
   "lexicon.appliedbotanicalmachinery.mechanical_apothecary.page1": "Усовершенствованная версия $(l:botania:basics/apothecary)аптекаря$() , в котором вода, семена и ингридиенты используются для создания любых цветов, которые ваша душа пожелает.",
-  "itemGroup.appliedbotanicalmachinery.extra": "Extra Botanical Machinery",
   "block.appliedbotanicalmachinery.base_mana_pool": "Базовый бассейн маны",
   "block.appliedbotanicalmachinery.upgraded_mana_pool": "Улучшенный бассейн маны",
   "block.appliedbotanicalmachinery.advanced_mana_pool": "Продвинутый бассейн маны",

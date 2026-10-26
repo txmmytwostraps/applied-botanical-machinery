@@ -41,7 +41,6 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
     }
 
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }

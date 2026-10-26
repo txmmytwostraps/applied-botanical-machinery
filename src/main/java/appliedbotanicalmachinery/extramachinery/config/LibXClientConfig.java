@@ -4,7 +4,7 @@ import org.moddingx.libx.annotation.config.RegisterConfig;
 import org.moddingx.libx.config.Config;
 import org.moddingx.libx.config.Group;
 
-@RegisterConfig(value = "client", client = true)
+@RegisterConfig(value = "extramachinery/client", client = true)
 public class LibXClientConfig {
     @Config({"Whether to show mana/water/energy/heat as a number when hovering over its capacity?"})
     public static boolean numericalTooltip = true;

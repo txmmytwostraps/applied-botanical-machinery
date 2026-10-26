@@ -1,6 +1,6 @@
 package appliedbotanicalmachinery.extramachinery.client;
 
-import appliedbotanicalmachinery.extramachinery.ExtraMachinery;
+import appliedbotanicalmachinery.AppliedBotanics;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -22,7 +22,7 @@ public class ModModels {
     }
 
     private static ResourceLocation res(String name){
-        return new ResourceLocation(ExtraMachinery.MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, name);
     }
 
 }

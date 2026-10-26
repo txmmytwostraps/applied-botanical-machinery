@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenuMechanicalDaisy> {
 
-    private static final ResourceLocation PURE_DAISY_TEXTURE = new ResourceLocation("botania", "block/pure_daisy");
+    private static final ResourceLocation PURE_DAISY_TEXTURE = ResourceLocation.fromNamespaceAndPath("botania", "block/pure_daisy");
 
     public ScreenMechanicalDaisy(ContainerMenuMechanicalDaisy menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -30,7 +30,6 @@ public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenu
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        this.renderBackground(guiGraphics);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
@@ -50,7 +49,7 @@ public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenu
     }
 
     @Override
-    public void renderSlot(@Nonnull GuiGraphics guiGraphics, @Nonnull Slot slot) {
+    protected void renderSlot(@Nonnull GuiGraphics guiGraphics, @Nonnull Slot slot) {
         if (slot instanceof ContainerMenuMechanicalDaisy.ItemAndFluidSlot) {
             FluidStack stack = ((ContainerMenuMechanicalDaisy.ItemAndFluidSlot) slot).inventory.getFluidInTank(slot.index);
             if (!stack.isEmpty() && stack.getFluid() != null) {
@@ -86,7 +85,7 @@ public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenu
 
                 FluidStack stack = ((ContainerMenuMechanicalDaisy.ItemAndFluidSlot) this.hoveredSlot).inventory.getFluidInTank(this.hoveredSlot.index);
                 List<Component> list = ImmutableList.of(
-                        Component.translatable(stack.getTranslationKey()),
+                        stack.getHoverName(),
                         Component.literal(stack.getAmount() + " / 1000")
                 );
 

@@ -4,7 +4,7 @@ import appliedbotanicalmachinery.extramachinery.ModItems;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ItemLike;
-import vazkii.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 public class ColorHandler {
 

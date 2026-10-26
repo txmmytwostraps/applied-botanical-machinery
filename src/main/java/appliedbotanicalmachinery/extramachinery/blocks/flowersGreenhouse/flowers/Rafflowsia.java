@@ -4,7 +4,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.flowersGreenhouse.GenFlow
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import vazkii.botania.common.lib.BotaniaTags;
+import velrondevs.botania.common.lib.BotaniaTags;
 
 public class Rafflowsia extends GenFlowers {
     @Override

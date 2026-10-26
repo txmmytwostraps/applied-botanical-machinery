@@ -3,21 +3,21 @@ package appliedbotanicalmachinery.machinery.blocks.base;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
-public abstract class RecipeTile<T extends Recipe<Container>> extends BotanicalTile {
+public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> extends BotanicalTile {
 
     private final RecipeType<T> recipeType;
     private final int firstInputSlot;
@@ -69,7 +69,8 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends BotanicalT
         }
         IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
         List<ItemStack> stacks = IntStream.range(this.firstInputSlot, this.firstOutputSlot).mapToObj(inventory::getStackInSlot).toList();
-        for (T recipe : this.level.getRecipeManager().getAllRecipesFor(this.recipeType)) {
+        for (RecipeHolder<T> holder : this.level.getRecipeManager().getAllRecipesFor(this.recipeType)) {
+            T recipe = holder.value();
             if (this.matchRecipe(recipe, stacks)) {
                 List<ItemStack> consumedStacks = new ArrayList<>();
                 for (Ingredient ingredient : recipe.getIngredients()) {
@@ -171,19 +172,16 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends BotanicalT
 
         List<IItemHandler> itemHandlers = new ArrayList<>();
         for (Direction dir : Direction.values()) {
-            BlockEntity blockEntity = this.level.getBlockEntity(this.worldPosition.relative(dir));
-            if (blockEntity == null) {
+            BlockPos target = this.worldPosition.relative(dir);
+            if (this.level.getBlockEntity(target) == null) {
                 continue;
             }
 
-            if (!LibXServerConfig.autoExportAllowed.test(ForgeRegistries.BLOCKS.getKey(blockEntity.getBlockState().getBlock()))) {
+            if (!LibXServerConfig.autoExportAllowed.test(BuiltInRegistries.BLOCK.getKey(this.level.getBlockState(target).getBlock()))) {
                 continue;
             }
 
-            LazyOptional<IItemHandler> capability = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
-            //noinspection DataFlowIssue
-            IItemHandler itemHandler = capability.orElse(null);
-            //noinspection ConstantValue
+            IItemHandler itemHandler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, target, dir.getOpposite());
             if (itemHandler == null) {
                 continue;
             }
@@ -222,8 +220,8 @@ public abstract class RecipeTile<T extends Recipe<Container>> extends BotanicalT
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.needsRecipeUpdate = true;
     }
 }

@@ -16,6 +16,7 @@ import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalTile;
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
@@ -25,12 +26,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.item.BotaniaItems;
+import velrondevs.botania.registry.BotaniaBlocks;
+import velrondevs.botania.registry.BotaniaItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,8 +185,8 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
         nbt.putInt("cooldown", this.cooldown);
         nbt.putBoolean("petalUpgrade", this.petalUpgrade);
         nbt.putBoolean("petalUpgradeBlock", this.petalBlockUpgrade);
@@ -193,8 +194,8 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.cooldown = nbt.getInt("cooldown");
         this.petalUpgrade = nbt.getBoolean("petalUpgrade");
         this.petalBlockUpgrade = nbt.getBoolean("petalUpgradeBlock");
@@ -204,8 +205,8 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag nbt) {
-        super.handleUpdateTag(nbt);
+    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
+        super.handleUpdateTag(nbt, registries);
         if (this.level == null || this.level.isClientSide) {
             this.cooldown = nbt.getInt("cooldown");
             this.petalUpgrade = nbt.getBoolean("petalUpgrade");
@@ -228,11 +229,11 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
         if (this.level != null && this.level.isClientSide) {
-            return super.getUpdateTag();
+            return super.getUpdateTag(registries);
         } else {
-            CompoundTag nbt = super.getUpdateTag();
+            CompoundTag nbt = super.getUpdateTag(registries);
             nbt.putInt("cooldown", this.cooldown);
             nbt.putBoolean("petalUpgrade", this.petalUpgrade);
             nbt.putBoolean("petalUpgradeBlock", this.petalBlockUpgrade);

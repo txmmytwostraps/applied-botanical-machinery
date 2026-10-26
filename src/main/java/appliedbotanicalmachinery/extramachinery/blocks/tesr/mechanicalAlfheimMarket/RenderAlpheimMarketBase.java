@@ -14,12 +14,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.moddingx.libx.render.block.RotatedBlockRenderer;
-import vazkii.botania.client.core.handler.ClientTickHandler;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.lib.ResourceLocationHelper;
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.registry.BotaniaBlocks;
+import velrondevs.botania.common.lib.ResourceLocationHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -77,11 +75,10 @@ public class RenderAlpheimMarketBase extends RotatedBlockRenderer<BlockEntityAlf
 
     private void renderPortal(PoseStack poseStack, MultiBufferSource buffer, TextureAtlasSprite sprite, int x, int y, int width, int height, float alpha, int overlay) {
         VertexConsumer vertex = buffer.getBuffer(Sheets.translucentCullBlockSheet());
-        Matrix4f model = poseStack.last().pose();
-        Matrix3f normal = poseStack.last().normal();
-        vertex.vertex(model, (float)x, (float)(y + height), 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV1()).overlayCoords(overlay).uv2(LightTexture.pack(15, 15)).normal(normal, 1.0F, 0.0F, 0.0F).endVertex();
-        vertex.vertex(model, (float)(x + width), (float)(y + height), 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV1()).overlayCoords(overlay).uv2(LightTexture.pack(15, 15)).normal(normal, 1.0F, 0.0F, 0.0F).endVertex();
-        vertex.vertex(model, (float)(x + width), (float)y, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV0()).overlayCoords(overlay).uv2(LightTexture.pack(15, 15)).normal(normal, 1.0F, 0.0F, 0.0F).endVertex();
-        vertex.vertex(model, (float)x, (float)y, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV0()).overlayCoords(overlay).uv2(LightTexture.pack(15, 15)).normal(normal, 1.0F, 0.0F, 0.0F).endVertex();
+        PoseStack.Pose pose = poseStack.last();
+        vertex.addVertex(pose, (float)x, (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)(x + width), (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)(x + width), (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)x, (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
     }
 }

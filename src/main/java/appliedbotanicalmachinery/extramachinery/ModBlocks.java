@@ -1,5 +1,6 @@
 package appliedbotanicalmachinery.extramachinery;
 
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import appliedbotanicalmachinery.extramachinery.blocks.blockMachines.BlockGreenhouse;
 import appliedbotanicalmachinery.extramachinery.blocks.blockMachines.BlockJadedAmaranthus;
 import appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalAlfheimMarket.BlockAlfheimMarketAdvanced;
@@ -102,19 +103,20 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAlta
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarUpgraded;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.moddingx.libx.annotation.registration.Reg;
 import org.moddingx.libx.annotation.registration.RegisterClass;
 import org.moddingx.libx.base.BlockBase;
 import org.moddingx.libx.base.tile.MenuBlockBE;
-import org.moddingx.libx.menu.BlockEntityMenu;
+import org.moddingx.libx.menu.type.AdvancedMenuType;
 
 import java.awt.*;
 
-@RegisterClass(registry = "BLOCKS", priority = 1)
+@RegisterClass(registry = "BLOCK", priority = 1)
 public class ModBlocks {
     public static final BlockBase malachiteDragonstoneBlock;
     public static final BlockBase malachiteIngotBlock;
@@ -169,10 +171,10 @@ public class ModBlocks {
     public static final MenuBlockBE<BlockEntityJadedAmaranthus, ContainerJadedAmaranthus> jadedAmaranthus;
     public static final MenuBlockBE<BlockEntityGreenhouse, ContainerGreenhouse> greenhouse;
 
-    public static final MenuBlockBE<BlockEntityManaInfuserBase, ContainerManaInfuserBase> baseManaInfuser = new BlockManaInfuserBase(ExtraMachinery.getInstance(), BlockEntityManaInfuserBase.class, BlockEntityMenu.createMenuType(ContainerManaInfuserBase::new));
-    public static final MenuBlockBE<BlockEntityManaInfuserUpgraded, ContainerManaInfuserUpgraded> upgradedManaInfuser = new BlockManaInfuserUpgraded(ExtraMachinery.getInstance(), BlockEntityManaInfuserUpgraded.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUpgraded::new));
-    public static final MenuBlockBE<BlockEntityManaInfuserAdvanced, ContainerManaInfuserAdvanced> advancedManaInfuser = new BlockManaInfuserAdvanced(ExtraMachinery.getInstance(), BlockEntityManaInfuserAdvanced.class, BlockEntityMenu.createMenuType(ContainerManaInfuserAdvanced::new));
-    public static final MenuBlockBE<BlockEntityManaInfuserUltimate, ContainerManaInfuserUltimate> ultimateManaInfuser = new BlockManaInfuserUltimate(ExtraMachinery.getInstance(), BlockEntityManaInfuserUltimate.class, BlockEntityMenu.createMenuType(ContainerManaInfuserUltimate::new));
+    public static final MenuBlockBE<BlockEntityManaInfuserBase, ContainerManaInfuserBase> baseManaInfuser = new BlockManaInfuserBase(AppliedBotanicalMachinery.getInstance(), BlockEntityManaInfuserBase.class, AdvancedMenuType.create(ContainerManaInfuserBase::new, BlockPos.STREAM_CODEC));
+    public static final MenuBlockBE<BlockEntityManaInfuserUpgraded, ContainerManaInfuserUpgraded> upgradedManaInfuser = new BlockManaInfuserUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityManaInfuserUpgraded.class, AdvancedMenuType.create(ContainerManaInfuserUpgraded::new, BlockPos.STREAM_CODEC));
+    public static final MenuBlockBE<BlockEntityManaInfuserAdvanced, ContainerManaInfuserAdvanced> advancedManaInfuser = new BlockManaInfuserAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityManaInfuserAdvanced.class, AdvancedMenuType.create(ContainerManaInfuserAdvanced::new, BlockPos.STREAM_CODEC));
+    public static final MenuBlockBE<BlockEntityManaInfuserUltimate, ContainerManaInfuserUltimate> ultimateManaInfuser = new BlockManaInfuserUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityManaInfuserUltimate.class, AdvancedMenuType.create(ContainerManaInfuserUltimate::new, BlockPos.STREAM_CODEC));
 
     public ModBlocks() {
 
@@ -180,58 +182,58 @@ public class ModBlocks {
 
     static {
 
-        malachiteDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        saffronDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        shadowDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        crimsonDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        aureateDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        mazarineDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        crystalDragonstoneBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        malachiteDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        saffronDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        shadowDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        crimsonDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        aureateDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        mazarineDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        crystalDragonstoneBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
 
-        malachiteIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        saffronIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        shadowIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        crimsonIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        aureateIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        mazarineIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
-        crystalIngotBlock = new BlockBase(ExtraMachinery.getInstance(), BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        malachiteIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        saffronIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        shadowIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        crimsonIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        aureateIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        mazarineIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        crystalIngotBlock = new BlockBase(AppliedBotanicalMachinery.getInstance(), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(5.0F, 6.0F).sound(SoundType.METAL));
 
-        baseManaPool = new BlockManaPoolBase(ExtraMachinery.getInstance(), BlockEntityManaPoolBase.class, BlockEntityMenu.createMenuType(ContainerManaPoolBase::new));
-        upgradedManaPool = new BlockManaPoolUpgraded(ExtraMachinery.getInstance(), BlockEntityManaPoolUpgraded.class, BlockEntityMenu.createMenuType(ContainerManaPoolUpgraded::new));
-        advancedManaPool = new BlockManaPoolAdvanced(ExtraMachinery.getInstance(), BlockEntityManaPoolAdvanced.class, BlockEntityMenu.createMenuType(ContainerManaPoolAdvanced::new));
-        ultimateManaPool = new BlockManaPoolUltimate(ExtraMachinery.getInstance(), BlockEntityManaPoolUltimate.class, BlockEntityMenu.createMenuType(ContainerManaPoolUltimate::new));
+        baseManaPool = new BlockManaPoolBase(AppliedBotanicalMachinery.getInstance(), BlockEntityManaPoolBase.class, AdvancedMenuType.create(ContainerManaPoolBase::new, BlockPos.STREAM_CODEC));
+        upgradedManaPool = new BlockManaPoolUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityManaPoolUpgraded.class, AdvancedMenuType.create(ContainerManaPoolUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedManaPool = new BlockManaPoolAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityManaPoolAdvanced.class, AdvancedMenuType.create(ContainerManaPoolAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateManaPool = new BlockManaPoolUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityManaPoolUltimate.class, AdvancedMenuType.create(ContainerManaPoolUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseRunicAltar = new BlockRunicAltarBase(ExtraMachinery.getInstance(), BlockEntityRunicAltarBase.class, BlockEntityMenu.createMenuType(ContainerRunicAltarBase::new));
-        upgradedRunicAltar = new BlockRunicAltarUpgraded(ExtraMachinery.getInstance(), BlockEntityRunicAltarUpgraded.class, BlockEntityMenu.createMenuType(ContainerRunicAltarUpgraded::new));
-        advancedRunicAltar = new BlockRunicAltarAdvanced(ExtraMachinery.getInstance(), BlockEntityRunicAltarAdvanced.class, BlockEntityMenu.createMenuType(ContainerRunicAltarAdvanced::new));
-        ultimateRunicAltar = new BlockRunicAltarUltimate(ExtraMachinery.getInstance(), BlockEntityRunicAltarUltimate.class, BlockEntityMenu.createMenuType(ContainerRunicAltarUltimate::new));
+        baseRunicAltar = new BlockRunicAltarBase(AppliedBotanicalMachinery.getInstance(), BlockEntityRunicAltarBase.class, AdvancedMenuType.create(ContainerRunicAltarBase::new, BlockPos.STREAM_CODEC));
+        upgradedRunicAltar = new BlockRunicAltarUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityRunicAltarUpgraded.class, AdvancedMenuType.create(ContainerRunicAltarUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedRunicAltar = new BlockRunicAltarAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityRunicAltarAdvanced.class, AdvancedMenuType.create(ContainerRunicAltarAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateRunicAltar = new BlockRunicAltarUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityRunicAltarUltimate.class, AdvancedMenuType.create(ContainerRunicAltarUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseDaisy = new BlockDaisyBase(ExtraMachinery.getInstance(), BlockEntityDaisyBase.class, BlockEntityMenu.createMenuType(ContainerDaisyBase::new));
-        upgradedDaisy = new BlockDaisyUpgraded(ExtraMachinery.getInstance(), BlockEntityDaisyUpgraded.class, BlockEntityMenu.createMenuType(ContainerDaisyUpgraded::new));
-        advancedDaisy = new BlockDaisyAdvanced(ExtraMachinery.getInstance(), BlockEntityDaisyAdvanced.class, BlockEntityMenu.createMenuType(ContainerDaisyAdvanced::new));
-        ultimateDaisy = new BlockDaisyUltimate(ExtraMachinery.getInstance(), BlockEntityDaisyUltimate.class, BlockEntityMenu.createMenuType(ContainerDaisyUltimate::new));
+        baseDaisy = new BlockDaisyBase(AppliedBotanicalMachinery.getInstance(), BlockEntityDaisyBase.class, AdvancedMenuType.create(ContainerDaisyBase::new, BlockPos.STREAM_CODEC));
+        upgradedDaisy = new BlockDaisyUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityDaisyUpgraded.class, AdvancedMenuType.create(ContainerDaisyUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedDaisy = new BlockDaisyAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityDaisyAdvanced.class, AdvancedMenuType.create(ContainerDaisyAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateDaisy = new BlockDaisyUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityDaisyUltimate.class, AdvancedMenuType.create(ContainerDaisyUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseApothecary = new BlockApothecaryBase(ExtraMachinery.getInstance(), BlockEntityApothecaryBase.class, BlockEntityMenu.createMenuType(ContainerApothecaryBase::new));
-        upgradedApothecary = new BlockApothecaryUpgraded(ExtraMachinery.getInstance(), BlockEntityApothecaryUpgraded.class, BlockEntityMenu.createMenuType(ContainerApothecaryUpgraded::new));
-        advancedApothecary = new BlockApothecaryAdvanced(ExtraMachinery.getInstance(), BlockEntityApothecaryAdvanced.class, BlockEntityMenu.createMenuType(ContainerApothecaryAdvanced::new));
-        ultimateApothecary = new BlockApothecaryUltimate(ExtraMachinery.getInstance(), BlockEntityApothecaryUltimate.class, BlockEntityMenu.createMenuType(ContainerApothecaryUltimate::new));
+        baseApothecary = new BlockApothecaryBase(AppliedBotanicalMachinery.getInstance(), BlockEntityApothecaryBase.class, AdvancedMenuType.create(ContainerApothecaryBase::new, BlockPos.STREAM_CODEC));
+        upgradedApothecary = new BlockApothecaryUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityApothecaryUpgraded.class, AdvancedMenuType.create(ContainerApothecaryUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedApothecary = new BlockApothecaryAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityApothecaryAdvanced.class, AdvancedMenuType.create(ContainerApothecaryAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateApothecary = new BlockApothecaryUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityApothecaryUltimate.class, AdvancedMenuType.create(ContainerApothecaryUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryBase(ExtraMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryBase.class, BlockEntityMenu.createMenuType(ContainerIndustrialAgglomerationFactoryBase::new));
-        upgradedIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryUpgraded(ExtraMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryUpgraded.class, BlockEntityMenu.createMenuType(ContainerIndustrialAgglomerationFactoryUpgraded::new));
-        advancedIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryAdvanced(ExtraMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryAdvanced.class, BlockEntityMenu.createMenuType(ContainerIndustrialAgglomerationFactoryAdvanced::new));
-        ultimateIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryUltimate(ExtraMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryUltimate.class, BlockEntityMenu.createMenuType(ContainerIndustrialAgglomerationFactoryUltimate::new));
+        baseIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryBase(AppliedBotanicalMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryBase.class, AdvancedMenuType.create(ContainerIndustrialAgglomerationFactoryBase::new, BlockPos.STREAM_CODEC));
+        upgradedIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryUpgraded.class, AdvancedMenuType.create(ContainerIndustrialAgglomerationFactoryUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryAdvanced.class, AdvancedMenuType.create(ContainerIndustrialAgglomerationFactoryAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateIndustrialAgglomerationFactory = new BlockIndustrialAgglomerationFactoryUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityIndustrialAgglomerationFactoryUltimate.class, AdvancedMenuType.create(ContainerIndustrialAgglomerationFactoryUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseAlfheimMarket = new BlockAlfheimMarketBase(ExtraMachinery.getInstance(), BlockEntityAlfheimMarketBase.class, BlockEntityMenu.createMenuType(ContainerAlfheimMarketBase::new));
-        upgradedAlfheimMarket = new BlockAlfheimMarketUpgraded(ExtraMachinery.getInstance(), BlockEntityAlfheimMarketUpgraded.class, BlockEntityMenu.createMenuType(ContainerAlfheimMarketUpgraded::new));
-        advancedAlfheimMarket = new BlockAlfheimMarketAdvanced(ExtraMachinery.getInstance(), BlockEntityAlfheimMarketAdvanced.class, BlockEntityMenu.createMenuType(ContainerAlfheimMarketAdvanced::new));
-        ultimateAlfheimMarket = new BlockAlfheimMarketUltimate(ExtraMachinery.getInstance(), BlockEntityAlfheimMarketUltimate.class, BlockEntityMenu.createMenuType(ContainerAlfheimMarketUltimate::new));
+        baseAlfheimMarket = new BlockAlfheimMarketBase(AppliedBotanicalMachinery.getInstance(), BlockEntityAlfheimMarketBase.class, AdvancedMenuType.create(ContainerAlfheimMarketBase::new, BlockPos.STREAM_CODEC));
+        upgradedAlfheimMarket = new BlockAlfheimMarketUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityAlfheimMarketUpgraded.class, AdvancedMenuType.create(ContainerAlfheimMarketUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedAlfheimMarket = new BlockAlfheimMarketAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityAlfheimMarketAdvanced.class, AdvancedMenuType.create(ContainerAlfheimMarketAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateAlfheimMarket = new BlockAlfheimMarketUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityAlfheimMarketUltimate.class, AdvancedMenuType.create(ContainerAlfheimMarketUltimate::new, BlockPos.STREAM_CODEC));
 
-        baseOrechid = new BlockOrechidBase(ExtraMachinery.getInstance(), BlockEntityOrechidBase.class, BlockEntityMenu.createMenuType(ContainerOrechidBase::new));
-        upgradedOrechid = new BlockOrechidUpgraded(ExtraMachinery.getInstance(), BlockEntityOrechidUpgraded.class, BlockEntityMenu.createMenuType(ContainerOrechidUpgraded::new));
-        advancedOrechid = new BlockOrechidAdvanced(ExtraMachinery.getInstance(), BlockEntityOrechidAdvanced.class, BlockEntityMenu.createMenuType(ContainerOrechidAdvanced::new));
-        ultimateOrechid = new BlockOrechidUltimate(ExtraMachinery.getInstance(), BlockEntityOrechidUltimate.class, BlockEntityMenu.createMenuType(ContainerOrechidUltimate::new));
+        baseOrechid = new BlockOrechidBase(AppliedBotanicalMachinery.getInstance(), BlockEntityOrechidBase.class, AdvancedMenuType.create(ContainerOrechidBase::new, BlockPos.STREAM_CODEC));
+        upgradedOrechid = new BlockOrechidUpgraded(AppliedBotanicalMachinery.getInstance(), BlockEntityOrechidUpgraded.class, AdvancedMenuType.create(ContainerOrechidUpgraded::new, BlockPos.STREAM_CODEC));
+        advancedOrechid = new BlockOrechidAdvanced(AppliedBotanicalMachinery.getInstance(), BlockEntityOrechidAdvanced.class, AdvancedMenuType.create(ContainerOrechidAdvanced::new, BlockPos.STREAM_CODEC));
+        ultimateOrechid = new BlockOrechidUltimate(AppliedBotanicalMachinery.getInstance(), BlockEntityOrechidUltimate.class, AdvancedMenuType.create(ContainerOrechidUltimate::new, BlockPos.STREAM_CODEC));
 
-        jadedAmaranthus = new BlockJadedAmaranthus(ExtraMachinery.getInstance(), BlockEntityJadedAmaranthus.class, BlockEntityMenu.createMenuType(ContainerJadedAmaranthus::new));
-        greenhouse = new BlockGreenhouse(ExtraMachinery.getInstance(), BlockEntityGreenhouse.class, BlockEntityMenu.createMenuType(ContainerGreenhouse::new));
+        jadedAmaranthus = new BlockJadedAmaranthus(AppliedBotanicalMachinery.getInstance(), BlockEntityJadedAmaranthus.class, AdvancedMenuType.create(ContainerJadedAmaranthus::new, BlockPos.STREAM_CODEC));
+        greenhouse = new BlockGreenhouse(AppliedBotanicalMachinery.getInstance(), BlockEntityGreenhouse.class, AdvancedMenuType.create(ContainerGreenhouse::new, BlockPos.STREAM_CODEC));
     }
 }
