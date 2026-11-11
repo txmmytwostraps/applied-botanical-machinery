@@ -15,6 +15,7 @@
   "item.appliedbotanicalmachinery.portable_mana_cell_64k": "64k Portable Mana Cell",
   "item.appliedbotanicalmachinery.portable_mana_cell_256k": "256k Portable Mana Cell",
   "item.appliedbotanicalmachinery.mana_p2p_tunnel": "Mana P2P Tunnel",
+  "tag.item.appliedbotanicalmachinery.p2p_attunements.mana_p2p_tunnel": "Mana P2P Tunnel Attunement",
   "appliedbotanicalmachinery.entry.fluix_mana_pool": "Fluix Mana Pool",
   "appliedbotanicalmachinery.page.fluix_mana_pool0": "The $(item)Fluix Mana Pool$(0) operates on $(thing)Mana$(0) from the attached ME system",
   "appliedbotanicalmachinery.page.fluix_mana_pool1": "this isn't so bad",
