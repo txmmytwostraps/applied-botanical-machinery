@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.core.TileTags;
@@ -17,7 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.lwjgl.opengl.GL11;
 import org.moddingx.libx.base.tile.BlockEntityBase;
@@ -51,7 +56,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     private String outputKey = "";
 
     @Nullable
-    private IItemHandler itemHandler;
+    private ResourceHandler<ItemResource> itemHandler;
 
     public BotanicalTile(BlockEntityType<?> blockEntityTypeIn, BlockPos pos, BlockState state, int manaCap) {
         super(blockEntityTypeIn, pos, state);
@@ -62,7 +67,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
      * The item handler exposed as capability. It is created on first use, as the inventory does not exist while
      * the constructors run.
      */
-    public IItemHandler getItemHandler() {
+    public ResourceHandler<ItemResource> getItemHandler() {
         if (this.itemHandler == null) {
             this.itemHandler = this.createItemHandler(this::getInventory);
         }
@@ -73,7 +78,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
      * This can be used to add canExtract or canInsert to the wrapper used as capability. You may call the supplier
      * inside the canExtract and canInsert lambda.
      */
-    protected IItemHandler createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
+    protected ResourceHandler<ItemResource> createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return new FilterItemHandler(inventory.get(), this.getExtracts(inventory), this.getInserts(inventory));
     }
 
@@ -97,43 +102,24 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.getInventory().deserializeNBT(registries, tag.getCompound(TileTags.INVENTORY));
-        this.mana = tag.getInt(TileTags.MANA);
-        if (tag.contains(TileTags.INPUT_KEY)) this.inputKey = tag.getString(TileTags.INPUT_KEY);
-        if (tag.contains(TileTags.OUTPUT_KEY)) this.outputKey = tag.getString(TileTags.OUTPUT_KEY);
+    protected void loadAdditional(@Nonnull ValueInput tag) {
+        super.loadAdditional(tag);
+        this.getInventory().deserialize(tag.childOrEmpty(TileTags.INVENTORY));
+        this.mana = tag.getIntOr(TileTags.MANA, 0);
+        this.inputKey = tag.getStringOr(TileTags.INPUT_KEY, this.inputKey);
+        this.outputKey = tag.getStringOr(TileTags.OUTPUT_KEY, this.outputKey);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        this.getInventory().serialize(nbt.child(TileTags.INVENTORY));
         nbt.putInt(TileTags.MANA, this.getCurrentMana());
         nbt.putString(TileTags.INPUT_KEY, this.inputKey);
         nbt.putString(TileTags.OUTPUT_KEY, this.outputKey);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.getInventory().deserializeNBT(registries, tag.getCompound(TileTags.INVENTORY));
-        this.mana = tag.getInt(TileTags.MANA);
-        if (tag.contains(TileTags.INPUT_KEY)) this.inputKey = tag.getString(TileTags.INPUT_KEY);
-        if (tag.contains(TileTags.OUTPUT_KEY)) this.outputKey = tag.getString(TileTags.OUTPUT_KEY);
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT(registries));
-        nbt.putInt(TileTags.MANA, this.getCurrentMana());
-        nbt.putString(TileTags.INPUT_KEY, this.inputKey);
-        nbt.putString(TileTags.OUTPUT_KEY, this.outputKey);
-        return nbt;
-    }
 
     @Override
     public void renderHUD(GuiGraphics guiGraphics, Minecraft minecraft) {

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appliedbotanicalmachinery.machinery.blocks.BlockManaBattery;
@@ -166,34 +170,18 @@ public class BlockEntityManaBattery extends BotanicalTile {
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.slot1Locked = nbt.getBoolean(TileTags.SLOT_1_LOCKED);
-        this.slot2Locked = nbt.getBoolean(TileTags.SLOT_2_LOCKED);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.slot1Locked = nbt.getBooleanOr(TileTags.SLOT_1_LOCKED, false);
+        this.slot2Locked = nbt.getBooleanOr(TileTags.SLOT_2_LOCKED, false);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putBoolean(TileTags.SLOT_1_LOCKED, this.slot1Locked);
         nbt.putBoolean(TileTags.SLOT_2_LOCKED, this.slot2Locked);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.slot1Locked = nbt.getBoolean(TileTags.SLOT_1_LOCKED);
-        this.slot2Locked = nbt.getBoolean(TileTags.SLOT_2_LOCKED);
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.putBoolean(TileTags.SLOT_1_LOCKED, this.slot1Locked);
-        nbt.putBoolean(TileTags.SLOT_2_LOCKED, this.slot2Locked);
-        return nbt;
-    }
 }

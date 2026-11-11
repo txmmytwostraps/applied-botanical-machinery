@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -244,43 +250,23 @@ public class BlockEntityOrechidPattern extends ExtraBotanicalTile
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.cooldown = nbt.getInt("cooldown");
-        this.getMainNode().loadFromNBT(nbt);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.cooldown = nbt.getIntOr("cooldown", 0);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt("cooldown", this.cooldown);
-        this.getMainNode().saveToNBT(nbt);
+        this.getMainNode().serialize(nbt);
     }
 
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.cooldown = nbt.getInt("cooldown");
 
-        }
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.putInt("cooldown", this.cooldown);
-
-            return nbt;
-        }
-    }
 
     public List<Item> getOutputs(){
         if (STATIC_ORECHID_OUTPUTS == null) {

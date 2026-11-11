@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks;
 
+import appliedbotanicalmachinery.util.SimpleFluidTank;
+
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.blocks.screens.ScreenMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.blocks.tesr.MechanicalApothecaryRenderer;
@@ -23,8 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidActionResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.moddingx.libx.base.tile.MenuBlockBE;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
@@ -71,13 +72,8 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
             BlockEntityMechanicalApothecary tile = this.getBlockEntity(level, pos);
 
             ItemStack held = player.getMainHandItem();
-            FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainer(held, tile.getFluidInventory(), 1000, player, true);
-            if (fluidActionResult.isSuccess()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, pos, tile.getFluidInventory())) {
                 tile.setDispatchable();
-
-                if (!player.isCreative()) {
-                    player.setItemInHand(hand, fluidActionResult.getResult());
-                }
 
                 return InteractionResult.SUCCESS;
             }

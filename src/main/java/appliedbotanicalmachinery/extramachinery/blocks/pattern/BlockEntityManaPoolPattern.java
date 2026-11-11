@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -256,41 +260,23 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
         return Inventories.get(this.inventory, CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem() ? this.getMaxMana() : super.getAvailableSpaceForMana();
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.cooldown = nbt.getInt("cooldown");
-        this.getMainNode().loadFromNBT(nbt);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.cooldown = nbt.getIntOr("cooldown", 0);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
 
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt("cooldown", this.cooldown);
-        this.getMainNode().saveToNBT(nbt);
+        this.getMainNode().serialize(nbt);
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.cooldown = nbt.getInt("cooldown");
 
-        }
-    }
-
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.putInt("cooldown", this.cooldown);
-
-            return nbt;
-        }
-    }
 
     public static void invalidateCatalysts() {
         CACHED_CATALYSTS = null;

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -113,32 +117,17 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
         this.slotsUsed.clear();
-        this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED)).boxed().toList());
+        this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED).orElse(new int[0])).boxed().toList());
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed.stream().mapToInt(Integer::intValue).toArray());
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.slotsUsed.clear();
-        this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED)).boxed().toList());
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed);
-        return nbt;
-    }
 }

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -405,8 +409,8 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
         this.needsRecipeUpdate = true;
     }
 

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -141,18 +145,18 @@ public class BlockEntityIndustrialAgglomerationFactoryPattern extends WorkingTil
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.getMainNode().loadFromNBT(nbt);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        this.getMainNode().saveToNBT(nbt);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        this.getMainNode().serialize(nbt);
     }
 
     protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {

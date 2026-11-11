@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tiles;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appeng.api.config.Actionable;
@@ -187,8 +193,8 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt("cooldown", this.cooldown);
         nbt.putBoolean("petalUpgrade", this.petalUpgrade);
         nbt.putBoolean("petalUpgradeBlock", this.petalBlockUpgrade);
@@ -196,25 +202,16 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.cooldown = nbt.getInt("cooldown");
-        this.petalUpgrade = nbt.getBoolean("petalUpgrade");
-        this.petalBlockUpgrade = nbt.getBoolean("petalUpgradeBlock");
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.cooldown = nbt.getIntOr("cooldown", 0);
+        this.petalUpgrade = nbt.getBooleanOr("petalUpgrade", false);
+        this.petalBlockUpgrade = nbt.getBooleanOr("petalUpgradeBlock", false);
 
         this.setChanged();
         this.setDispatchable();
     }
 
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.cooldown = nbt.getInt("cooldown");
-            this.petalUpgrade = nbt.getBoolean("petalUpgrade");
-            this.petalBlockUpgrade = nbt.getBoolean("petalUpgradeBlock");
-        }
-    }
 
     @Override
     protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> supplier) {
@@ -229,20 +226,6 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
         return this.inventory;
     }
 
-    @NotNull
-    @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.putInt("cooldown", this.cooldown);
-            nbt.putBoolean("petalUpgrade", this.petalUpgrade);
-            nbt.putBoolean("petalUpgradeBlock", this.petalBlockUpgrade);
-
-            return nbt;
-        }
-    }
 
     @Override
     public int getComparatorOutput() {

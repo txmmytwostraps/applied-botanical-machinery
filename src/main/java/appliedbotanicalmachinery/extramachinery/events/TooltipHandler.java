@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.events;
 
+import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import net.minecraft.world.item.component.TypedEntityData;
+
 import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.ModItems;
@@ -112,12 +116,12 @@ public class TooltipHandler {
 
         ItemStack stack = event.getItemStack();
         if (!stack.isEmpty()){
-            CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
-            CompoundTag tag = data == null ? new CompoundTag() : data.copyTag();
+            TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+            CompoundTag tag = data == null ? new CompoundTag() : data.copyTagWithoutId();
 
             if (tooltipManaAllBlocks.contains(stack.getItem())){
                 if (tag.contains("mana")){
-                    int mana = tag.getInt("mana");
+                    int mana = tag.getIntOr("mana", 0);
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.mana", NumberFormatter.formatInteger(mana)));
                 }
@@ -126,7 +130,7 @@ public class TooltipHandler {
             if (tooltipWaterAllBlocks.contains(stack.getItem())){
 
                 if (tag.contains("fluid")){
-                    int water = tag.getCompound("fluid").getInt("amount");
+                    int water = tag.getCompoundOrEmpty("fluid").getIntOr("amount", 0);
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.water", NumberFormatter.formatIntegerWater(water)));
                 }
@@ -135,7 +139,7 @@ public class TooltipHandler {
             if (tooltipEnergyAllBlocks.contains(stack.getItem())){
 
                 if (tag.contains("energyStorage")){
-                    int energy = tag.getInt("energyStorage");
+                    int energy = tag.getIntOr("energyStorage", 0);
 
                     event.getToolTip().add(Component.translatable("appliedbotanicalmachinery.tooltip.block.energy", NumberFormatter.formatInteger(energy)));
                 }

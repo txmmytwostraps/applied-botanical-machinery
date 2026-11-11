@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -158,32 +162,18 @@ public class BlockEntityMechanicalManaPool extends RecipeTile<RecipeInput, ManaI
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.cooldown = nbt.getInt(TileTags.COOLDOWN);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.cooldown = nbt.getIntOr(TileTags.COOLDOWN, 0);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt(TileTags.COOLDOWN, this.cooldown);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.cooldown = nbt.getInt(TileTags.COOLDOWN);
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.putInt(TileTags.COOLDOWN, this.cooldown);
-        return nbt;
-    }
 
     public static void invalidateCatalysts() {
         CACHED_CATALYSTS = null;

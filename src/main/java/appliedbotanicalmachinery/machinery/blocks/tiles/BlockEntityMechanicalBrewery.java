@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -133,34 +137,16 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.currentOutput = nbt.read(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        CompoundTag tankTag = new CompoundTag();
-        nbt.put(TileTags.FLUID, tankTag);
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.store(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC, this.currentOutput);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        final CompoundTag tankTag = new CompoundTag();
-        nbt.put(TileTags.FLUID, tankTag);
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
-        return nbt;
-    }
 }

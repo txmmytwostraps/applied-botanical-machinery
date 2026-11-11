@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.block;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import java.util.EnumSet;
 
 import com.google.common.primitives.Ints;
@@ -130,21 +136,21 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public void saveAdditional(@Nonnull ValueOutput tag) {
         try {
             saving = true;
-            super.saveAdditional(tag, registries);
+            super.saveAdditional(tag);
         } finally {
             saving = false;
         }
 
-        this.getMainNode().saveToNBT(tag);
+        this.getMainNode().serialize(tag);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.getMainNode().loadFromNBT(tag);
+    public void loadAdditional(@Nonnull ValueInput tag) {
+        super.loadAdditional(tag);
+        this.getMainNode().deserialize(tag);
     }
 
     @Nullable

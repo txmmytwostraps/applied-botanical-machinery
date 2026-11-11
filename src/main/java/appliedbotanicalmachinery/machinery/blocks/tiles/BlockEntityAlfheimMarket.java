@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -111,34 +115,18 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_INPUT));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.currentInput = nbt.read(TileTags.CURRENT_INPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.currentOutput = nbt.read(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.saveOptional(registries));
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.store(TileTags.CURRENT_INPUT, ItemStack.OPTIONAL_CODEC, this.currentInput);
+        nbt.store(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC, this.currentOutput);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide()) return;
-        super.handleUpdateTag(nbt, registries);
-        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_INPUT));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.put(TileTags.CURRENT_INPUT, this.currentInput.saveOptional(registries));
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
-        return nbt;
-    }
 }

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -81,34 +85,18 @@ public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> ex
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.progress = nbt.getInt(TileTags.PROGRESS);
-        this.maxProgress = nbt.getInt(TileTags.MAX_PROGRESS);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.progress = nbt.getIntOr(TileTags.PROGRESS, 0);
+        this.maxProgress = nbt.getIntOr(TileTags.MAX_PROGRESS, 0);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt(TileTags.PROGRESS, this.progress);
         nbt.putInt(TileTags.MAX_PROGRESS, this.maxProgress);
     }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.putInt(TileTags.PROGRESS, this.progress);
-        nbt.putInt(TileTags.MAX_PROGRESS, this.maxProgress);
-        return nbt;
-    }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.progress = tag.getInt(TileTags.PROGRESS);
-        this.maxProgress = tag.getInt(TileTags.MAX_PROGRESS);
-    }
 }

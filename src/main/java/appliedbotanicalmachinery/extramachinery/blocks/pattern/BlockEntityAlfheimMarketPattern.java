@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -205,42 +209,24 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
         return this.currentOutput;
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound("currentInput"));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
-        this.getMainNode().loadFromNBT(nbt);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.currentInput = nbt.read("currentInput", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.currentOutput = nbt.read("currentOutput", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("currentInput", this.currentInput.saveOptional(registries));
-        nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
-        this.getMainNode().saveToNBT(nbt);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.store("currentInput", ItemStack.OPTIONAL_CODEC, this.currentInput);
+        nbt.store("currentOutput", ItemStack.OPTIONAL_CODEC, this.currentOutput);
+        this.getMainNode().serialize(nbt);
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level == null || this.level.isClientSide()) {
-            super.handleUpdateTag(nbt, registries);
-            this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound("currentInput"));
-            this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
-        }
-    }
 
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.put("currentInput", this.currentInput.saveOptional(registries));
-            nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
-            return nbt;
-        }
-    }
 
     public BlockEntity getBlockEntity(){
         return this;

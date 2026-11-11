@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.entities.manaSpark;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import net.minecraft.world.entity.EquipmentSlot;
 
 import net.minecraft.core.component.DataComponents;
@@ -388,12 +392,12 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
         return InteractionResult.PASS;
     }
 
-    protected void readAdditionalSaveData(@NotNull CompoundTag cmp) {
+    protected void readAdditionalSaveData(@NotNull ValueInput cmp) {
         super.readAdditionalSaveData(cmp);
-        this.setUpgrade(SparkUpgradeType.values()[cmp.getInt(TAG_UPGRADE)]);
+        this.setUpgrade(SparkUpgradeType.values()[cmp.getIntOr(TAG_UPGRADE, 0)]);
     }
 
-    protected void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput cmp) {
         super.addAdditionalSaveData(cmp);
         cmp.putInt(TAG_UPGRADE, this.getUpgrade().ordinal());
     }

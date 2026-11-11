@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalApothecary;
 
+import appliedbotanicalmachinery.util.SimpleFluidTank;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalApothecary.ContainerApothecaryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.pattern.BlockEntityApothecaryPattern;
@@ -29,8 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidActionResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.moddingx.libx.base.tile.MenuBlockBE;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -79,13 +80,8 @@ public class BlockApothecaryAdvanced extends MenuBlockBE<BlockEntityApothecaryAd
         if (!level.isClientSide()) {
             BlockEntityApothecaryPattern tile = this.getBlockEntity(level, pos);
             ItemStack held = player.getMainHandItem();
-            FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainer(held, tile.getFluidInventory(), 1000, player, true);
-            if (fluidActionResult.isSuccess()) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, pos, tile.getFluidInventory())) {
                 tile.setDispatchable();
-
-                if (!player.isCreative()) {
-                    player.setItemInHand(hand, fluidActionResult.getResult());
-                }
 
                 return InteractionResult.SUCCESS;
             }

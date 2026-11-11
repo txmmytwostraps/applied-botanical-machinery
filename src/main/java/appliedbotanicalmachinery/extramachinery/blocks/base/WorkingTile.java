@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -88,35 +92,17 @@ public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> ex
         return this.getProgress() > 0 ? 15 : 0;
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.progress = nbt.getInt("progress");
-        this.maxProgress = nbt.getInt("maxProgress");
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.progress = nbt.getIntOr("progress", 0);
+        this.maxProgress = nbt.getIntOr("maxProgress", 0);
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
         nbt.putInt("progress", this.progress);
         nbt.putInt("maxProgress", this.maxProgress);
     }
 
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.putInt("progress", this.progress);
-            nbt.putInt("maxProgress", this.maxProgress);
-            return nbt;
-        }
-    }
 
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.progress = tag.getInt("progress");
-            this.maxProgress = tag.getInt("maxProgress");
-        }
-    }
 }

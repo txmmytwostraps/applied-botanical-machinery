@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.SimpleFluidTank;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -42,8 +48,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -77,7 +81,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
     private int UPGRADE_SLOT_2 = -1;
 
     private final BaseItemStackHandler inventory;
-    private final BlockEntityApothecaryPattern.ApothecaryFluidTank fluidInventory;
+    private final SimpleFluidTank fluidInventory;
     private ItemStack currentOutput;
 
     private int timeCheckOutputSlot = LibXServerConfig.tickOutputSlots;
@@ -109,8 +113,12 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
 
         this.FLUID_CAPACITY = settingPattern.getConfigInt("fluidStorage");
-        fluidInventory = new BlockEntityApothecaryPattern.ApothecaryFluidTank(FLUID_CAPACITY, (fluidStack) -> {
+        fluidInventory = new SimpleFluidTank(FLUID_CAPACITY, (fluidStack) -> {
             return Fluids.WATER.isSame(fluidStack.getFluid());
+        }, false, () -> {
+            this.setChanged();
+            this.setDispatchable();
+            this.needsRecipeUpdate();
         });
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 == -1){
@@ -280,7 +288,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
     }
 
     @Nonnull
-    public FluidTank getFluidInventory() {
+    public SimpleFluidTank getFluidInventory() {
         return this.fluidInventory;
     }
 
@@ -329,68 +337,27 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
         return this.currentOutput;
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound("fluid")));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
-        this.seedBuffer = nbt.getInt("seedBuffer");
-        this.getMainNode().loadFromNBT(nbt);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.fluidInventory.setFluid(nbt.read("fluid", FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY));
+        this.currentOutput = nbt.read("currentOutput", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.seedBuffer = nbt.getIntOr("seedBuffer", 0);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("fluid", this.getFluidInventory().getFluid().saveOptional(registries));
-        nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.store("fluid", FluidStack.OPTIONAL_CODEC, this.getFluidInventory().getFluid());
+        nbt.store("currentOutput", ItemStack.OPTIONAL_CODEC, this.currentOutput);
         nbt.putInt("seedBuffer", this.seedBuffer);
-        this.getMainNode().saveToNBT(nbt);
+        this.getMainNode().serialize(nbt);
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound("fluid")));
-            this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
-            this.seedBuffer = nbt.getInt("seedBuffer");
-        }
-    }
 
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.put("fluid", this.getFluidInventory().getFluid().saveOptional(registries));
-            nbt.put("currentOutput", this.currentOutput.saveOptional(registries));
-            nbt.putInt("seedBuffer", this.seedBuffer);
-            return nbt;
-        }
-    }
 
-    private class ApothecaryFluidTank extends FluidTank {
-        public ApothecaryFluidTank(int capacity, Predicate<FluidStack> validator) {
-            super(capacity, validator);
-        }
-
-        protected void onContentsChanged() {
-            BlockEntityApothecaryPattern.this.setChanged();
-            BlockEntityApothecaryPattern.this.setDispatchable();
-            BlockEntityApothecaryPattern.this.needsRecipeUpdate();
-        }
-
-        @Nonnull
-        public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Nonnull
-        public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-    }
 
     public BlockEntity getBlockEntity() {
         return this;

@@ -1,5 +1,15 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tiles;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appeng.api.networking.GridHelper;
@@ -30,7 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +52,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 
-public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergyStorage,
+public class BlockEntityGreenhouse extends ExtraBotanicalTile implements EnergyHandler,
         IInWorldGridNodeHost, IGridConnectedBlockEntity {
 
     private final static int FLOWER_SIZE = 7;
@@ -471,17 +481,17 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
 
-        this.getFlowerInventory().deserializeNBT(registries, nbt.getCompound("invFlower"));
-        this.getUpgradeInventory().deserializeNBT(registries, nbt.getCompound("invUpgrade"));
-        this.fuelInventoryEmpty = nbt.getBoolean("fuelInventoryEmpty");
-        this.energy = nbt.getInt("energyStorage");
-        this.energy_capacity = nbt.getInt("energyCapacity");
-        this.count_heat = nbt.getInt("countHeat");
+        this.getFlowerInventory().deserialize(nbt.childOrEmpty("invFlower"));
+        this.getUpgradeInventory().deserialize(nbt.childOrEmpty("invUpgrade"));
+        this.fuelInventoryEmpty = nbt.getBooleanOr("fuelInventoryEmpty", false);
+        this.energy = nbt.getIntOr("energyStorage", 0);
+        this.energy_capacity = nbt.getIntOr("energyCapacity", 0);
+        this.count_heat = nbt.getIntOr("countHeat", 0);
 
-        if (this.getMainNode() != null) this.getMainNode().loadFromNBT(nbt);
+        if (this.getMainNode() != null) this.getMainNode().deserialize(nbt);
 
         this.reloadFuelSlots();
 
@@ -497,52 +507,19 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
 
-        nbt.put("invFlower", this.getFlowerInventory().serializeNBT(registries));
-        nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT(registries));
+        this.getFlowerInventory().serialize(nbt.child("invFlower"));
+        this.getUpgradeInventory().serialize(nbt.child("invUpgrade"));
         nbt.putBoolean("fuelInventoryEmpty", this.fuelInventoryEmpty);
         nbt.putInt("energyStorage", this.energy);
         nbt.putInt("energyCapacity", this.energy_capacity);
         nbt.putInt("countHeat", this.count_heat);
-        if (this.getMainNode() != null) this.getMainNode().saveToNBT(nbt);
+        if (this.getMainNode() != null) this.getMainNode().serialize(nbt);
     }
 
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.getFlowerInventory().deserializeNBT(registries, nbt.getCompound("invFlower"));
-            this.getUpgradeInventory().deserializeNBT(registries, nbt.getCompound("invUpgrade"));
-            this.fuelInventoryEmpty = nbt.getBoolean("fuelInventoryEmpty");
-            this.energy = nbt.getInt("energyStorage");
-            this.energy_capacity = nbt.getInt("energyCapacity");
-            this.count_heat = nbt.getInt("countHeat");
 
-            for (int i = 0; i < this.getUpgradeInventory().size(); i++){
-                updateUpgradeSlot(i);
-            }
-        }
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.put("invFlower", this.getFlowerInventory().serializeNBT(registries));
-            nbt.put("invUpgrade", this.getUpgradeInventory().serializeNBT(registries));
-            nbt.putBoolean("fuelInventoryEmpty", this.fuelInventoryEmpty);
-            nbt.putInt("energyStorage", this.energy);
-            nbt.putInt("energyCapacity", this.energy_capacity);
-            nbt.putInt("countHeat", this.count_heat);
-
-            return nbt;
-        }
-    }
 
     public void drops(){
         if (this.level == null) return;
@@ -592,7 +569,6 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     //endregion
 
     //region ENERGY
-    @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
         if (!canReceive())
             return 0;
@@ -609,17 +585,14 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         return energyReceived;
     }
 
-    @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
         return 0;
     }
 
-    @Override
     public int getEnergyStored() {
         return this.energy;
     }
 
-    @Override
     public int getMaxEnergyStored() {
         return energy_capacity;
     }
@@ -632,14 +605,58 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         energy_capacity = val;
     }
 
-    @Override
     public boolean canExtract() {
         return false;
     }
 
-    @Override
     public boolean canReceive() {
         return this.energyTransfer > 0;
+    }
+    private final SnapshotJournal<Integer> energyJournal = new SnapshotJournal<>() {
+        @Override
+        protected Integer createSnapshot() {
+            return BlockEntityGreenhouse.this.energy;
+        }
+
+        @Override
+        protected void revertToSnapshot(Integer snapshot) {
+            BlockEntityGreenhouse.this.energy = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Integer originalState) {
+            BlockEntityGreenhouse.this.setChanged();
+            BlockEntityGreenhouse.this.setDispatchable();
+        }
+    };
+
+    @Override
+    public long getAmountAsLong() {
+        return this.energy;
+    }
+
+    @Override
+    public long getCapacityAsLong() {
+        return this.energy_capacity;
+    }
+
+    @Override
+    public int insert(int amount, @Nonnull TransactionContext transaction) {
+        if (!this.canReceive() || amount <= 0) {
+            return 0;
+        }
+        int received = Math.min(this.getMaxEnergyStored() - this.energy, Math.min(this.energyTransfer, amount));
+        if (received <= 0) {
+            return 0;
+        }
+        this.energyJournal.updateSnapshots(transaction);
+        this.energy += received;
+        return received;
+    }
+
+    @Override
+    public int extract(int amount, @Nonnull TransactionContext transaction) {
+        return 0;
     }
     //endregion
 

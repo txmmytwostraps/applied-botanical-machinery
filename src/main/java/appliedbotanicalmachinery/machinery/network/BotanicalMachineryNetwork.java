@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.machinery.network;
 
+import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
+
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+
+import net.neoforged.neoforge.common.NeoForge;
+
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
@@ -13,6 +19,11 @@ public class BotanicalMachineryNetwork extends NetworkX {
         super(mod);
 
         this.register(new ManaBatteryLockedMessage.Handler());
+        this.register(new LargeManaCellsMessage.Handler());
+        NeoForge.EVENT_BUS.addListener((OnDatapackSyncEvent event) -> {
+            LargeManaCellsMessage msg = new LargeManaCellsMessage(InitAppbot.replacedByMegaCells());
+            event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, msg));
+        });
     }
 
     @Override

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -17,7 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
@@ -49,7 +54,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
     private int manaCap;
 
     @Nullable
-    private IItemHandler itemHandler;
+    private ResourceHandler<ItemResource> itemHandler;
 
     public ExtraBotanicalTile(BlockEntityType<?> blockEntityTypeIn, BlockPos pos, BlockState state, int cap) {
         super(blockEntityTypeIn, pos, state);
@@ -59,7 +64,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
     /**
      * The item handler exposed as capability. Without a side it is the inventory itself, so the block can drop it.
      */
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         if (side == null) {
             return this.getInventory();
         }
@@ -69,7 +74,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
         return this.itemHandler;
     }
 
-    protected IItemHandler createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
+    protected ResourceHandler<ItemResource> createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return new FilterItemHandler(inventory.get(), this.getExtracts(inventory), this.getInserts(inventory));
     }
 
@@ -93,44 +98,23 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.getInventory().deserializeNBT(registries, tag.getCompound("inv"));
-        this.mana = tag.getInt("mana");
-        manaCap = tag.getInt("manaCap");
+    protected void loadAdditional(@Nonnull ValueInput tag) {
+        super.loadAdditional(tag);
+        this.getInventory().deserialize(tag.childOrEmpty("inv"));
+        this.mana = tag.getIntOr("mana", 0);
+        manaCap = tag.getIntOr("manaCap", 0);
 
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("inv", this.getInventory().serializeNBT(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        this.getInventory().serialize(nbt.child("inv"));
         nbt.putInt("mana", this.getCurrentMana());
         nbt.putInt("manaCap", this.getMaxMana());
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        if (this.level == null || this.level.isClientSide()) {
-            this.getInventory().deserializeNBT(registries, tag.getCompound("inv"));
-            this.mana = tag.getInt("mana");
-            manaCap = tag.getInt("manaCap");
-        }
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.put("inv", this.getInventory().serializeNBT(registries));
-            nbt.putInt("mana", this.getCurrentMana());
-            nbt.putInt("manaCap", this.getMaxMana());
-            return nbt;
-        }
-    }
 
     public void renderHUD(GuiGraphics guiGraphics, Minecraft minecraft) {
         ItemStack block = new ItemStack(this.getBlockState().getBlock());

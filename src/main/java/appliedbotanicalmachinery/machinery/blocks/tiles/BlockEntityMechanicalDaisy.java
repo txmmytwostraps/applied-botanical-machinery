@@ -1,5 +1,23 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
+
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+
+import net.neoforged.neoforge.transfer.item.ItemResource;
+
+import net.neoforged.neoforge.transfer.ResourceHandler;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -10,20 +28,14 @@ import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.FilterItemHandler;
@@ -34,8 +46,6 @@ import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockEntityMechanicalDaisy extends BlockEntityBase implements TickingBlock {
 
@@ -45,21 +55,17 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
     private final InventoryHandler inventory = new InventoryHandler();
 
     // The canExtract function makes it so that hoppers can only extract items when the recipe is done.
-    private final IItemHandler hopperInventory = new FilterItemHandler(this.inventory, slot -> this.workingTicks[slot] < 0, null);
+    private final ResourceHandler<ItemResource> hopperInventory = new FilterItemHandler(this.inventory, slot -> this.workingTicks[slot] < 0, null);
 
     public BlockEntityMechanicalDaisy(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        if (nbt.contains(TileTags.INVENTORY)) {
-            this.inventory.deserializeNBT(registries, nbt.getCompound(TileTags.INVENTORY));
-        }
-        if (nbt.contains(TileTags.WORKING_TICKS)) {
-            this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS);
-        }
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        nbt.child(TileTags.INVENTORY).ifPresent(this.inventory::deserialize);
+        this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS).filter(ticks -> ticks.length == 8).orElse(this.workingTicks);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
                             //noinspection deprecation
                             Inventories.set(this.inventory, i, state.getCloneItemStack(this.level, this.worldPosition, false));
                         } else if (state.getFluidState().getType() != Fluids.EMPTY) {
-                            Inventories.set(this.inventory, i, new FluidStack(state.getFluidState().getType(), 1000));
+                            this.inventory.setFluid(i, new FluidStack(state.getFluidState().getType(), 1000));
                         }
                         this.workingTicks[i] = -1;
                         this.setDispatchable();
@@ -155,259 +161,150 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         return this.inventory;
     }
 
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         // If the side is null (e.g we're in the gui) we return the normal inventory.
         // For world interactions (direction != null) we return the inventory that block slots of not finished recipes.
         return side == null ? this.inventory : this.hopperInventory;
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        this.inventory.serialize(nbt.child(TileTags.INVENTORY));
         nbt.putIntArray(TileTags.WORKING_TICKS, this.workingTicks);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide()) return;
-        super.handleUpdateTag(nbt, registries);
-        if (nbt.contains(TileTags.INVENTORY)) {
-            this.inventory.deserializeNBT(registries, nbt.getCompound(TileTags.INVENTORY));
-        }
-        if (nbt.contains(TileTags.WORKING_TICKS)) {
-            this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS);
-        }
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT(registries));
-        nbt.putIntArray(TileTags.WORKING_TICKS, this.workingTicks);
-        return nbt;
-    }
 
-    public class InventoryHandler extends ItemStackHandler implements IFluidHandler {
+    /**
+     * Eight slots that each hold either one block item or up to 1000 mB of a fluid.
+     */
+    public class InventoryHandler extends ItemStacksResourceHandler implements IAdvancedItemHandlerModifiable {
 
-        private final List<FluidStack> fluids = new ArrayList<>(8);
+        private final Fluids fluids = new Fluids();
 
         public InventoryHandler() {
             super(8);
-            for (int i = 0; i < 8; i++) {
-                this.fluids.add(FluidStack.EMPTY);
+        }
+
+        /**
+         * The fluid side of the slots, exposed as fluid capability.
+         */
+        public ResourceHandler<FluidResource> getFluidHandler() {
+            return this.fluids;
+        }
+
+        @Override
+        public void set(int slot, @Nonnull ItemResource resource, int amount) {
+            if (!resource.isEmpty()) {
+                this.fluids.set(slot, FluidResource.EMPTY, 0);
+            }
+            super.set(slot, resource, amount);
+        }
+
+        public void setFluid(int slot, @Nonnull FluidStack stack) {
+            this.fluids.set(slot, stack.isEmpty() ? FluidResource.EMPTY : FluidResource.of(stack), stack.isEmpty() ? 0 : stack.getAmount());
+            if (!stack.isEmpty()) {
+                super.set(slot, ItemResource.EMPTY, 0);
             }
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            if (!stack.isEmpty())
-                this.fluids.set(slot, FluidStack.EMPTY);
-            super.setStackInSlot(slot, stack);
-        }
-
-        public void setStackInSlot(int slot, @Nonnull FluidStack stack) {
-            this.fluids.set(slot, stack);
-            if (!stack.isEmpty())
-                super.setStackInSlot(slot, ItemStack.EMPTY);
-            else
-                this.onContentsChanged(slot); // setStackInSlot calls this as well
+        public int insert(int slot, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
+            // A slot holding a fluid takes no items.
+            return this.fluids.getResource(slot).isEmpty() ? super.insert(slot, resource, amount, transaction) : 0;
         }
 
         @Override
-        public int getSlots() {
-            return 8;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (!this.fluids.get(slot).isEmpty()) {
-                // Slot is occupied by a fluid.
-                return stack;
-            } else {
-                return super.insertItem(slot, stack, simulate);
-            }
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (!this.fluids.get(slot).isEmpty()) {
-                // Slot is occupied by a fluid.
-                return ItemStack.EMPTY;
-            } else {
-                return super.extractItem(slot, amount, simulate);
-            }
+        public int extract(int slot, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
+            return this.fluids.getResource(slot).isEmpty() ? super.extract(slot, resource, amount, transaction) : 0;
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        protected int getCapacity(int slot, @Nonnull ItemResource resource) {
             return 1;
         }
 
         @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return !stack.isEmpty() && stack.getItem() instanceof BlockItem && BlockEntityMechanicalDaisy.this.getRecipe(((BlockItem) stack.getItem()).getBlock().defaultBlockState()) != null;
-        }
-
-        @Override
-        public int getTanks() {
-            return 8;
+        public boolean isValid(int slot, @Nonnull ItemResource resource) {
+            return !resource.isEmpty() && resource.getItem() instanceof BlockItem blockItem && BlockEntityMechanicalDaisy.this.getRecipe(blockItem.getBlock().defaultBlockState()) != null;
         }
 
         @Nonnull
-        @Override
         public FluidStack getFluidInTank(int tank) {
-            if (!Inventories.get(this, tank).isEmpty()) {
-                // There's an item in here
+            if (!this.getResource(tank).isEmpty()) {
+                // An item is in this slot
                 return FluidStack.EMPTY;
-            } else {
-                return this.fluids.get(tank);
             }
+            FluidResource resource = this.fluids.getResource(tank);
+            return resource.isEmpty() ? FluidStack.EMPTY : resource.toStack(this.fluids.getAmountAsInt(tank));
         }
 
-        @Override
         public int getTankCapacity(int tank) {
             return 1000;
         }
 
         @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-            return !stack.isEmpty() && BlockEntityMechanicalDaisy.this.getRecipe(stack.getFluid().defaultFluidState().createLegacyBlock()) != null;
+        public void serialize(@Nonnull ValueOutput output) {
+            super.serialize(output);
+            this.fluids.serialize(output.child("fluids"));
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            int leftToFill = resource.getAmount();
-
-            // Try to deposit the fluid to slots already filled with it
-            for (int i = 0; i < 8; i++) {
-                if (leftToFill <= 0)
-                    break;
-                if (!Inventories.get(this, i).isEmpty())
-                    continue;
-                if (this.fluids.get(i).getFluid() == resource.getFluid()) {
-                    int transfer = Math.min(leftToFill, this.getTankCapacity(i) - this.fluids.get(i).getAmount());
-                    leftToFill -= transfer;
-                    if (action == FluidAction.EXECUTE) {
-                        this.fluids.get(i).setAmount(this.fluids.get(i).getAmount() + transfer);
-                        this.onContentsChanged(i);
-                    }
-                }
-            }
-
-            // If that did not work we use an empty slot
-            for (int i = 0; i < 8; i++) {
-                if (leftToFill <= 0)
-                    break;
-                if (!Inventories.get(this, i).isEmpty())
-                    continue;
-                if (this.fluids.get(i).isEmpty()) {
-                    int transfer = Math.min(leftToFill, this.getTankCapacity(i));
-                    leftToFill -= transfer;
-                    if (action == FluidAction.EXECUTE) {
-                        this.fluids.set(i, new FluidStack(resource.getFluid(), transfer));
-                        this.onContentsChanged(i);
-                    }
-                }
-            }
-            return resource.getAmount() - leftToFill;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            int leftToDrain = resource.getAmount();
-
-            for (int i = 0; i < 8; i++) {
-                if (leftToDrain <= 0)
-                    break;
-                if (!Inventories.get(this, i).isEmpty())
-                    continue;
-                if (this.fluids.get(i).getFluid() == resource.getFluid()) {
-                    int transfer = Math.min(this.fluids.get(i).getAmount(), leftToDrain);
-                    leftToDrain -= transfer;
-                    if (action == FluidAction.EXECUTE) {
-                        this.fluids.get(i).setAmount(this.fluids.get(i).getAmount() - transfer);
-                        if (this.fluids.get(i).getAmount() <= 0)
-                            this.fluids.set(i, FluidStack.EMPTY);
-                        this.onContentsChanged(i);
-                    }
-                }
-            }
-
-            if (resource.getAmount() - leftToDrain > 0) {
-                return new FluidStack(resource.getFluid(), resource.getAmount() - leftToDrain);
-            } else {
-                return FluidStack.EMPTY;
-            }
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            int leftToDrain = maxDrain;
-            Fluid drainFluid = null;
-
-            for (int i = 0; i < 8; i++) {
-                if (leftToDrain <= 0)
-                    break;
-                if (!Inventories.get(this, i).isEmpty())
-                    continue;
-                if (drainFluid == null || drainFluid == this.fluids.get(i).getFluid()) {
-                    int transfer = Math.min(this.fluids.get(i).getAmount(), leftToDrain);
-                    leftToDrain -= transfer;
-                    if (transfer > 0)
-                        drainFluid = this.fluids.get(i).getFluid();
-                    if (action == FluidAction.EXECUTE) {
-                        this.fluids.get(i).setAmount(this.fluids.get(i).getAmount() - transfer);
-                        if (this.fluids.get(i).getAmount() <= 0)
-                            this.fluids.set(i, FluidStack.EMPTY);
-                        this.onContentsChanged(i);
-                    }
-                }
-            }
-
-            if (drainFluid == null) {
-                return FluidStack.EMPTY;
-            } else {
-                return new FluidStack(drainFluid, maxDrain - leftToDrain);
-            }
+        public void deserialize(@Nonnull ValueInput input) {
+            super.deserialize(input);
+            this.fluids.deserialize(input.childOrEmpty("fluids"));
         }
 
         @Override
-        public CompoundTag serializeNBT(@Nonnull HolderLookup.Provider registries) {
-            CompoundTag nbt = super.serializeNBT(registries);
-            ListTag tag = new ListTag();
-            for (int i = 0; i < 8; i++) {
-                tag.add(i, this.fluids.get(i).saveOptional(registries));
-            }
-            nbt.put("fluids", tag);
-            return nbt;
+        protected void onContentsChanged(int slot, @Nonnull ItemStack previousContents) {
+            this.changed(slot);
         }
 
-        @Override
-        public void deserializeNBT(@Nonnull HolderLookup.Provider registries, @Nonnull CompoundTag nbt) {
-            super.deserializeNBT(registries, nbt);
-            if (nbt.contains("fluids")) {
-                ListTag tag = nbt.getList("fluids", CompoundTag.TAG_COMPOUND);
-                for (int i = 0; i < 8; i++) {
-                    CompoundTag fluidNbt = tag.getCompound(i);
-                    this.fluids.set(i, FluidStack.parseOptional(registries, fluidNbt));
-                }
-            }
-        }
-
-        @Override
-        protected void onContentsChanged(int slot) {
-            if (slot >= 0 && slot < 8 && Inventories.get(this, slot).isEmpty() && this.getFluidInTank(slot).isEmpty()) {
+        private void changed(int slot) {
+            if (slot >= 0 && slot < 8 && this.getResource(slot).isEmpty() && this.fluids.getResource(slot).isEmpty()) {
                 BlockEntityMechanicalDaisy.this.workingTicks[slot] = 0;
             }
             BlockEntityMechanicalDaisy.this.setChanged();
             BlockEntityMechanicalDaisy.this.setDispatchable();
+        }
+
+        private class Fluids extends FluidStacksResourceHandler {
+
+            Fluids() {
+                super(8, 1000);
+            }
+
+            @Override
+            public boolean isValid(int tank, @Nonnull FluidResource resource) {
+                return !resource.isEmpty() && BlockEntityMechanicalDaisy.this.getRecipe(resource.getFluid().defaultFluidState().createLegacyBlock()) != null;
+            }
+
+            @Override
+            public int insert(int tank, @Nonnull FluidResource resource, int amount, @Nonnull TransactionContext transaction) {
+                // A slot holding an item takes no fluid.
+                return InventoryHandler.this.getResource(tank).isEmpty() ? super.insert(tank, resource, amount, transaction) : 0;
+            }
+
+            @Override
+            public int insert(@Nonnull FluidResource resource, int amount, @Nonnull TransactionContext transaction) {
+                // Fill tanks that already hold this fluid first, then empty ones.
+                int inserted = 0;
+                for (int pass = 0; pass < 2 && inserted < amount; pass++) {
+                    for (int tank = 0; tank < this.size() && inserted < amount; tank++) {
+                        boolean same = resource.equals(this.getResource(tank));
+                        if (pass == 0 ? same : this.getResource(tank).isEmpty()) {
+                            inserted += this.insert(tank, resource, amount - inserted, transaction);
+                        }
+                    }
+                }
+                return inserted;
+            }
+
+            @Override
+            protected void onContentsChanged(int tank, @Nonnull FluidStack previousContents) {
+                InventoryHandler.this.changed(tank);
+            }
         }
     }
 }

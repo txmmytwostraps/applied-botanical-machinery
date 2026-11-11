@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -20,7 +24,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -172,7 +177,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
             return;
         }
 
-        List<IItemHandler> itemHandlers = new ArrayList<>();
+        List<ResourceHandler<ItemResource>> itemHandlers = new ArrayList<>();
         for (Direction dir : Direction.values()) {
             BlockPos target = this.worldPosition.relative(dir);
             if (this.level.getBlockEntity(target) == null) {
@@ -183,7 +188,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
                 continue;
             }
 
-            IItemHandler itemHandler = this.level.getCapability(Capabilities.Item.BLOCK, target, dir.getOpposite());
+            ResourceHandler<ItemResource> itemHandler = this.level.getCapability(Capabilities.Item.BLOCK, target, dir.getOpposite());
             if (itemHandler == null) {
                 continue;
             }
@@ -194,7 +199,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
         IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
         for (int i = this.firstOutputSlot; i < inventory.size(); i++) {
             ItemStack stack = Inventories.get(inventory, i);
-            for (IItemHandler itemHandler : itemHandlers) {
+            for (ResourceHandler<ItemResource> itemHandler : itemHandlers) {
                 stack = Inventories.insert(itemHandler, stack, false);
                 if (stack.isEmpty()) {
                     break;
@@ -222,8 +227,8 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
         this.needsRecipeUpdate = true;
     }
 

@@ -1,5 +1,21 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+
+import net.neoforged.neoforge.transfer.item.ItemResource;
+
+import appliedbotanicalmachinery.util.SimpleFluidTank;
+
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+
+import net.neoforged.neoforge.transfer.ResourceHandler;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -40,9 +56,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -62,8 +76,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingBlock,
@@ -76,13 +88,13 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
     private BaseItemStackHandler inventoryUpgrade;
 
     private final int sizeItemSlots;
-    private final IItemHandler guiInventory;
-    private final IItemHandler hopperInventory;
+    private final ResourceHandler<ItemResource> guiInventory;
+    private final ResourceHandler<ItemResource> hopperInventory;
     private final int countSlotInventory;
     private final SettingPattern setting;
     private boolean recipeOutputItem = false;
 
-    private final FluidTank tank;
+    private final SimpleFluidTank tank;
     private int waterProgress = 0;
 
     public BlockEntityDaisyPattern(BlockEntityType<?> type, BlockPos pos, BlockState state, int countSlotInventory,
@@ -114,7 +126,7 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
             buckets = 128;
         }
         int capacityMb = buckets * 1000;
-        this.tank = new WaterOnlyTank(capacityMb);
+        this.tank = new SimpleFluidTank(capacityMb, stack -> Fluids.WATER.isSame(stack.getFluid()), true, () -> {});
 
         inventory = new InventoryHandler();
         workingTicks = new int[this.countSlotInventory];
@@ -236,7 +248,7 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
 
                         if (totalCreated > 0) {
                             int consumed = fluidInTank.getAmount() - waterAvailable;
-                            if (consumed > 0) this.tank.drain(consumed, IFluidHandler.FluidAction.EXECUTE);
+                            if (consumed > 0) this.tank.drain(consumed, false);
                             createdSnow = true;
                         }
 
@@ -336,155 +348,112 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
         return upgrade;
     }
 
-    public IItemHandler getItemHandler(@Nullable Direction side) {
+    public ResourceHandler<ItemResource> getItemHandler(@Nullable Direction side) {
         return side == null ? this.guiInventory : this.hopperInventory;
     }
 
-    public IFluidHandler getFluidHandler() {
+    public ResourceHandler<FluidResource> getFluidHandler() {
         return this.tank;
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        if (nbt.contains("invBase")) {
-            this.inventory.deserializeNBT(registries, nbt.getCompound("invBase"));
-        }
-        if (nbt.contains("workingTicks")) {
-            this.workingTicks = nbt.getIntArray("workingTicks");
-        }
-        if (nbt.contains("inv")) {
-            this.getInventoryUpgrade().deserializeNBT(registries, nbt.getCompound("inv"));
-        }
-        if (nbt.contains("tank")) {
-            FluidStack loaded = FluidStack.parseOptional(registries, nbt.getCompound("tank"));
-            if (loaded != null && !loaded.isEmpty() && Fluids.WATER.isSame(loaded.getFluid())) {
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        nbt.child("invBase").ifPresent(this.inventory::deserialize);
+        this.workingTicks = nbt.getIntArray("workingTicks").filter(ticks -> ticks.length == this.workingTicks.length).orElse(this.workingTicks);
+        nbt.child("inv").ifPresent(this.getInventoryUpgrade()::deserialize);
+        nbt.read("tank", FluidStack.OPTIONAL_CODEC).ifPresent(loaded -> {
+            if (!loaded.isEmpty() && Fluids.WATER.isSame(loaded.getFluid())) {
                 this.tank.setFluid(loaded);
             } else {
                 this.tank.setFluid(FluidStack.EMPTY);
             }
-        }
-        if (nbt.contains("waterProgress")) {
-            this.waterProgress = nbt.getInt("waterProgress");
-        }
-        this.getMainNode().loadFromNBT(nbt);
+        });
+        this.waterProgress = nbt.getIntOr("waterProgress", this.waterProgress);
+        this.getMainNode().deserialize(nbt);
         this.setChanged();
         this.setDispatchable();
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put("invBase", this.inventory.serializeNBT(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        this.inventory.serialize(nbt.child("invBase"));
         nbt.putIntArray("workingTicks", this.workingTicks);
-        this.getMainNode().saveToNBT(nbt);
+        this.getMainNode().serialize(nbt);
         if (this.inventoryUpgrade != null) {
-            nbt.put("inv", this.getInventoryUpgrade().serializeNBT(registries));
+            this.getInventoryUpgrade().serialize(nbt.child("inv"));
         }
-        CompoundTag tankNbt = (CompoundTag) this.tank.getFluid().saveOptional(registries);
-        nbt.put("tank", tankNbt);
+        nbt.store("tank", FluidStack.OPTIONAL_CODEC, this.tank.getFluid());
         nbt.putInt("waterProgress", this.waterProgress);
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level == null || this.level.isClientSide()) {
-            super.handleUpdateTag(nbt, registries);
-            if (nbt.contains("invBase")) {
-                this.inventory.deserializeNBT(registries, nbt.getCompound("invBase"));
-            }
-            if (nbt.contains("workingTicks")) {
-                this.workingTicks = nbt.getIntArray("workingTicks");
-            }
-            if (nbt.contains("inv")) {
-                this.getInventoryUpgrade().deserializeNBT(registries, nbt.getCompound("inv"));
-            }
-            if (nbt.contains("tank")) {
-                FluidStack loaded = FluidStack.parseOptional(registries, nbt.getCompound("tank"));
-                if (loaded != null && !loaded.isEmpty() && Fluids.WATER.isSame(loaded.getFluid())) {
-                    this.tank.setFluid(loaded);
-                } else {
-                    this.tank.setFluid(FluidStack.EMPTY);
-                }
-            }
-            if (nbt.contains("waterProgress")) {
-                this.waterProgress = nbt.getInt("waterProgress");
-            }
-        }
-    }
 
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-            nbt.put("invBase", this.inventory.serializeNBT(registries));
-            nbt.putIntArray("workingTicks", this.workingTicks);
-            if (this.inventoryUpgrade != null) {
-                nbt.put("inv", this.getInventoryUpgrade().serializeNBT(registries));
-            }
-            CompoundTag tankNbt = (CompoundTag) this.tank.getFluid().saveOptional(registries);
-            nbt.put("tank", tankNbt);
-            nbt.putInt("waterProgress", this.waterProgress);
-            return nbt;
-        }
-    }
 
     public BlockEntity getBlockEntity() {
         return this;
     }
 
-    public class InventoryHandler extends ItemStackHandler {
+    public class InventoryHandler extends ItemStacksResourceHandler implements IAdvancedItemHandlerModifiable {
         public InventoryHandler() {
             super(countSlotInventory);
         }
 
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            if (recipeOutputItem) {
-                stack.setCount(Inventories.get(inventory, slot).getCount());
+        @Override
+        public void set(int slot, @Nonnull ItemResource resource, int amount) {
+            if (recipeOutputItem && !resource.isEmpty()) {
+                // a finished block keeps the count of the block it replaces
+                amount = this.getAmountAsInt(slot);
+                if (amount <= 0) {
+                    resource = ItemResource.EMPTY;
+                    amount = 0;
+                }
             }
-            this.stacks.set(slot, stack);
+            super.set(slot, resource, amount);
         }
 
-        public int getSlots() {
-            return countSlotInventory;
-        }
-
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        @Override
+        public int insert(int slot, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
             // Allow insertion into empty slots even if workingTicks is >= 0.
             // Only block insertion if the slot is occupied AND the slot is currently working.
             if (slot >= 0 && slot < workingTicks.length) {
-                if (!Inventories.get(this, slot).isEmpty() && workingTicks[slot] >= 0) {
-                    return stack;
+                if (!this.getResource(slot).isEmpty() && workingTicks[slot] >= 0) {
+                    return 0;
                 }
             }
-            return super.insertItem(slot, stack, simulate);
+            return super.insert(slot, resource, amount, transaction);
         }
 
-        @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        @Override
+        public int extract(int slot, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
             if (getMainNode() != null && getMainNode().getNode() != null && getMainNode().isOnline()) {
-                ItemStack stackInSlot = Inventories.get(getInventory(), slot);
+                ItemStack stackInSlot = Inventories.get(this, slot);
                 if (!stackInSlot.isEmpty()) {
                     int getCountExport = Math.toIntExact(Objects.requireNonNull(getMainNode().getGrid()).getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
                     if (getCountExport > 0) {
                         stackInSlot.shrink(getCountExport);
-                        Inventories.set(inventory, slot, stackInSlot);
+                        Inventories.set(this, slot, stackInSlot);
                     }
                 }
             }
-            return super.extractItem(slot, amount, simulate);
+            return super.extract(slot, resource, amount, transaction);
         }
 
         public int getSlotLimit(int slot) {
             return sizeItemSlots;
         }
 
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return !stack.isEmpty() && stack.getItem() instanceof BlockItem && BlockEntityDaisyPattern.this.getRecipe(((BlockItem) stack.getItem()).getBlock().defaultBlockState()) != null;
+        @Override
+        protected int getCapacity(int slot, @Nonnull ItemResource resource) {
+            return resource.isEmpty() ? sizeItemSlots : Math.min(sizeItemSlots, resource.getMaxStackSize());
         }
 
-        protected void onContentsChanged(int slot) {
-            if (slot >= 0 && slot < countSlotInventory && Inventories.get(this, slot).isEmpty()) {
+        @Override
+        public boolean isValid(int slot, @Nonnull ItemResource resource) {
+            return !resource.isEmpty() && resource.getItem() instanceof BlockItem blockItem && BlockEntityDaisyPattern.this.getRecipe(blockItem.getBlock().defaultBlockState()) != null;
+        }
+
+        @Override
+        protected void onContentsChanged(int slot, @Nonnull ItemStack previousContents) {
+            if (slot >= 0 && slot < countSlotInventory && this.getResource(slot).isEmpty()) {
                 BlockEntityDaisyPattern.this.workingTicks[slot] = 0;
             }
             BlockEntityDaisyPattern.this.setChanged();
@@ -569,7 +538,7 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
                     Inventories.set(this.inventory, slot, stackInSlot);
-                    this.inventory.onContentsChanged(slot);
+                    this.inventory.onContentsChanged(slot, ItemStack.EMPTY);
                 }
             }
             this.activeUpgradeSlot(slot);
@@ -581,23 +550,6 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
         return AECableType.SMART;
     }
 
-    private static class WaterOnlyTank extends FluidTank {
-        public WaterOnlyTank(int capacity) {
-            super(capacity);
-        }
-
-        @Override
-        public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-            if (resource == null || resource.isEmpty()) return 0;
-            if (!Fluids.WATER.isSame(resource.getFluid())) return 0;
-            return super.fill(resource, action);
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return stack != null && !stack.isEmpty() && Fluids.WATER.isSame(stack.getFluid());
-        }
-    }
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {

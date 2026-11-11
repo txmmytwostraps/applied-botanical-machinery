@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -306,46 +310,25 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
         return this.slotsUsed.contains(slot);
     }
 
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
         this.slotsUsed.clear();
-        this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray("slotsUsed")).boxed().toList());
-        this.livingRockBuffer = nbt.getInt("livingRockBuffer");
-        this.getMainNode().loadFromNBT(nbt);
+        this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray("slotsUsed").orElse(new int[0])).boxed().toList());
+        this.livingRockBuffer = nbt.getIntOr("livingRockBuffer", 0);
+        this.getMainNode().deserialize(nbt);
 
         this.setChanged();
         this.setDispatchable();
     }
 
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.putIntArray("slotsUsed", this.slotsUsed);
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.putIntArray("slotsUsed", this.slotsUsed.stream().mapToInt(Integer::intValue).toArray());
         nbt.putInt("livingRockBuffer", this.livingRockBuffer);
-        this.getMainNode().saveToNBT(nbt);
+        this.getMainNode().serialize(nbt);
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide()) {
-            this.slotsUsed.clear();
-            this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray("slotsUsed")).boxed().toList());
-            this.livingRockBuffer = nbt.getInt("livingRockBuffer");
-        }
-    }
 
-    @Nonnull
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) {
-            return super.getUpdateTag(registries);
-        } else {
-            CompoundTag nbt = super.getUpdateTag(registries);
-
-            nbt.putIntArray("slotsUsed", this.slotsUsed);
-            nbt.putInt("livingRockBuffer", this.livingRockBuffer);
-
-            return nbt;
-        }
-    }
 
     public BlockEntity getBlockEntity() {
         return this;

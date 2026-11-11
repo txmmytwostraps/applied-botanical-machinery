@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.SimpleFluidTank;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.util.Inventories;
@@ -21,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -43,7 +48,11 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
 
     private final BaseItemStackHandler inventory;
 
-    private final ApothecaryFluidTank fluidInventory = new ApothecaryFluidTank(FLUID_CAPACITY, fluidStack -> Fluids.WATER.isSame(fluidStack.getFluid()));
+    private final SimpleFluidTank fluidInventory = new SimpleFluidTank(FLUID_CAPACITY, fluidStack -> Fluids.WATER.isSame(fluidStack.getFluid()), false, () -> {
+        this.setChanged();
+        this.setDispatchable();
+        this.needsRecipeUpdate();
+    });
 
     private ItemStack currentOutput = ItemStack.EMPTY;
 
@@ -117,7 +126,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
     }
 
     @Nonnull
-    public FluidTank getFluidInventory() {
+    public SimpleFluidTank getFluidInventory() {
         return this.fluidInventory;
     }
 
@@ -164,60 +173,19 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound(TileTags.FLUID)));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
+    protected void loadAdditional(@Nonnull ValueInput nbt) {
+        super.loadAdditional(nbt);
+        this.fluidInventory.setFluid(nbt.read(TileTags.FLUID, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY));
+        this.currentOutput = nbt.read(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        nbt.put(TileTags.FLUID, this.getFluidInventory().getFluid().saveOptional(registries));
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
+    protected void saveAdditional(@Nonnull ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        nbt.store(TileTags.FLUID, FluidStack.OPTIONAL_CODEC, this.getFluidInventory().getFluid());
+        nbt.store(TileTags.CURRENT_OUTPUT, ItemStack.OPTIONAL_CODEC, this.currentOutput);
     }
 
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide()) return;
-        this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound(TileTags.FLUID)));
-        this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
-    }
 
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
-        CompoundTag nbt = super.getUpdateTag(registries);
-        nbt.put(TileTags.FLUID, this.getFluidInventory().getFluid().saveOptional(registries));
-        nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));
-        return nbt;
-    }
 
-    private class ApothecaryFluidTank extends FluidTank {
-
-        public ApothecaryFluidTank(int capacity, Predicate<FluidStack> validator) {
-            super(capacity, validator);
-        }
-
-        @Override
-        protected void onContentsChanged() {
-            BlockEntityMechanicalApothecary.this.setChanged();
-            BlockEntityMechanicalApothecary.this.setDispatchable();
-            BlockEntityMechanicalApothecary.this.needsRecipeUpdate();
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-    }
 }
