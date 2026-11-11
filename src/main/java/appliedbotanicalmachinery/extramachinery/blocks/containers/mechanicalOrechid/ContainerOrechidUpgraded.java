@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -19,7 +19,7 @@ public class ContainerOrechidUpgraded extends BlockEntityMenu<BlockEntityOrechid
 
     public ContainerOrechidUpgraded(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
         super(type, windowId, level, pos, player, playerContainer, 14, 23);
-        IItemHandlerModifiable inventory = this.blockEntity.getInventory();
+        IAdvancedItemHandlerModifiable inventory = this.blockEntity.getInventory();
 
         int index = this.addSlotBox(inventory, 0, 59, 22, 5, 18, 1, 18);
 

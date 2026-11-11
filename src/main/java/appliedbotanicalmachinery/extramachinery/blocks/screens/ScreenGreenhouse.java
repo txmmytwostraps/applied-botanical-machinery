@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.ContainerGreenhouse;
@@ -15,7 +17,7 @@ import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -85,8 +87,8 @@ public class ScreenGreenhouse extends ExtraScreenBase<ContainerGreenhouse> {
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.greenhouse",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
-        for (int i = 0; i < blockEntity.getUpgradeInventory().getSlots(); i++){
-            if (this.minecraft != null && blockEntity.getUpgradeInventory().getStackInSlot(i).isEmpty()) {
+        for (int i = 0; i < blockEntity.getUpgradeInventory().size(); i++){
+            if (this.minecraft != null && Inventories.get(blockEntity.getUpgradeInventory(), i).isEmpty()) {
                 int x;
                 int y;
 

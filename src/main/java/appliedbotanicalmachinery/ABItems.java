@@ -2,7 +2,7 @@ package appliedbotanicalmachinery;
 
 import java.util.Collection;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;

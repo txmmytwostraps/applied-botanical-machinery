@@ -1,9 +1,15 @@
 package appliedbotanicalmachinery.extramachinery;
 
+import appliedbotanicalmachinery.AppliedBotanicalMachinery;
+
+import net.minecraft.core.registries.Registries;
+
+import net.minecraft.resources.ResourceKey;
+
 import appliedbotanicalmachinery.extramachinery.core.LibNames;
 import appliedbotanicalmachinery.extramachinery.entities.manaSpark.*;
 import appliedbotanicalmachinery.extramachinery.core.LibResources;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -14,13 +20,13 @@ import java.util.function.Function;
 
 
 public class ModEntities {
-    public static final EntityType<EntityBaseManaSpark> BASE_SPARK = EntityType.Builder.<EntityBaseManaSpark>of(EntityBaseManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.BASE_SPARK);
-    public static final EntityType<EntityMalachiteManaSpark> MALACHITE_SPARK = EntityType.Builder.<EntityMalachiteManaSpark>of(EntityMalachiteManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.MALACHITE_SPARK);
-    public static final EntityType<EntitySaffronManaSpark> SAFFRON_SPARK = EntityType.Builder.<EntitySaffronManaSpark>of(EntitySaffronManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.SAFFRON_SPARK);
-    public static final EntityType<EntityShadowManaSpark> SHADOW_SPARK = EntityType.Builder.<EntityShadowManaSpark>of(EntityShadowManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.SHADOW_SPARK);
-    public static final EntityType<EntityCrimsonManaSpark> CRIMSON_SPARK = EntityType.Builder.<EntityCrimsonManaSpark>of(EntityCrimsonManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.CRIMSON_SPARK);
-    public static final EntityType<EntityAureateManaSpark> AUREATE_SPARK = EntityType.Builder.<EntityAureateManaSpark>of(EntityAureateManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.AUREATE_SPARK);
-    public static final EntityType<EntityMazarineManaSpark> MAZARINE_SPARK = EntityType.Builder.<EntityMazarineManaSpark>of(EntityMazarineManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(LibNames.MAZARINE_SPARK);
+    public static final EntityType<EntityBaseManaSpark> BASE_SPARK = EntityType.Builder.<EntityBaseManaSpark>of(EntityBaseManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.BASE_SPARK)));
+    public static final EntityType<EntityMalachiteManaSpark> MALACHITE_SPARK = EntityType.Builder.<EntityMalachiteManaSpark>of(EntityMalachiteManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.MALACHITE_SPARK)));
+    public static final EntityType<EntitySaffronManaSpark> SAFFRON_SPARK = EntityType.Builder.<EntitySaffronManaSpark>of(EntitySaffronManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.SAFFRON_SPARK)));
+    public static final EntityType<EntityShadowManaSpark> SHADOW_SPARK = EntityType.Builder.<EntityShadowManaSpark>of(EntityShadowManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.SHADOW_SPARK)));
+    public static final EntityType<EntityCrimsonManaSpark> CRIMSON_SPARK = EntityType.Builder.<EntityCrimsonManaSpark>of(EntityCrimsonManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.CRIMSON_SPARK)));
+    public static final EntityType<EntityAureateManaSpark> AUREATE_SPARK = EntityType.Builder.<EntityAureateManaSpark>of(EntityAureateManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.AUREATE_SPARK)));
+    public static final EntityType<EntityMazarineManaSpark> MAZARINE_SPARK = EntityType.Builder.<EntityMazarineManaSpark>of(EntityMazarineManaSpark::new, MobCategory.MISC).sized(0.2F, 0.5F).fireImmune().clientTrackingRange(4).updateInterval(10).build(ResourceKey.create(Registries.ENTITY_TYPE, AppliedBotanicalMachinery.getInstance().id(LibNames.MAZARINE_SPARK)));
 
     public static void registerWandHudCaps(ECapConsumer<WandHUD> consumer) {
         consumer.accept(e -> new EntityBaseManaSpark.WandHud((EntityBaseManaSpark) e), BASE_SPARK);
@@ -37,7 +43,7 @@ public class ModEntities {
         void accept(Function<Entity, T> factory, EntityType<?>... types);
     }
 
-    public static void registerEntities(BiConsumer<EntityType<?>, ResourceLocation> r) {
+    public static void registerEntities(BiConsumer<EntityType<?>, Identifier> r) {
         r.accept(BASE_SPARK, LibResources.BASE_SPARK);
         r.accept(MALACHITE_SPARK, LibResources.MALACHITE_SPARK);
         r.accept(SAFFRON_SPARK, LibResources.SAFFRON_SPARK);

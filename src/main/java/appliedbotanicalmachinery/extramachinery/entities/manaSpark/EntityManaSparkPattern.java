@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.extramachinery.entities.manaSpark;
 
+import net.minecraft.world.entity.EquipmentSlot;
+
+import net.minecraft.core.component.DataComponents;
+
+import net.minecraft.server.level.ServerLevel;
+
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalTile;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
@@ -86,7 +92,7 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
 
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.firstTick) {
                 this.updateTransfers();
             }
@@ -113,8 +119,12 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
                             while (iterator.hasNext()) {
                                 player = iterator.next();
                                 List<ItemStack> stacks = new ArrayList<>();
-                                stacks.addAll(player.getInventory().items);
-                                stacks.addAll(player.getInventory().armor);
+                                stacks.addAll(player.getInventory().getNonEquipmentItems());
+                                for (EquipmentSlot slot : EquipmentSlot.values()) {
+                                    if (slot.isArmor()) {
+                                        stacks.add(player.getItemBySlot(slot));
+                                    }
+                                }
                                 Container inv = BotaniaAPI.instance().getAccessoriesInventory(player);
 
                                 for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -291,7 +301,7 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
     }
 
     public static void particleBeam(Player player, Entity e1, Entity e2) {
-        if (e1 != null && e2 != null && !e1.level().isClientSide) {
+        if (e1 != null && e2 != null && !e1.level().isClientSide()) {
             XplatAbstractions.INSTANCE.sendToPlayer(player, new BotaniaEffectPacket(EffectType.SPARK_NET_INDICATOR, e1.getX(), e1.getY(), e1.getZ(), e1.getId(), e2.getId()));
         }
 
@@ -303,9 +313,9 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
 
     private void dropAndKill() {
         SparkUpgradeType upgrade = this.getUpgrade();
-        this.spawnAtLocation(new ItemStack(this.getSparkItem()), 0.0F);
+        if (this.level() instanceof ServerLevel serverLevel) this.spawnAtLocation(serverLevel, new ItemStack(this.getSparkItem()), 0.0F);
         if (upgrade != SparkUpgradeType.NONE) {
-            this.spawnAtLocation(SparkAugmentItem.getByType(upgrade), 0.0F);
+            if (this.level() instanceof ServerLevel serverLevel) this.spawnAtLocation(serverLevel, SparkAugmentItem.getByType(upgrade), 0.0F);
         }
 
         this.discard();
@@ -321,10 +331,10 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
         if (this.isAlive() && !stack.isEmpty()) {
             SparkUpgradeType upgrade = this.getUpgrade();
             if (stack.getItem() instanceof WandOfTheForestItem) {
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     if (player.isShiftKeyDown()) {
                         if (upgrade != SparkUpgradeType.NONE) {
-                            this.spawnAtLocation(SparkAugmentItem.getByType(upgrade), 0.0F);
+                            if (this.level() instanceof ServerLevel serverLevel) this.spawnAtLocation(serverLevel, SparkAugmentItem.getByType(upgrade), 0.0F);
                             this.setUpgrade(SparkUpgradeType.NONE);
                             this.outgoingTransfers.clear();
                             this.notifyOthers(this.getNetwork());
@@ -338,39 +348,39 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
                     }
                 }
 
-                return InteractionResult.sidedSuccess(this.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
 
             Item item = stack.getItem();
             if (item instanceof SparkAugmentItem newUpgrade) {
                 if (upgrade == SparkUpgradeType.NONE) {
-                    if (!this.level().isClientSide) {
+                    if (!this.level().isClientSide()) {
                         this.setUpgrade(newUpgrade.type);
                         stack.shrink(1);
                     }
 
-                    return InteractionResult.sidedSuccess(this.level().isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
 
             if (stack.is(BotaniaItems.phantomInk)) {
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     this.setInvisible(true);
                 }
 
-                return InteractionResult.sidedSuccess(this.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
 
             item = stack.getItem();
             if (item instanceof DyeItem dye) {
-                DyeColor color = dye.getDyeColor();
+                DyeColor color = stack.get(DataComponents.DYE);
                 if (color != this.getNetwork()) {
-                    if (!this.level().isClientSide) {
+                    if (!this.level().isClientSide()) {
                         this.setNetwork(color);
                         stack.shrink(1);
                     }
 
-                    return InteractionResult.sidedSuccess(this.level().isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

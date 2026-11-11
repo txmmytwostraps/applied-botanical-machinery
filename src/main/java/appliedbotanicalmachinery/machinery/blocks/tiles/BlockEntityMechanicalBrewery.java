@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.google.common.collect.Range;
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
@@ -15,8 +19,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.moddingx.libx.crafting.RecipeHelper;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.brew.BrewItem;
 import velrondevs.botania.api.recipe.BotanicalBreweryRecipe;
@@ -42,7 +45,7 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
         super(type, BotaniaRecipeTypes.BREW_TYPE, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalBrewery, 1, 7);
         this.inventory = BaseItemStackHandler.builder(8)
                 .validator(stack -> BREW_CONTAINER.contains(stack.getItem()) && !stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("brewKey"), 0)
-                .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.BREW_TYPE, stack), Range.closedOpen(1, 7))
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.BREW_TYPE, stack), Range.closedOpen(1, 7))
                 .output(7)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -54,10 +57,10 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.runRecipeTick();
             if (this.recipe != null) {
-                this.currentOutput = this.recipe.getOutput(this.inventory.getStackInSlot(0));
+                this.currentOutput = this.recipe.getOutput(Inventories.get(this.inventory, 0));
                 this.setChanged();
                 this.setDispatchable();
             } else if (!this.currentOutput.isEmpty()) {
@@ -67,10 +70,10 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
             }
         } else if (this.level != null) {
             if (this.getProgress() > 0 && LibXClientConfig.AdvancedRendering.all && LibXClientConfig.AdvancedRendering.mechanicalBrewery) {
-                if (this.currentOutput.getItem() instanceof BrewItem item && this.level.random.nextFloat() < 0.5f) {
+                if (this.currentOutput.getItem() instanceof BrewItem item && this.level.getRandom().nextFloat() < 0.5f) {
                     int segments = 3;
                     for (int i = 1; i <= 6; i++) {
-                        if (!this.inventory.getStackInSlot(i).isEmpty()) {
+                        if (!Inventories.get(this.inventory, i).isEmpty()) {
                             segments += 1;
                         }
                     }
@@ -80,9 +83,9 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
                         float green = (targetColor >> 8 & 255) / 255f;
                         float blue = (targetColor & 255) / 255f;
                         WispParticleData data = WispParticleData.wisp(0.125f, red, green, blue, 0.5f);
-                        double xPos = this.worldPosition.getX() + 0.25 + (this.level.random.nextDouble() / 2);
-                        double zPos = this.worldPosition.getZ() + 0.25 + (this.level.random.nextDouble() / 2);
-                        this.level.addParticle(data, xPos, this.worldPosition.getY() + 0.35, zPos, 0, 0.01 + (this.level.random.nextDouble() / 18), 0);
+                        double xPos = this.worldPosition.getX() + 0.25 + (this.level.getRandom().nextDouble() / 2);
+                        double zPos = this.worldPosition.getZ() + 0.25 + (this.level.getRandom().nextDouble() / 2);
+                        this.level.addParticle(data, xPos, this.worldPosition.getY() + 0.35, zPos, 0, 0.01 + (this.level.getRandom().nextDouble() / 18), 0);
                     }
                 }
             }
@@ -90,7 +93,7 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return slot -> slot == 7;
     }
 
@@ -102,17 +105,17 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
 
     @Override
     protected boolean canMatchRecipes() {
-        return !this.inventory.getStackInSlot(0).isEmpty() && BREW_CONTAINER.contains(this.inventory.getStackInSlot(0).getItem());
+        return !Inventories.get(this.inventory, 0).isEmpty() && BREW_CONTAINER.contains(Inventories.get(this.inventory, 0).getItem());
     }
 
     @Override
     protected List<ItemStack> resultItems(BotanicalBreweryRecipe recipe, List<ItemStack> stacks) {
-        return List.of(recipe.getOutput(this.inventory.getStackInSlot(0)));
+        return List.of(recipe.getOutput(Inventories.get(this.inventory, 0)));
     }
 
     @Override
     protected void onCrafted(BotanicalBreweryRecipe recipe) {
-        this.inventory.getUnrestricted().extractItem(0, 1, false);
+        Inventories.extract(this.inventory.getUnrestricted(), 0, 1, false);
     }
 
     @Override
@@ -146,14 +149,14 @@ public class BlockEntityMechanicalBrewery extends WorkingTile<RecipeInput, Botan
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
 
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         final CompoundTag tankTag = new CompoundTag();
         nbt.put(TileTags.FLUID, tankTag);

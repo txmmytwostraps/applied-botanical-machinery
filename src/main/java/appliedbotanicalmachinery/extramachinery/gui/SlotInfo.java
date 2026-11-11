@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.gui;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -69,7 +71,7 @@ public class SlotInfo {
             for (Integer key: slots.keySet()){
                 int [] x_y = slots.get(key);
                 if (isMouseOver(mouseX, mouseY, x_y[0], x_y[1])){
-                    if (inventory.getStackInSlot(key).isEmpty()){
+                    if (Inventories.get(inventory, key).isEmpty()){
                         Component text = Component.translatable(translatables.get(key));
                         guiGraphics.renderTooltip(this.parent.getMinecraft().font, text, mouseX, mouseY);
                     }

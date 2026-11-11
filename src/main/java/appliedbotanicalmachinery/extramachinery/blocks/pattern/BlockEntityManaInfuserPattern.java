@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -31,12 +35,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.masterfulbotany.common.crafting.InfuserRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import velrondevs.masterfulbotany.common.crafting.StackListInput;
 import velrondevs.masterfulbotany.registry.ModRecipes;
 
@@ -85,7 +89,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 != -1){
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .validator((stack) -> (stack.getItem() == ModItems.catalystSpeed.asItem() || stack.getItem() == ModItems.catalystManaInfinity.asItem()), UPGRADE_SLOT_1, UPGRADE_SLOT_2)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
@@ -94,7 +98,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
         }
         else {
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .contentsChanged(() -> { this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
@@ -105,7 +109,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
 
     //region Base
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (!this.getMainNode().isReady()){
                 this.getMainNode().create(this.level, this.getBlockPos());
             }
@@ -124,13 +128,13 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
             }
 
             isInfinityMana = (
-                (UPGRADE_SLOT_1 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_1).getItem() == ModItems.catalystManaInfinity) ||
-                (UPGRADE_SLOT_2 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_2).getItem() == ModItems.catalystManaInfinity)
+                (UPGRADE_SLOT_1 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_1).getItem() == ModItems.catalystManaInfinity) ||
+                (UPGRADE_SLOT_2 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_2).getItem() == ModItems.catalystManaInfinity)
             );
 
             if (this.speedMulti == 1 && (
-                    (UPGRADE_SLOT_1 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystSpeed)||
-                            (UPGRADE_SLOT_2 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystSpeed))){
+                    (UPGRADE_SLOT_1 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystSpeed)||
+                            (UPGRADE_SLOT_2 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystSpeed))){
                 this.speedMulti = 4;
             } else{
                 this.speedMulti = 1;
@@ -157,7 +161,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
         this.getMainNode().saveToNBT(nbt);
     }
 
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return (slot) -> slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
     }
 
@@ -190,7 +194,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i <= LAST_OUTPUT_SLOT; i++){
-            if (!inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -252,7 +256,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -271,14 +275,14 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(Objects.requireNonNull(this.getMainNode().getGrid()).getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }
@@ -288,5 +292,16 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
     @Override
     protected boolean matchRecipe(InfuserRecipe recipe, List<ItemStack> stacks) {
         return super.matchRecipe(recipe, stacks);
+    }
+
+    @Override
+    protected List<Ingredient> ingredientsOf(InfuserRecipe recipe) {
+        return recipe.getIngredients();
+    }
+
+    @Override
+    protected ItemStack resultOf(InfuserRecipe recipe) {
+        //noinspection DataFlowIssue
+        return recipe.getResultItem(this.level.registryAccess());
     }
 }

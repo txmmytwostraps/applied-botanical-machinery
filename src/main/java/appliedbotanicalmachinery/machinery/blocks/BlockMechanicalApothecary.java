@@ -7,7 +7,7 @@ import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalApo
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,8 +46,8 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
     @Override
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
-        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, (tile, side) -> tile.getItemHandler()));
-        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getFluidInventory()));
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Item.BLOCK, (tile, side) -> tile.getItemHandler()));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Fluid.BLOCK, (tile, side) -> tile.getFluidInventory()));
     }
 
     @Override
@@ -66,8 +66,8 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
-        if (!level.isClientSide) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+        if (!level.isClientSide()) {
             BlockEntityMechanicalApothecary tile = this.getBlockEntity(level, pos);
 
             ItemStack held = player.getMainHandItem();
@@ -79,11 +79,11 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
                     player.setItemInHand(hand, fluidActionResult.getResult());
                 }
 
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Nullable
@@ -98,12 +98,12 @@ public class BlockMechanicalApothecary extends MenuBlockBE<BlockEntityMechanical
     }
 
     @Override
-    protected int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    protected int getLightDampening(@Nonnull BlockState state) {
         return 0;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 

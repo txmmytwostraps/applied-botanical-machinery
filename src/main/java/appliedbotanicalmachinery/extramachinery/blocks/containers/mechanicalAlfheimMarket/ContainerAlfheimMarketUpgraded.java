@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -19,7 +19,7 @@ public class ContainerAlfheimMarketUpgraded extends BlockEntityMenu<BlockEntityA
 
     public ContainerAlfheimMarketUpgraded(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
         super(type, windowId, level, pos, player, playerContainer, 6, 12);
-        IItemHandlerModifiable inventory = this.blockEntity.getInventory();
+        IAdvancedItemHandlerModifiable inventory = this.blockEntity.getInventory();
 
         int index = this.addSlotBox(inventory, 0, 47, 36,2, 18, 3, 18);
         this.addSlotBox(inventory, index, 115, 36, 2, 18, 3, 18, UnrestrictedOutputSlot::new);

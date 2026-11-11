@@ -21,13 +21,13 @@ public class ItemMalachiteManaSpark extends ItemBase {
     }
 
     public @NotNull InteractionResult useOn(UseOnContext ctx) {
-        return attachSpark(ctx.getLevel(), ctx.getClickedPos(), ctx.getItemInHand()) ? InteractionResult.sidedSuccess(ctx.getLevel().isClientSide) : InteractionResult.PASS;
+        return attachSpark(ctx.getLevel(), ctx.getClickedPos(), ctx.getItemInHand()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     public static boolean attachSpark(Level world, BlockPos pos, ItemStack stack) {
         SparkAttachable attach = XplatAbstractions.INSTANCE.findSparkAttachable(world, pos, world.getBlockState(pos), world.getBlockEntity(pos), Direction.UP);
         if (attach != null && attach.canAttachSpark(stack) && attach.getAttachedSpark() == null) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 stack.shrink(1);
                 EntityMalachiteManaSpark spark = new EntityMalachiteManaSpark(world);
                 spark.setPos((double)pos.getX() + 0.5, (double)pos.getY() + 1.25, (double)pos.getZ() + 0.5);

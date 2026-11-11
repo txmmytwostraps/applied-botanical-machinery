@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalRunicAltar.ContainerRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenAddInventory;
@@ -70,7 +72,7 @@ public class ScreenRunicAltarUpgraded extends ExtraScreenBase<ContainerRunicAlta
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
         for (int i = 0; i < 3; i++){
-            if (blockEntity.getInventory().getStackInSlot(i).isEmpty() && this.minecraft != null) {
+            if (Inventories.get(blockEntity.getInventory(), i).isEmpty() && this.minecraft != null) {
                 GhostItemRenderer.renderGhostItem(new ItemStack(BotaniaBlocks.livingrock), guiGraphics, this.leftPos + 81 + i * 18 + i, this.topPos + 100);
             }
         }

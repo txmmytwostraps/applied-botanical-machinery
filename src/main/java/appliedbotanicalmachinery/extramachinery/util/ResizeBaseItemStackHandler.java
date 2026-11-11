@@ -1,26 +1,32 @@
 package appliedbotanicalmachinery.extramachinery.util;
 
+import java.util.stream.Stream;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.VanillaWrapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdvancedItemHandlerModifiable {
+/**
+ * LibX's BaseItemStackHandler with slot limits that can be changed after it is built.
+ */
+public class ResizeBaseItemStackHandler extends ItemStacksResourceHandler implements IAdvancedItemHandlerModifiable {
+
     private final int size;
     private final int defaultSlotLimit;
     private final Set<Integer> insertionOnlySlots;
@@ -28,6 +34,7 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
     private static Map<Integer, Integer> slotLimits;
     private final Map<Integer, Predicate<ItemStack>> slotValidators;
     private final Consumer<Integer> contentsChanged;
+    private final List<SlotJournal> slotJournals;
     private Container vanilla = null;
     private Unrestricted unrestricted = null;
 
@@ -37,71 +44,98 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
         this.defaultSlotLimit = defaultSlotLimit;
         this.insertionOnlySlots = ImmutableSet.copyOf(insertionOnlySlots);
         this.outputSlots = ImmutableSet.copyOf(outputSlots);
-        this.slotLimits = ImmutableMap.copyOf(slotLimits);
+        ResizeBaseItemStackHandler.slotLimits = ImmutableMap.copyOf(slotLimits);
         this.slotValidators = ImmutableMap.copyOf(slotValidators);
         this.contentsChanged = contentsChanged;
+        List<SlotJournal> journals = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) journals.add(new SlotJournal(i));
+        this.slotJournals = Collections.unmodifiableList(journals);
     }
 
-    public void setSlotLimits(int limit){
+    public void setSlotLimits(int limit) {
         Map<Integer, Integer> aa = new HashMap<>();
-
-        for (Integer slot: slotLimits.keySet()){
+        for (Integer slot : slotLimits.keySet()) {
             aa.put(slot, limit);
         }
-
         slotLimits = ImmutableMap.copyOf(aa);
     }
 
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        return this.outputSlots.contains(slot) ? stack : super.insertItem(slot, stack, simulate);
-    }
-
-    @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return this.insertionOnlySlots.contains(slot) ? ItemStack.EMPTY : super.extractItem(slot, amount, simulate);
-    }
-
     public int getSlotLimit(int slot) {
-        return (Integer)this.slotLimits.getOrDefault(slot, this.defaultSlotLimit);
+        return slotLimits.getOrDefault(slot, this.defaultSlotLimit);
     }
 
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        return !this.slotValidators.containsKey(slot) || (this.slotValidators.get(slot)).test(stack);
-    }
+    private class SlotJournal extends SnapshotJournal<ItemStack> {
+        private final int index;
 
-    public void onContentsChanged(int slot) {
-        if (this.contentsChanged != null) {
-            this.contentsChanged.accept(slot);
+        SlotJournal(int index) {
+            this.index = index;
         }
 
+        @Override
+        protected ItemStack createSnapshot() {
+            return ResizeBaseItemStackHandler.this.stacks.get(this.index).copy();
+        }
+
+        @Override
+        protected void revertToSnapshot(ItemStack snapshot) {
+            ResizeBaseItemStackHandler.this.stacks.set(this.index, snapshot);
+        }
+
+        @Override
+        protected void onRootCommit(ItemStack originalState) {
+            ResizeBaseItemStackHandler.this.onContentsChanged(this.index, originalState);
+        }
     }
 
-    protected void onLoad() {
+    @Override
+    public boolean isValid(int slot, ItemResource resource) {
+        return !resource.isEmpty() && (!this.slotValidators.containsKey(slot) || this.slotValidators.get(slot).test(resource.toStack()));
+    }
+
+    @Override
+    protected int getCapacity(int index, ItemResource resource) {
+        if (resource.isEmpty()) {
+            return this.getSlotLimit(index);
+        }
+        return Math.min(this.getSlotLimit(index), resource.getMaxStackSize());
+    }
+
+    @Override
+    public int insert(int index, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext tx) {
+        return this.outputSlots.contains(index) ? 0 : super.insert(index, resource, amount, tx);
+    }
+
+    @Override
+    public int extract(int index, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext tx) {
+        return this.insertionOnlySlots.contains(index) ? 0 : super.extract(index, resource, amount, tx);
+    }
+
+    @Override
+    protected void onContentsChanged(int index, @Nonnull ItemStack previousContents) {
+        if (this.contentsChanged != null) {
+            this.contentsChanged.accept(index);
+        }
+    }
+
+    @Override
+    public void deserialize(@Nonnull ValueInput input) {
+        super.deserialize(input);
         if (this.stacks.size() != this.size) {
             NonNullList<ItemStack> oldStacks = this.stacks;
             this.stacks = NonNullList.withSize(this.size, ItemStack.EMPTY);
-
-            for(int slot = 0; slot < Math.min(oldStacks.size(), this.size); ++slot) {
+            for (int slot = 0; slot < Math.min(oldStacks.size(), this.size); slot++) {
                 this.stacks.set(slot, oldStacks.get(slot));
             }
         }
-
     }
 
     public Container toVanilla() {
-        if (this.vanilla == null) {
-            this.vanilla = new VanillaWrapper(this, null);
-        }
-
+        if (this.vanilla == null) this.vanilla = new VanillaWrapper(this, null);
         return this.vanilla;
     }
 
     public IAdvancedItemHandlerModifiable getUnrestricted() {
-        if (this.unrestricted == null) {
-            this.unrestricted = new Unrestricted();
-        }
-
+        if (this.unrestricted == null) this.unrestricted = new Unrestricted();
         return this.unrestricted;
     }
 
@@ -110,83 +144,67 @@ public class ResizeBaseItemStackHandler extends ItemStackHandler implements IAdv
     }
 
     private class Unrestricted implements IAdvancedItemHandlerModifiable {
-        private Unrestricted() {
+
+        @Override
+        public void set(int index, ItemResource resource, int amount) {
+            ResizeBaseItemStackHandler.this.set(index, resource, amount);
         }
 
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-            ResizeBaseItemStackHandler.this.setStackInSlot(slot, stack);
-        }
-
-        public int getSlots() {
-            return ResizeBaseItemStackHandler.this.getSlots();
-        }
-
-        @Nonnull
-        public ItemStack getStackInSlot(int slot) {
-            return ResizeBaseItemStackHandler.this.getStackInSlot(slot);
+        @Override
+        public int size() {
+            return ResizeBaseItemStackHandler.this.size();
         }
 
         @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (stack.isEmpty()) {
-                return ItemStack.EMPTY;
-            } else {
-                ResizeBaseItemStackHandler.this.validateSlotIndex(slot);
-                ItemStack current = ResizeBaseItemStackHandler.this.stacks.get(slot);
-                int amount = ResizeBaseItemStackHandler.this.getStackLimit(slot, stack);
-                if (!current.isEmpty()) {
-                    if (!ItemStack.isSameItemSameComponents(stack, current)) {
-                        return stack;
-                    }
-
-                    amount -= current.getCount();
-                }
-
-                if (amount <= 0) {
-                    return stack;
-                } else {
-                    if (!simulate) {
-                        if (current.isEmpty()) {
-                            ResizeBaseItemStackHandler.this.stacks.set(slot, stack.copyWithCount(Math.min(stack.getCount(), amount)));
-                        } else {
-                            current.grow(Math.min(stack.getCount(), amount));
-                        }
-
-                        ResizeBaseItemStackHandler.this.onContentsChanged(slot);
-                    }
-
-                    return stack.copyWithCount(Math.max(0, stack.getCount() - amount));
-                }
-            }
+        @Override
+        public ItemResource getResource(int index) {
+            return ResizeBaseItemStackHandler.this.getResource(index);
         }
 
-        @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (amount <= 0) {
-                return ItemStack.EMPTY;
-            } else {
-                ResizeBaseItemStackHandler.this.validateSlotIndex(slot);
-                ItemStack current = ResizeBaseItemStackHandler.this.stacks.get(slot);
-                if (current.isEmpty()) {
-                    return ItemStack.EMPTY;
-                } else {
-                    int count = Math.min(current.getCount(), Math.min(amount, current.getMaxStackSize()));
-                    if (!simulate) {
-                        ResizeBaseItemStackHandler.this.stacks.set(slot, current.copyWithCount(Math.max(0, current.getCount() - count)));
-                        ResizeBaseItemStackHandler.this.onContentsChanged(slot);
-                    }
-
-                    return current.copyWithCount(count);
-                }
-            }
+        @Override
+        public long getAmountAsLong(int index) {
+            return ResizeBaseItemStackHandler.this.getAmountAsLong(index);
         }
 
-        public int getSlotLimit(int slot) {
-            return ResizeBaseItemStackHandler.this.getSlotLimit(slot);
+        @Override
+        public long getCapacityAsLong(int index, @Nonnull ItemResource resource) {
+            return ResizeBaseItemStackHandler.this.getCapacityAsLong(index, resource);
         }
 
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        @Override
+        public boolean isValid(int index, @Nonnull ItemResource resource) {
             return true;
+        }
+
+        @Override
+        public int insert(int index, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
+            if (resource.isEmpty() || amount <= 0) return 0;
+            ItemStack current = ResizeBaseItemStackHandler.this.stacks.get(index);
+            int capacity = ResizeBaseItemStackHandler.this.getCapacity(index, resource);
+            if (!current.isEmpty()) {
+                if (!ItemResource.of(current).equals(resource)) return 0;
+                capacity -= current.getCount();
+            }
+            if (capacity <= 0) return 0;
+            int toInsert = Math.min(amount, capacity);
+            ResizeBaseItemStackHandler.this.slotJournals.get(index).updateSnapshots(transaction);
+            if (current.isEmpty()) {
+                ResizeBaseItemStackHandler.this.stacks.set(index, resource.toStack(toInsert));
+            } else {
+                current.grow(toInsert);
+            }
+            return toInsert;
+        }
+
+        @Override
+        public int extract(int index, @Nonnull ItemResource resource, int amount, @Nonnull TransactionContext transaction) {
+            if (amount <= 0) return 0;
+            ItemStack current = ResizeBaseItemStackHandler.this.stacks.get(index);
+            if (current.isEmpty() || !ItemResource.of(current).equals(resource)) return 0;
+            int toExtract = Math.min(current.getCount(), amount);
+            ResizeBaseItemStackHandler.this.slotJournals.get(index).updateSnapshots(transaction);
+            ResizeBaseItemStackHandler.this.stacks.set(index, current.copyWithCount(current.getCount() - toExtract));
+            return toExtract;
         }
     }
 

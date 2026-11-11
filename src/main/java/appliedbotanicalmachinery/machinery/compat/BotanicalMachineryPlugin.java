@@ -7,7 +7,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import velrondevs.botania.client.integration.jei.*;
 import velrondevs.masterfulbotany.integration.jei.InfusionCategory;
@@ -19,7 +19,7 @@ public class BotanicalMachineryPlugin implements IModPlugin {
 
     @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return AppliedBotanics.id("machinery");
     }
 

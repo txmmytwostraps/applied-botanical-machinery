@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaPool;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -10,7 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -34,12 +36,12 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
 
     protected void doRender(@Nonnull BlockEntityManaPoolBase tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.ManaPoolSettings.manaPoolBase) {
-            ItemStack catalystStack = tile.getInventory().getStackInSlot(0);
+            ItemStack catalystStack = Inventories.get(tile.getInventory(), 0);
             if (!catalystStack.isEmpty() && catalystStack.getItem() instanceof BlockItem) {
                 Block block = ((BlockItem)catalystStack.getItem()).getBlock();
                 if (block instanceof PoolOverlayProvider) {
                     PoolOverlayProvider catalyst = (PoolOverlayProvider)block;
-                    ResourceLocation spriteId = catalyst.getIcon(tile.getLevel(), tile.getBlockPos());
+                    Identifier spriteId = catalyst.getIcon(tile.getLevel(), tile.getBlockPos());
                     TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(spriteId);
                     poseStack.pushPose();
                     poseStack.translate(0.125, POOL_BOTTOM_HEIGHT, 0.125);
@@ -64,8 +66,8 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
             }
 
 
-            ItemStack output_1 = tile.getInventory().getStackInSlot(4);
-            ItemStack output_2 = tile.getInventory().getStackInSlot(5);
+            ItemStack output_1 = Inventories.get(tile.getInventory(), 4);
+            ItemStack output_2 = Inventories.get(tile.getInventory(), 5);
 
             poseStack.pushPose();
             poseStack.translate(0.3125, 0.4375, 0.5);
@@ -96,7 +98,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
 
 
             for(int i = 1; i < 4; i++){
-                ItemStack input = tile.getInventory().getStackInSlot(i);
+                ItemStack input = Inventories.get(tile.getInventory(), i);
 
                 if (!input.isEmpty()) {
                     poseStack.pushPose();
@@ -114,6 +116,6 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
     }
 
     static {
-        MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.fromNamespaceAndPath("botania", "block/mana_water"));
+        MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(Identifier.fromNamespaceAndPath("botania", "block/mana_water"));
     }
 }

@@ -2,7 +2,7 @@ package appliedbotanicalmachinery.integration.jei;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import appliedbotanicalmachinery.ABBlocks;
@@ -22,7 +22,7 @@ public class ABJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public @NotNull ResourceLocation getPluginUid() {
+    public @NotNull Identifier getPluginUid() {
         return AppliedBotanics.id("main");
     }
 }

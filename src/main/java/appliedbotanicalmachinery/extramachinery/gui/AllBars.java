@@ -1,7 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.gui;
 
 import appliedbotanicalmachinery.extramachinery.core.LibResources;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum AllBars {
     MANA("mana", LibResources.MANA_BAR_CURRENT, 130, 5, true, "appliedbotanicalmachinery.tooltip.screen.mana"),
@@ -11,13 +11,13 @@ public enum AllBars {
     HEAT("heat", LibResources.HEAT_BAR_CURRENT, 3, 15, false, "appliedbotanicalmachinery.tooltip.screen.heat");
 
     private final String name;
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     private final int width;
     private final int height;
     private final boolean hor;
     private final String translatableCode;
 
-    private AllBars(String name, ResourceLocation resourceLocation, int width, int height, boolean hor, String translatableCode){
+    private AllBars(String name, Identifier resourceLocation, int width, int height, boolean hor, String translatableCode){
         this.name = name;
         this.resourceLocation = resourceLocation;
         this.width = width;
@@ -29,7 +29,7 @@ public enum AllBars {
     public String getName(){
         return name;
     }
-    public ResourceLocation getResourceLocation(){
+    public Identifier getResourceLocation(){
         return resourceLocation;
     }
 

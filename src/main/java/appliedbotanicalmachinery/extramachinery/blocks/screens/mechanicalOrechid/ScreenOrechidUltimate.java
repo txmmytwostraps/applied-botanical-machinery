@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalOrechid.ContainerOrechidAdvanced;
@@ -81,7 +83,7 @@ public class ScreenOrechidUltimate extends ExtraScreenBase<ContainerOrechidUltim
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
         for (int i = 0; i < 2; i++){
-            if (blockEntity.getInventory().getStackInSlot(i).isEmpty() && this.minecraft != null){
+            if (Inventories.get(blockEntity.getInventory(), i).isEmpty() && this.minecraft != null){
                 GhostItemRenderer.renderGhostItem(items, guiGraphics, this.leftPos + 17 + 156 * i, this.topPos + 74);
             }
         }

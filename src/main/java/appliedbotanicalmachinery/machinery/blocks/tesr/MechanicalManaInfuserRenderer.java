@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalManaInfuser;
@@ -26,11 +28,11 @@ public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEnt
 
         double progressLeft = 1 - (tile.getProgress() / (double) tile.getMaxProgress());
 
-        this.renderStack(tile.getInventory().getStackInSlot(0), poseStack, buffer, partialTick, progressLeft, 0, light);
-        this.renderStack(tile.getInventory().getStackInSlot(1), poseStack, buffer, partialTick, progressLeft, 120, light);
-        this.renderStack(tile.getInventory().getStackInSlot(2), poseStack, buffer, partialTick, progressLeft, 240, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 0), poseStack, buffer, partialTick, progressLeft, 0, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 1), poseStack, buffer, partialTick, progressLeft, 120, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 2), poseStack, buffer, partialTick, progressLeft, 240, light);
 
-        if (!tile.getInventory().getStackInSlot(3).isEmpty()) {
+        if (!Inventories.get(tile.getInventory(), 3).isEmpty()) {
             float time = ClientTickHandler.ticksInGame + partialTick;
 
             poseStack.pushPose();
@@ -39,7 +41,7 @@ public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEnt
             poseStack.mulPose(Axis.YP.rotationDegrees(-time));
             poseStack.translate(0, 0.075 * Math.sin(time / 5d), 0);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(tile.getInventory().getStackInSlot(3), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+            Minecraft.getInstance().getItemRenderer().renderStatic(Inventories.get(tile.getInventory(), 3), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
             poseStack.popPose();
         }

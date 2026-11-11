@@ -9,8 +9,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
+import org.moddingx.libx.menu.slot.BaseSlot;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -20,9 +20,9 @@ public class ContainerRunicAltarBase extends BlockEntityMenu<BlockEntityRunicAlt
 
     public ContainerRunicAltarBase(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
         super(type, windowId, level, pos, player, playerContainer, 17, 33);
-        IItemHandlerModifiable inventory = this.blockEntity.getInventory();
+        IAdvancedItemHandlerModifiable inventory = this.blockEntity.getInventory();
 
-        this.addSlot(new SlotItemHandler(inventory, 0, 100, 100));
+        this.addSlot(new BaseSlot(inventory, inventory, 0, 100, 100));
 
         int index = this.addSlotBox(inventory, 1, 27, 25, 4, 18, 4, 18);
         this.addSlotBox(inventory, index, 119, 25, 4, 18, 4, 18, UnrestrictedOutputSlot::new);

@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.ContainerJadedAmaranthus;
@@ -73,7 +75,7 @@ public class ScreenJadedAmaranthus extends ExtraScreenBase<ContainerJadedAmarant
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
         for (int i = 0; i < 2; i++) {
-            if (blockEntity.getInventory().getStackInSlot(i).isEmpty() && this.minecraft != null) {
+            if (Inventories.get(blockEntity.getInventory(), i).isEmpty() && this.minecraft != null) {
                 GhostItemRenderer.renderGhostItem(items, guiGraphics, this.leftPos + 72 + 36 * i, this.topPos + 23);
             }
         }

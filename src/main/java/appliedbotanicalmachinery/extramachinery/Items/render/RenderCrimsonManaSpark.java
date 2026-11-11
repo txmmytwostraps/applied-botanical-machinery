@@ -5,7 +5,7 @@ import appliedbotanicalmachinery.extramachinery.entities.manaSpark.EntityCrimson
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import velrondevs.botania.client.render.entity.BaseSparkRenderer;
 import velrondevs.botania.common.lib.ResourceLocationHelper;
@@ -27,7 +27,7 @@ public class RenderCrimsonManaSpark extends BaseSparkRenderer<EntityCrimsonManaS
 
     public RenderCrimsonManaSpark(EntityRendererProvider.Context ctx) {
         super(ctx);
-        Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+        Function<Identifier, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
         this.dispersiveIcon = Objects.requireNonNull(atlas.apply(ResourceLocationHelper.prefix("item/spark_upgrade_rune_dispersive")));
         this.dominantIcon = Objects.requireNonNull(atlas.apply(ResourceLocationHelper.prefix("item/spark_upgrade_rune_dominant")));
         this.recessiveIcon = Objects.requireNonNull(atlas.apply(ResourceLocationHelper.prefix("item/spark_upgrade_rune_recessive")));

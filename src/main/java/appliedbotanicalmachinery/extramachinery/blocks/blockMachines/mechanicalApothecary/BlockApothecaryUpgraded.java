@@ -9,7 +9,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalApothecar
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +56,7 @@ public class BlockApothecaryUpgraded extends MenuBlockBE<BlockEntityApothecaryUp
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
         ExtraBotanicalBlock.registerTileCapabilities(this.getBlockEntityType(), builder);
-        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getFluidInventory()));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Fluid.BLOCK, (tile, side) -> tile.getFluidInventory()));
     }
 
     @Override
@@ -75,8 +75,8 @@ public class BlockApothecaryUpgraded extends MenuBlockBE<BlockEntityApothecaryUp
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
-        if (!level.isClientSide) {
+    protected InteractionResult useItemOn(@Nonnull ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hit) {
+        if (!level.isClientSide()) {
             BlockEntityApothecaryPattern tile = this.getBlockEntity(level, pos);
             ItemStack held = player.getMainHandItem();
             FluidActionResult fluidActionResult = FluidUtil.tryEmptyContainer(held, tile.getFluidInventory(), 1000, player, true);
@@ -87,11 +87,11 @@ public class BlockApothecaryUpgraded extends MenuBlockBE<BlockEntityApothecaryUp
                     player.setItemInHand(hand, fluidActionResult.getResult());
                 }
 
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Nullable
@@ -103,11 +103,11 @@ public class BlockApothecaryUpgraded extends MenuBlockBE<BlockEntityApothecaryUp
         builder.add(BlockStateProperties.HORIZONTAL_FACING);
     }
 
-    public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    public int getLightDampening(@Nonnull BlockState state) {
         return 0;
     }
 
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 

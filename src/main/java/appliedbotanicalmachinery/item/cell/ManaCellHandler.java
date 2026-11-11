@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.item.cell;
 
+import java.util.function.Consumer;
+
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -28,11 +30,11 @@ public class ManaCellHandler implements ICellHandler {
         return null;
     }
 
-    public void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+    public void addCellInformationToTooltip(ItemStack is, Consumer<Component> lines) {
         var handler = getCellInventory(is, null);
         if (handler == null) {
             return;
         }
-        lines.add(Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
+        lines.accept(Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
     }
 }

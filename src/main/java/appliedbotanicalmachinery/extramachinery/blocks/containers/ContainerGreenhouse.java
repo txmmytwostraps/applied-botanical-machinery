@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import org.moddingx.libx.menu.slot.BaseSlot;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -30,8 +30,8 @@ public class ContainerGreenhouse extends BlockEntityMenu<BlockEntityGreenhouse> 
         this.addSlotBox(this.getBlockEntity().getInventory(), 0, 46, 45, 7, 18, 3, 18);
 
         for (int i = 0; i < 4; i++){
-            this.addSlot(new SlotItemHandler(this.getBlockEntity().getUpgradeInventory(), i, 22, 34 + i * 20));
-            this.addSlot(new SlotItemHandler(this.getBlockEntity().getUpgradeInventory(), i + 4, 178, 34 + i * 20));
+            this.addSlot(new BaseSlot(this.getBlockEntity().getUpgradeInventory(), this.getBlockEntity().getUpgradeInventory(), i, 22, 34 + i * 20));
+            this.addSlot(new BaseSlot(this.getBlockEntity().getUpgradeInventory(), this.getBlockEntity().getUpgradeInventory(), i + 4, 178, 34 + i * 20));
         }
 
         int[] x_y = ScreenAddInventory.getCoordInventorySlot(ScreenInventory.ULTIMATE, WIDTH_GUI, HEIGHT_GUI);

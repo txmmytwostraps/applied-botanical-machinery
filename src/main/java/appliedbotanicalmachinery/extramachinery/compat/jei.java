@@ -41,7 +41,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAl
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarBase;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarUpgraded;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import velrondevs.botania.client.integration.jei.*;
@@ -56,7 +56,7 @@ public class jei implements IModPlugin {
     }
 
     @Nonnull
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return AppliedBotanics.id("extra_machinery");
     }
 

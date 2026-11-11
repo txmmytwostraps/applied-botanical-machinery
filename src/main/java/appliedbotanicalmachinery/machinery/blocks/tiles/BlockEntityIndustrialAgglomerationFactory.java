@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
@@ -7,8 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.moddingx.libx.crafting.RecipeHelper;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.TerrestrialAgglomerationRecipe;
 import velrondevs.botania.client.fx.WispParticleData;
@@ -27,7 +28,7 @@ public class BlockEntityIndustrialAgglomerationFactory extends WorkingTile<Recip
     public BlockEntityIndustrialAgglomerationFactory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, BotaniaRecipeTypes.TERRA_PLATE_TYPE, pos, state, LibXServerConfig.MaxManaCapacity.industrialAgglomerationFactory, 0, 3);
         this.inventory = BaseItemStackHandler.builder(4)
-                .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.TERRA_PLATE_TYPE, stack), 0, 1, 2)
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.TERRA_PLATE_TYPE, stack), 0, 1, 2)
                 .output(3)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -39,7 +40,7 @@ public class BlockEntityIndustrialAgglomerationFactory extends WorkingTile<Recip
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.runRecipeTick();
         } else if (this.level != null && LibXClientConfig.AdvancedRendering.all && LibXClientConfig.AdvancedRendering.industrialAgglomerationFactory) {
             if (this.getProgress() > 0) {
@@ -62,7 +63,7 @@ public class BlockEntityIndustrialAgglomerationFactory extends WorkingTile<Recip
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return slot -> slot == 3;
     }
 

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -40,9 +44,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.TickingBlock;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.CustomApothecaryColor;
 import velrondevs.botania.api.recipe.PetalApothecaryRecipe;
@@ -114,7 +117,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
                     .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
                     .validator( (stack) -> {return (stack.getItem() == ModItems.catalystSeedInfinity.asItem());}, UPGRADE_SLOT_1)
-                    .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator( (stack) -> { return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
@@ -122,14 +125,14 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
                     .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
                     .validator( (stack) -> {return (stack.getItem() == ModItems.catalystSeedInfinity.asItem() || stack.getItem() == ModItems.catalystWaterInfinity.asItem());}, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
-                    .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator( (stack) -> { return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         } else {
             this.inventory = BaseItemStackHandler.builder(this.LAST_OUTPUT_SLOT + 1)
                     .validator( (stack) -> { return stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);}, SEEDS_SLOT)
-                    .validator( (stack) -> { return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator( (stack) -> { return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.PETAL_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         }
@@ -139,8 +142,8 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     public void bufferCheck(){
         int old = seedBuffer;
-        seedBuffer = seedBuffer > this.inventory.getStackInSlot(0).getCount() ? seedBuffer - this.inventory.getStackInSlot(0).getCount(): 0;
-        this.inventory.extractItem(0, seedBuffer == 0 ? old : this.inventory.getStackInSlot(0).getCount(), false);
+        seedBuffer = seedBuffer > Inventories.get(this.inventory, 0).getCount() ? seedBuffer - Inventories.get(this.inventory, 0).getCount(): 0;
+        Inventories.extract(this.inventory, 0, seedBuffer == 0 ? old : Inventories.get(this.inventory, 0).getCount(), false);
     }
 
 
@@ -164,7 +167,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
             }
 
-            if (!this.inventory.getStackInSlot(0).isEmpty() && seedBuffer != 0) bufferCheck();
+            if (!Inventories.get(this.inventory, 0).isEmpty() && seedBuffer != 0) bufferCheck();
             upgradedCheck();
 
             this.runRecipeTick();
@@ -183,15 +186,15 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
             int slot;
             if (this.getMaxProgress() > 0 && this.getProgress() > this.getMaxProgress() - 5) {
                 for(slot = 0; slot < 5; ++slot) {
-                    SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), 10);
-                    this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.random.nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.6, (double)this.worldPosition.getZ() + 0.3 + this.level.random.nextDouble() * 0.4, 0.0, 0.0, 0.0);
+                    SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), 10);
+                    this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.getRandom().nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.6, (double)this.worldPosition.getZ() + 0.3 + this.level.getRandom().nextDouble() * 0.4, 0.0, 0.0, 0.0);
                 }
 
                 this.level.playLocalSound((double)this.worldPosition.getX() + 0.5, (double)this.worldPosition.getY() + 0.5, (double)this.worldPosition.getZ() + 0.5, BotaniaSounds.altarCraft, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             } else {
-                for(slot = 0; slot < this.inventory.getSlots(); ++slot) {
-                    ItemStack stack = this.inventory.getStackInSlot(slot);
-                    if (!stack.isEmpty() && this.level.random.nextFloat() >= 0.97F) {
+                for(slot = 0; slot < this.inventory.size(); ++slot) {
+                    ItemStack stack = Inventories.get(this.inventory, slot);
+                    if (!stack.isEmpty() && this.level.getRandom().nextFloat() >= 0.97F) {
                         Item item1 = stack.getItem();
                         int i;
                         if (item1 instanceof CustomApothecaryColor) {
@@ -209,8 +212,8 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
                             this.level.playSound((Player)null, this.worldPosition, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.1F, 10.0F);
                         }
 
-                        SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), red, green, blue, 10);
-                        this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.random.nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.6, (double)this.worldPosition.getZ() + 0.3 + this.level.random.nextDouble() * 0.4, 0.0, 0.0, 0.0);
+                        SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), red, green, blue, 10);
+                        this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.getRandom().nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.6, (double)this.worldPosition.getZ() + 0.3 + this.level.getRandom().nextDouble() * 0.4, 0.0, 0.0, 0.0);
                     }
                 }
             }
@@ -219,7 +222,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i <= LAST_OUTPUT_SLOT; i++){
-            if (!inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -242,30 +245,30 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     public void upgradedCheck(){
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 == -1){
-            if (!inventory.getStackInSlot(UPGRADE_SLOT_1).isEmpty() && inventory.getStackInSlot(SEEDS_SLOT).isEmpty()){
+            if (!Inventories.get(inventory, UPGRADE_SLOT_1).isEmpty() && Inventories.get(inventory, SEEDS_SLOT).isEmpty()){
                 ItemStack seed = Items.WHEAT_SEEDS.getDefaultInstance();
                 seed.setCount(64);
 
-                inventory.setStackInSlot(SEEDS_SLOT, seed);
+                Inventories.set(inventory, SEEDS_SLOT, seed);
             }
         } else if (UPGRADE_SLOT_1 != -1){
 
-            if (((!inventory.getStackInSlot(UPGRADE_SLOT_1).isEmpty() && inventory.getStackInSlot(UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystSeedInfinity.asItem()) ||
-                    (!inventory.getStackInSlot(UPGRADE_SLOT_2).isEmpty() && inventory.getStackInSlot(UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystSeedInfinity.asItem())) &&
-                    inventory.getStackInSlot(SEEDS_SLOT).isEmpty()){
+            if (((!Inventories.get(inventory, UPGRADE_SLOT_1).isEmpty() && Inventories.get(inventory, UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystSeedInfinity.asItem()) ||
+                    (!Inventories.get(inventory, UPGRADE_SLOT_2).isEmpty() && Inventories.get(inventory, UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystSeedInfinity.asItem())) &&
+                    Inventories.get(inventory, SEEDS_SLOT).isEmpty()){
                 ItemStack seed = Items.WHEAT_SEEDS.getDefaultInstance();
                 seed.setCount(64);
 
-                inventory.setStackInSlot(SEEDS_SLOT, seed);
+                Inventories.set(inventory, SEEDS_SLOT, seed);
             }
 
             isInfinityWater =
-                    (!inventory.getStackInSlot(UPGRADE_SLOT_1).isEmpty() && inventory.getStackInSlot(UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystWaterInfinity.asItem()) ||
-                    (!inventory.getStackInSlot(UPGRADE_SLOT_2).isEmpty() && inventory.getStackInSlot(UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystWaterInfinity.asItem());
+                    (!Inventories.get(inventory, UPGRADE_SLOT_1).isEmpty() && Inventories.get(inventory, UPGRADE_SLOT_1).getItem().asItem() == ModItems.catalystWaterInfinity.asItem()) ||
+                    (!Inventories.get(inventory, UPGRADE_SLOT_2).isEmpty() && Inventories.get(inventory, UPGRADE_SLOT_2).getItem().asItem() == ModItems.catalystWaterInfinity.asItem());
         }
     }
 
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return (slot) -> {
             return slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
         };
@@ -290,7 +293,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
     }
 
     protected boolean canMatchRecipes() {
-        if (this.inventory.getStackInSlot(0).isEmpty()) {
+        if (Inventories.get(this.inventory, 0).isEmpty()) {
             return false;
         } else {
             if (isInfinityWater) {
@@ -303,9 +306,9 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     @Override
     protected void onCrafted(PetalApothecaryRecipe recipe, int countItemCraft) {
-        seedBuffer = countItemCraft > this.inventory.getStackInSlot(0).getCount() ? countItemCraft - this.inventory.getStackInSlot(0).getCount(): 0;
+        seedBuffer = countItemCraft > Inventories.get(this.inventory, 0).getCount() ? countItemCraft - Inventories.get(this.inventory, 0).getCount(): 0;
 
-        this.inventory.extractItem(0, seedBuffer == 0 ? countItemCraft : this.inventory.getStackInSlot(0).getCount(), false);
+        Inventories.extract(this.inventory, 0, seedBuffer == 0 ? countItemCraft : Inventories.get(this.inventory, 0).getCount(), false);
         FluidStack fluid = this.getFluidInventory().getFluid().copy();
         if (!isInfinityWater && fluid.getFluid() == Fluids.WATER) {
             int newAmount = Math.max(0, fluid.getAmount() - 1000);
@@ -347,7 +350,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound("fluid")));
             this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
             this.seedBuffer = nbt.getInt("seedBuffer");
@@ -356,7 +359,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     @Nonnull
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -449,7 +452,7 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -468,14 +471,14 @@ public class BlockEntityApothecaryPattern extends WorkingTile<RecipeInput, Petal
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(this.getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }

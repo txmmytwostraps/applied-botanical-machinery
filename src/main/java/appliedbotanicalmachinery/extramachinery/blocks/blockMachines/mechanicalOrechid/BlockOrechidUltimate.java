@@ -60,11 +60,11 @@ public class BlockOrechidUltimate extends MenuBlockBE<BlockEntityOrechidUltimate
         });
     }
 
-    public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    public int getLightDampening(@Nonnull BlockState state) {
         return 0;
     }
 
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
@@ -79,7 +79,7 @@ public class BlockOrechidUltimate extends MenuBlockBE<BlockEntityOrechidUltimate
     }
 
     @Nonnull
-    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state) {
         return SHAPE;
     }
 

@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalRunicAltar;
@@ -23,7 +25,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalRunicAltar)
             return;
 
-        ItemStack livingRockStack = tile.getInventory().getStackInSlot(0);
+        ItemStack livingRockStack = Inventories.get(tile.getInventory(), 0);
         if (!livingRockStack.isEmpty() && livingRockStack.getItem() instanceof BlockItem) {
             BlockState state = ((BlockItem) livingRockStack.getItem()).getBlock().defaultBlockState();
 
@@ -46,7 +48,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
 
         int items = 0;
         for (int slot = 1; slot < 17; slot++) {
-            if (!tile.getInventory().getStackInSlot(slot).isEmpty())
+            if (!Inventories.get(tile.getInventory(), slot).isEmpty())
                 items += 1;
         }
 
@@ -61,7 +63,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
 
         int nextAngleIdx = 0;
         for (int slot = 1; slot < 17; slot++) {
-            if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+            if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                 double travelCenter = 1;
                 boolean shrink = false;
                 if (tile.isSlotUsedCurrently(slot)) {
@@ -85,7 +87,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
                     poseStack.scale(0.3f, 0.3f, 0.3f);
                 }
 
-                ItemStack stack = tile.getInventory().getStackInSlot(slot);
+                ItemStack stack = Inventories.get(tile.getInventory(), slot);
                 Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong() + slot);
 
                 poseStack.popPose();

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
@@ -32,7 +36,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 import appliedbotanicalmachinery.extramachinery.util.RecipeValidityCache;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -86,14 +90,14 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
             inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
                     .validator((stack) -> { return this.getCatalysts().contains(stack.getItem()); }, CATALYSTS_SLOT)
                     .validator((stack) -> { return stack.getItem() == ModItems.catalystManaInfinity.asItem();}, UPGRADE_SLOT)
-                    .validator((stack) -> { return this.level != null && RecipeValidityCache.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.MANA_INFUSION_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> { return this.level != null && RecipeValidityCache.isItemValidInput(this.level, BotaniaRecipeTypes.MANA_INFUSION_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, CATALYSTS_SLOT, UPGRADE_SLOT).output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
 
         } else {
             inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
                     .validator((stack) -> { return this.getCatalysts().contains(stack.getItem()); }, CATALYSTS_SLOT)
-                    .validator((stack) -> { return this.level != null && RecipeValidityCache.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.MANA_INFUSION_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> { return this.level != null && RecipeValidityCache.isItemValidInput(this.level, BotaniaRecipeTypes.MANA_INFUSION_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, CATALYSTS_SLOT).output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         }
@@ -110,12 +114,12 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     //region BASE CODE
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (!this.getMainNode().isReady()){
                 this.getMainNode().create(this.level, this.getBlockPos());
             }
 
-            isInfinityMana = UPGRADE_SLOT != -1 && !inventory.getStackInSlot(UPGRADE_SLOT).isEmpty();
+            isInfinityMana = UPGRADE_SLOT != -1 && !Inventories.get(inventory, UPGRADE_SLOT).isEmpty();
 
             this.updateRecipeIfNeeded();
 
@@ -148,12 +152,12 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
                 float green = 0.7764706F;
                 float blue = 1.0F;
                 WispParticleData data = WispParticleData.wisp((float)Math.random() / 3.0F, red, green, blue, 2.0F);
-                this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.random.nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.5 + this.level.random.nextDouble() * 0.25, (double)this.worldPosition.getZ() + 0.3 + this.level.random.nextDouble() * 0.4, 0.0, (double)(this.level.random.nextFloat() / 25.0F), 0.0);
+                this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.getRandom().nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.5 + this.level.getRandom().nextDouble() * 0.25, (double)this.worldPosition.getZ() + 0.3 + this.level.getRandom().nextDouble() * 0.4, 0.0, (double)(this.level.getRandom().nextFloat() / 25.0F), 0.0);
             }
         }
     }
 
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> supplier) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> supplier) {
         return (slot) -> {
             return slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
         };
@@ -165,7 +169,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
     }
 
     @Override
-    protected java.util.function.BiPredicate<Integer, ItemStack> getInserts(Supplier<IItemHandlerModifiable> supplier) {
+    protected java.util.function.BiPredicate<Integer, ItemStack> getInserts(Supplier<IAdvancedItemHandlerModifiable> supplier) {
         // Delegate to the centralized insert guard in ExtraBotanicalTile so the "pool full" check is respected.
         return super.getInserts(supplier);
     }
@@ -184,7 +188,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
         if (recipe.getManaToConsume() > this.getCurrentMana() && !isInfinityMana) {
             return true;
         } else {
-            Item catalystItem = this.checkWithCatalyst && !this.inventory.getStackInSlot(CATALYSTS_SLOT).isEmpty() ? this.inventory.getStackInSlot(CATALYSTS_SLOT).getItem() : null;
+            Item catalystItem = this.checkWithCatalyst && !Inventories.get(this.inventory, CATALYSTS_SLOT).isEmpty() ? Inventories.get(this.inventory, CATALYSTS_SLOT).getItem() : null;
             Block catalyst = catalystItem == null ? null : Block.byItem(catalystItem);
             if (catalyst == null && recipe.getRecipeCatalyst() != null) {
                 return true;
@@ -197,7 +201,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
     protected void onCrafted(ManaInfusionRecipe recipe, int countItemCraft) {
         this.cooldown = Math.max(1, settingPattern.getConfigInt("craftTime"));
 
-        if (isUpgrade && !inventory.getStackInSlot(UPGRADE_SLOT).isEmpty()) return;
+        if (isUpgrade && !Inventories.get(inventory, UPGRADE_SLOT).isEmpty()) return;
 
         if (isInfinityMana) return;
         for (int i = 0; i < countItemCraft; i++){
@@ -206,16 +210,16 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
     }
 
     public int getComparatorOutput() {
-        if (this.inventory.getStackInSlot(CATALYSTS_SLOT).isEmpty()) {
+        if (Inventories.get(this.inventory, CATALYSTS_SLOT).isEmpty()) {
             return 0;
         } else {
-            Item item = this.inventory.getStackInSlot(CATALYSTS_SLOT).getItem();
+            Item item = Inventories.get(this.inventory, CATALYSTS_SLOT).getItem();
             return this.getCatalysts().contains(item) ? Mth.clamp(1 + this.getCatalysts().indexOf(item), 0, 15) : 0;
         }
     }
 
     public void receiveMana(int i) {
-        if (inventory.getStackInSlot(CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem()) {
+        if (Inventories.get(inventory, CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem()) {
             super.receiveMana(Math.min(i, this.getAvailableSpaceForMana()));
         } else {
             super.receiveMana(i);
@@ -228,7 +232,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     private boolean checkInputSlots(){
         for (int i = FIRST_INPUT_SLOT; i <= LAST_INPUT_SLOT; i++){
-            if (!inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -237,7 +241,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i <= LAST_OUTPUT_SLOT; i++){
-            if (!inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -245,11 +249,11 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
     }
 
     public boolean isFull() {
-        return this.inventory.getStackInSlot(CATALYSTS_SLOT).getItem() != BotaniaBlocks.manaVoid.asItem() && super.isFull();
+        return Inventories.get(this.inventory, CATALYSTS_SLOT).getItem() != BotaniaBlocks.manaVoid.asItem() && super.isFull();
     }
 
     public int getAvailableSpaceForMana() {
-        return this.inventory.getStackInSlot(CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem() ? this.getMaxMana() : super.getAvailableSpaceForMana();
+        return Inventories.get(this.inventory, CATALYSTS_SLOT).getItem() == BotaniaBlocks.manaVoid.asItem() ? this.getMaxMana() : super.getAvailableSpaceForMana();
     }
 
     protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
@@ -270,7 +274,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.cooldown = nbt.getInt("cooldown");
 
         }
@@ -278,7 +282,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     @Nonnull
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -299,7 +303,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
             }
 
             List<Item> catalysts = new ArrayList();
-            this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.MANA_INFUSION_TYPE).stream().map(RecipeHolder::value).forEach((recipe) -> {
+            Recipes.all(this.level, BotaniaRecipeTypes.MANA_INFUSION_TYPE).stream().map(RecipeHolder::value).forEach((recipe) -> {
                 if (recipe.getRecipeCatalyst() != null) {
                     recipe.getRecipeCatalyst().getDisplayedStacks().stream().map(ItemStack::getItem).forEach((item) -> {
                         if (!catalysts.contains(item)) {
@@ -377,7 +381,7 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -396,14 +400,14 @@ public class BlockEntityManaPoolPattern extends RecipeTile<RecipeInput, ManaInfu
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(this.getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }

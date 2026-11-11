@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalRunicAltar.ContainerRunicAltarUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenAddInventory;
@@ -74,16 +76,16 @@ public class ScreenRunicAltarUltimate extends ExtraScreenBase<ContainerRunicAlta
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
         for (int i = 0; i < 3; i++){
-            if (blockEntity.getInventory().getStackInSlot(i).isEmpty() && this.minecraft != null) {
+            if (Inventories.get(blockEntity.getInventory(), i).isEmpty() && this.minecraft != null) {
                 GhostItemRenderer.renderGhostItem(new ItemStack(BotaniaBlocks.livingrock), guiGraphics, this.leftPos + 81 + i * 18 + i, this.topPos + 100);
             }
         }
 
-        if (blockEntity.getInventory().getStackInSlot(3).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 3).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(blockEntity.getUpgrades(), guiGraphics, this.leftPos + 45, this.topPos + 100);
         }
 
-        if (blockEntity.getInventory().getStackInSlot(4).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 4).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(blockEntity.getUpgrades(), guiGraphics, this.leftPos + 155, this.topPos + 100);
         }
 

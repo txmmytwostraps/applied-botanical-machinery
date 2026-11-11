@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalRunicAltar;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarBase;
@@ -23,7 +25,7 @@ public class RendererRunicAltarBase extends RotatedBlockRenderer<BlockEntityRuni
 
     protected void doRender(@Nonnull BlockEntityRunicAltarBase tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.RunicAltarSettings.runicAltarBase) {
-            ItemStack livingRockStack = tile.getInventory().getStackInSlot(0);
+            ItemStack livingRockStack = Inventories.get(tile.getInventory(), 0);
             if (!livingRockStack.isEmpty() && livingRockStack.getItem() instanceof BlockItem) {
                 BlockState state = ((BlockItem)livingRockStack.getItem()).getBlock().defaultBlockState();
                 poseStack.pushPose();
@@ -41,7 +43,7 @@ public class RendererRunicAltarBase extends RotatedBlockRenderer<BlockEntityRuni
             int items = 0;
 
             for(int slot = 1; slot < 17; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     ++items;
                 }
             }
@@ -58,7 +60,7 @@ public class RendererRunicAltarBase extends RotatedBlockRenderer<BlockEntityRuni
             int nextAngleIdx = 0;
 
             for(int slot = 1; slot < 17; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     double travelCenter = 1.0;
                     boolean shrink = false;
                     if (tile.isSlotUsedCurrently(slot)) {
@@ -83,7 +85,7 @@ public class RendererRunicAltarBase extends RotatedBlockRenderer<BlockEntityRuni
                         poseStack.scale(0.3F, 0.3F, 0.3F);
                     }
 
-                    ItemStack stack = tile.getInventory().getStackInSlot(slot);
+                    ItemStack stack = Inventories.get(tile.getInventory(), slot);
                     Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
                     poseStack.popPose();
                 }

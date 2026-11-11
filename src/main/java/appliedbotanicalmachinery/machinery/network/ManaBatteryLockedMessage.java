@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 
 public record ManaBatteryLockedMessage(BlockPos pos, boolean locked1, boolean locked2) implements CustomPacketPayload {
 
-    public static final Type<ManaBatteryLockedMessage> TYPE = new Type<>(AppliedBotanicalMachinery.getInstance().resource("mana_battery_locked"));
+    public static final Type<ManaBatteryLockedMessage> TYPE = new Type<>(AppliedBotanicalMachinery.getInstance().id("mana_battery_locked"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ManaBatteryLockedMessage> CODEC = StreamCodec.of(
             (buffer, msg) -> {

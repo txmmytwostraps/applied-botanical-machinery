@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
@@ -13,8 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.moddingx.libx.crafting.RecipeHelper;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
@@ -36,7 +39,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
     public BlockEntityAlfheimMarket(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, pos, state, LibXServerConfig.MaxManaCapacity.alfheimMarket, 0, 4);
         this.inventory = BaseItemStackHandler.builder(5)
-                .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack), 0, 1, 2, 3)
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack), 0, 1, 2, 3)
                 .output(4)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -48,7 +51,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.runRecipeTick(() -> this.currentInput = ItemStack.EMPTY, (stack, slot) -> this.currentInput = stack.copy(), (stack, slot) -> {
             });
             if (this.recipe != null) {
@@ -63,7 +66,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
             }
             if (this.getCurrentMana() > 0) {
                 for (int slot = 0; slot < 4; slot++) {
-                    if (this.inventory.getStackInSlot(slot).getItem() == Items.BREAD) {
+                    if (Inventories.get(this.inventory, slot).getItem() == Items.BREAD) {
                         this.level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
                         this.level.explode(null, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), 3, Level.ExplosionInteraction.BLOCK);
                         break;
@@ -74,7 +77,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return slot -> slot == 4;
     }
 
@@ -123,7 +126,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         super.handleUpdateTag(nbt, registries);
         this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_INPUT));
         this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
@@ -132,7 +135,7 @@ public class BlockEntityAlfheimMarket extends WorkingTile<RecipeInput, ElvenTrad
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         nbt.put(TileTags.CURRENT_INPUT, this.currentInput.saveOptional(registries));
         nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));

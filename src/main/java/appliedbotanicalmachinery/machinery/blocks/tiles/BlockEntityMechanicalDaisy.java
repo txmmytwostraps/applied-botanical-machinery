@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.machinery.core.TileTags;
@@ -65,14 +69,14 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             PureDaisyRecipe recipe = this.getRecipe(i);
             if (recipe != null && this.workingTicks[i] >= 0) {
                 //noinspection ConstantConditions
-                if (!this.level.isClientSide) {
+                if (!this.level.isClientSide()) {
                     if (this.workingTicks[i] >= recipe.getTime() * LibXServerConfig.WorkingDurationMultiplier.mechanicalDaisy) {
                         BlockState state = recipe.getOutputState();
                         if (state.getBlock().asItem() != Items.AIR) {
                             //noinspection deprecation
-                            this.inventory.setStackInSlot(i, state.getBlock().getCloneItemStack(this.level, this.worldPosition, state));
+                            Inventories.set(this.inventory, i, state.getCloneItemStack(this.level, this.worldPosition, false));
                         } else if (state.getFluidState().getType() != Fluids.EMPTY) {
-                            this.inventory.setStackInSlot(i, new FluidStack(state.getFluidState().getType(), 1000));
+                            Inventories.set(this.inventory, i, new FluidStack(state.getFluidState().getType(), 1000));
                         }
                         this.workingTicks[i] = -1;
                         this.setDispatchable();
@@ -88,7 +92,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
                     this.level.addParticle(data, x, y, z, 0.0D, 0.0D, 0.0D);
                 }
             } else {
-                if (this.workingTicks[i] < 0 && !this.inventory.getStackInSlot(i).isEmpty()) {
+                if (this.workingTicks[i] < 0 && !Inventories.get(this.inventory, i).isEmpty()) {
                     this.workingTicks[i] = -1;
                 } else {
                     this.workingTicks[i] = 0;
@@ -96,7 +100,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             }
         }
         //noinspection ConstantConditions
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.ticksToNextUpdate <= 0) {
                 this.ticksToNextUpdate = 5;
                 VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
@@ -120,7 +124,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
     public BlockState getState(int slot) {
         BlockState state = null;
 
-        ItemStack stack = this.inventory.getStackInSlot(slot);
+        ItemStack stack = Inventories.get(this.inventory, slot);
         if (!stack.isEmpty()) {
             if (stack.getItem() instanceof BlockItem) {
                 state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
@@ -139,7 +143,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         if (this.level == null)
             return null;
 
-        for (RecipeHolder<PureDaisyRecipe> holder : this.level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
+        for (RecipeHolder<PureDaisyRecipe> holder : Recipes.all(this.level, BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
             if (holder.value().matches(this.level, this.worldPosition, null, state)) {
                 return holder.value();
             }
@@ -166,7 +170,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         super.handleUpdateTag(nbt, registries);
         if (nbt.contains(TileTags.INVENTORY)) {
             this.inventory.deserializeNBT(registries, nbt.getCompound(TileTags.INVENTORY));
@@ -179,7 +183,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         nbt.put(TileTags.INVENTORY, this.inventory.serializeNBT(registries));
         nbt.putIntArray(TileTags.WORKING_TICKS, this.workingTicks);
@@ -257,7 +261,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
         @Nonnull
         @Override
         public FluidStack getFluidInTank(int tank) {
-            if (!this.getStackInSlot(tank).isEmpty()) {
+            if (!Inventories.get(this, tank).isEmpty()) {
                 // There's an item in here
                 return FluidStack.EMPTY;
             } else {
@@ -283,7 +287,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             for (int i = 0; i < 8; i++) {
                 if (leftToFill <= 0)
                     break;
-                if (!this.getStackInSlot(i).isEmpty())
+                if (!Inventories.get(this, i).isEmpty())
                     continue;
                 if (this.fluids.get(i).getFluid() == resource.getFluid()) {
                     int transfer = Math.min(leftToFill, this.getTankCapacity(i) - this.fluids.get(i).getAmount());
@@ -299,7 +303,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             for (int i = 0; i < 8; i++) {
                 if (leftToFill <= 0)
                     break;
-                if (!this.getStackInSlot(i).isEmpty())
+                if (!Inventories.get(this, i).isEmpty())
                     continue;
                 if (this.fluids.get(i).isEmpty()) {
                     int transfer = Math.min(leftToFill, this.getTankCapacity(i));
@@ -321,7 +325,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             for (int i = 0; i < 8; i++) {
                 if (leftToDrain <= 0)
                     break;
-                if (!this.getStackInSlot(i).isEmpty())
+                if (!Inventories.get(this, i).isEmpty())
                     continue;
                 if (this.fluids.get(i).getFluid() == resource.getFluid()) {
                     int transfer = Math.min(this.fluids.get(i).getAmount(), leftToDrain);
@@ -351,7 +355,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
             for (int i = 0; i < 8; i++) {
                 if (leftToDrain <= 0)
                     break;
-                if (!this.getStackInSlot(i).isEmpty())
+                if (!Inventories.get(this, i).isEmpty())
                     continue;
                 if (drainFluid == null || drainFluid == this.fluids.get(i).getFluid()) {
                     int transfer = Math.min(this.fluids.get(i).getAmount(), leftToDrain);
@@ -399,7 +403,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
 
         @Override
         protected void onContentsChanged(int slot) {
-            if (slot >= 0 && slot < 8 && this.getStackInSlot(slot).isEmpty() && this.getFluidInTank(slot).isEmpty()) {
+            if (slot >= 0 && slot < 8 && Inventories.get(this, slot).isEmpty() && this.getFluidInTank(slot).isEmpty()) {
                 BlockEntityMechanicalDaisy.this.workingTicks[slot] = 0;
             }
             BlockEntityMechanicalDaisy.this.setChanged();

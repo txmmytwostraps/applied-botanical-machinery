@@ -1,6 +1,6 @@
 package appliedbotanicalmachinery.machinery.config;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.moddingx.libx.annotation.config.RegisterConfig;
 import org.moddingx.libx.config.Config;
 import org.moddingx.libx.config.Group;
@@ -12,8 +12,8 @@ public class LibXServerConfig {
 
     @Config
     public static ResourceList autoExportAllowed = new ResourceList(true, builder -> {
-        builder.simple(ResourceLocation.fromNamespaceAndPath("ae2", "pattern_provider"));
-        builder.simple(ResourceLocation.fromNamespaceAndPath("ae2", "cable_bus"));
+        builder.simple(Identifier.fromNamespaceAndPath("ae2", "pattern_provider"));
+        builder.simple(Identifier.fromNamespaceAndPath("ae2", "cable_bus"));
     });
 
     @Group("The amount of mana used in alfheim market to trade items [Default: 500]")

@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -26,7 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -80,11 +82,11 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
             petalBlockUpgrade = false;
 
             for (int slotUpgrade: UPGRADE_SLOT){
-                if (!this.getInventory().getStackInSlot(slotUpgrade).isEmpty() && this.getInventory().getStackInSlot(slotUpgrade).getItem() == ModItems.catalystPetal.asItem()){
+                if (!Inventories.get(this.getInventory(), slotUpgrade).isEmpty() && Inventories.get(this.getInventory(), slotUpgrade).getItem() == ModItems.catalystPetal.asItem()){
                     petalUpgrade = true;
                 }
 
-                if (!this.getInventory().getStackInSlot(slotUpgrade).isEmpty() && this.getInventory().getStackInSlot(slotUpgrade).getItem() == ModItems.catalystPetalBlock.asItem()){
+                if (!Inventories.get(this.getInventory(), slotUpgrade).isEmpty() && Inventories.get(this.getInventory(), slotUpgrade).getItem() == ModItems.catalystPetalBlock.asItem()){
                     petalBlockUpgrade = true;
                 }
             }
@@ -93,15 +95,15 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
     @Override
     public void tick() {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
 
         if (!this.getMainNode().isReady()) {
             this.getMainNode().create(this.level, this.getBlockPos());
         }
 
         if (this.getCurrentMana() != this.getMaxMana()){
-            if (inventory.getStackInSlot(0).getItem() == ModItems.catalystManaInfinity ||
-                    inventory.getStackInSlot(1).getItem() == ModItems.catalystManaInfinity){
+            if (Inventories.get(inventory, 0).getItem() == ModItems.catalystManaInfinity ||
+                    Inventories.get(inventory, 1).getItem() == ModItems.catalystManaInfinity){
                 this.receiveMana(this.getMaxMana());
             }
         }
@@ -143,7 +145,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
                     flowerOrPetal = BotaniaBlocks.getFlower(color).defaultBlockState().getBlock().asItem();
                 }
 
-                ItemStack itemSlot = this.getInventory().getStackInSlot(dyeIndex + FIRST_OUTPUT_SLOT);
+                ItemStack itemSlot = Inventories.get(this.getInventory(), dyeIndex + FIRST_OUTPUT_SLOT);
                 if (itemSlot.isEmpty() || ((itemSlot.is(flowerOrPetal)) && itemSlot.getCount() != itemSlot.getMaxStackSize())){
 
                     ItemStack addItem = new ItemStack(flowerOrPetal);
@@ -160,12 +162,12 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
                     }
 
 
-                    if (this.getInventory().getStackInSlot(dyeIndex + FIRST_OUTPUT_SLOT).getCount() ==
-                            this.getInventory().getStackInSlot(dyeIndex + FIRST_OUTPUT_SLOT).getMaxStackSize()) continue;
+                    if (Inventories.get(this.getInventory(), dyeIndex + FIRST_OUTPUT_SLOT).getCount() ==
+                            Inventories.get(this.getInventory(), dyeIndex + FIRST_OUTPUT_SLOT).getMaxStackSize()) continue;
 
                     if (this.getCurrentMana() - mana < 0) break;
 
-                    this.getInventory().setStackInSlot(dyeIndex + FIRST_OUTPUT_SLOT, addItem);
+                    Inventories.set(this.getInventory(), dyeIndex + FIRST_OUTPUT_SLOT, addItem);
                     this.receiveMana(-mana);
                 }
             }
@@ -177,7 +179,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i <= LAST_OUTPUT_SLOT; i++){
-            if (!inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -207,7 +209,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     @Override
     public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.cooldown = nbt.getInt("cooldown");
             this.petalUpgrade = nbt.getBoolean("petalUpgrade");
             this.petalBlockUpgrade = nbt.getBoolean("petalUpgradeBlock");
@@ -215,7 +217,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> supplier) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> supplier) {
         return (slot) -> {
             return slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
         };
@@ -230,7 +232,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     @NotNull
     @Override
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -291,7 +293,7 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -310,14 +312,14 @@ public class BlockEntityJadedAmaranthus extends ExtraBotanicalTile implements II
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(this.getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }

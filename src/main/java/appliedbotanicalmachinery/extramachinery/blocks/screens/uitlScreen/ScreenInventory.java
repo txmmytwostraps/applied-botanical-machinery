@@ -1,7 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen;
 
 import appliedbotanicalmachinery.extramachinery.core.LibResources;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ScreenInventory {
 
@@ -12,14 +12,14 @@ public enum ScreenInventory {
     OTHER("other", LibResources.OTHER_INVENTORY, 188, 95, 2, 80, 83);
 
     private final String name;
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     private final int width;
     private final int height;
     private final int offset;
     private final int xFirstCenterSlot;
     private final int yFirstBottomSlot;
 
-    private ScreenInventory(String name, ResourceLocation resourceLocation, int width, int height, int offset, int xFirstCenterSlot, int yFirstBottomSlot){
+    private ScreenInventory(String name, Identifier resourceLocation, int width, int height, int offset, int xFirstCenterSlot, int yFirstBottomSlot){
         this.name = name;
         this.resourceLocation = resourceLocation;
         this.width = width;
@@ -32,7 +32,7 @@ public enum ScreenInventory {
     public String getName(){
         return name;
     }
-    public ResourceLocation getResourceLocation(){
+    public Identifier getResourceLocation(){
         return resourceLocation;
     }
 

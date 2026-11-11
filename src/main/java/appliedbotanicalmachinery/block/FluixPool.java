@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.block;
 
+import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +37,7 @@ public class FluixPool extends ManaPoolBlock {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
         var pool = (FluixPoolBlockEntity) world.getBlockEntity(pos);
         return pool != null ? pool.calculateComparatorLevel() : 0;
     }

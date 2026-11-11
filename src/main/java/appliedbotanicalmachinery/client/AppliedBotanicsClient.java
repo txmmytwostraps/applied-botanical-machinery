@@ -1,7 +1,7 @@
 package appliedbotanicalmachinery.client;
 
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -23,10 +23,10 @@ public class AppliedBotanicsClient {
 
     private void registerItemColors(RegisterColorHandlersEvent.Item event) {
         ItemColor cells = (stack, tintIndex) -> {
-            return FastColor.ARGB32.opaque(BasicStorageCell.getColor(stack, tintIndex));
+            return ARGB.opaque(BasicStorageCell.getColor(stack, tintIndex));
         };
         ItemColor portableCells = (stack, tintIndex) -> {
-            return FastColor.ARGB32.opaque(PortableCellItem.getColor(stack, tintIndex));
+            return ARGB.opaque(PortableCellItem.getColor(stack, tintIndex));
         };
 
         for (var tier : ABItems.Tier.values()) {

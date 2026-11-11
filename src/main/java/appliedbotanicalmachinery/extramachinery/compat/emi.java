@@ -6,7 +6,7 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 
@@ -60,7 +60,7 @@ public class emi implements EmiPlugin {
                 ModBlocks.ultimateManaInfuser != null) {
             // Masterful Botany has no EMI plugin of its own; attach only if one shows up as masterfulbotany:infuser
             // Try to attach by scanning for a matching category id at runtime.
-            tryAttachById(registry, ResourceLocation.fromNamespaceAndPath("masterfulbotany", "infuser"),
+            tryAttachById(registry, Identifier.fromNamespaceAndPath("masterfulbotany", "infuser"),
                     new ItemStack(ModBlocks.baseManaInfuser),
                     new ItemStack(ModBlocks.upgradedManaInfuser),
                     new ItemStack(ModBlocks.advancedManaInfuser),
@@ -73,7 +73,7 @@ public class emi implements EmiPlugin {
         }
     }
 
-    private static void tryAttachById(EmiRegistry registry, ResourceLocation id, ItemStack... stacks) {
+    private static void tryAttachById(EmiRegistry registry, Identifier id, ItemStack... stacks) {
         // Best-effort: resolve an existing category by ID via the live EMI manager
         dev.emi.emi.api.recipe.EmiRecipeManager mgr = dev.emi.emi.api.EmiApi.getRecipeManager();
         for (dev.emi.emi.api.recipe.EmiRecipeCategory cat : mgr.getCategories()) {

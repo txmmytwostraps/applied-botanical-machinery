@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -33,9 +37,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
@@ -84,7 +87,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
 
         if (UPGRADE_SLOT != -1) {
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator( (stack) -> {return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator( (stack) -> {return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .validator( (stack) -> {return stack.getItem() == ModItems.catalystManaInfinity.asItem(); }, UPGRADE_SLOT)
                     .slotLimit(1, UPGRADE_SLOT)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
@@ -92,7 +95,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
                     .build();
         } else {
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator( (stack) -> {return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator( (stack) -> {return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .contentsChanged(() -> {this.setChanged(); this.setDispatchable(); this.needsRecipeUpdate();})
                     .build();
@@ -105,12 +108,12 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
     //region Base
 
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (!this.getMainNode().isReady()){
                 this.getMainNode().create(this.level, this.getBlockPos());
             }
 
-            isInfinityMana = UPGRADE_SLOT != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT).getItem().asItem() == ModItems.catalystManaInfinity;
+            isInfinityMana = UPGRADE_SLOT != -1 && Inventories.get(this.inventory, UPGRADE_SLOT).getItem().asItem() == ModItems.catalystManaInfinity;
 
             this.runRecipeTick(
                     () -> {this.currentInput = ItemStack.EMPTY;},
@@ -144,7 +147,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
 
             if (this.getCurrentMana() > 0) {
                 for(int slot = 0; slot < 4; ++slot) {
-                    if (this.inventory.getStackInSlot(slot).getItem() == Items.BREAD) {
+                    if (Inventories.get(this.inventory, slot).getItem() == Items.BREAD) {
                         this.level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
                         this.level.explode(null, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), 3.0F, Level.ExplosionInteraction.BLOCK);
                         break;
@@ -157,7 +160,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i < LAST_OUTPUT_SLOT + 1; i++){
-            if (!this.inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(this.inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -165,7 +168,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
         return false;
     }
 
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return (slot) -> {
             return slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
         };
@@ -220,7 +223,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
     }
 
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             super.handleUpdateTag(nbt, registries);
             this.currentInput = ItemStack.parseOptional(registries, nbt.getCompound("currentInput"));
             this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound("currentOutput"));
@@ -229,7 +232,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
 
     @Nonnull
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -299,7 +302,7 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -313,14 +316,14 @@ public class BlockEntityAlfheimMarketPattern extends WorkingTile<RecipeInput, El
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(this.getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }

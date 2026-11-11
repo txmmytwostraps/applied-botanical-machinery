@@ -3,7 +3,7 @@ package appliedbotanicalmachinery.extramachinery.compat;
 import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.fml.ModList;
 
 /**
@@ -12,7 +12,7 @@ import net.neoforged.fml.ModList;
  */
 public final class LargeManaCellsClient {
 
-    private static final ResourceLocation CELL_RECIPE = AppliedBotanics.id("cells/mana_storage_cell_1m_storage");
+    private static final Identifier CELL_RECIPE = AppliedBotanics.id("cells/mana_storage_cell_1m_storage");
 
     private LargeManaCellsClient() {
     }

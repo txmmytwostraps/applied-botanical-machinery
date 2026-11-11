@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalDaisy;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenAddInventory;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenDrawLabelText;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenInventory;
@@ -54,7 +56,7 @@ public class ScreenDaisyUltimate extends ExtraScreenBase<ContainerDaisyUltimate>
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.ultimate_daisy",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 3);
 
-        if (blockEntity.getInventoryUpgrade() != null && blockEntity.getInventoryUpgrade().getStackInSlot(0).isEmpty() && this.minecraft != null) {
+        if (blockEntity.getInventoryUpgrade() != null && Inventories.get(blockEntity.getInventoryUpgrade(), 0).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(blockEntity.getUpgrades(), guiGraphics, this.leftPos + 166, this.topPos + 105);
         }
 

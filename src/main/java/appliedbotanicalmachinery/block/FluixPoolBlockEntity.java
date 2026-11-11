@@ -173,7 +173,7 @@ public class FluixPoolBlockEntity extends ManaPoolBlockEntity
         // Clientside is marked immediately as dirty as there is no queue processing
         // Serverside is only queued once per tick to avoid costly operations
         // TODO: Evaluate if this is still necessary
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             this.setChanged();
         } else {
             this.level.blockEntityChanged(this.worldPosition);

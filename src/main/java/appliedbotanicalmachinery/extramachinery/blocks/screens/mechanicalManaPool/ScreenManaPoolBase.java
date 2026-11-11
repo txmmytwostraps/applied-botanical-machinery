@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalManaPool;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalAlfheimMarket.ContainerAlfheimMarketBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalManaPool.ContainerManaPoolBase;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
@@ -66,7 +68,7 @@ public class ScreenManaPoolBase extends ExtraScreenBase<ContainerManaPoolBase> {
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.base_mana_pool",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
-        if (blockEntity.getInventory().getStackInSlot(0).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 0).isEmpty() && this.minecraft != null) {
                 GhostItemRenderer.renderGhostItem(blockEntity.getCatalysts().stream().map(ItemStack::new).toList(), guiGraphics, this.leftPos + 98, this.topPos + 76);
         }
 

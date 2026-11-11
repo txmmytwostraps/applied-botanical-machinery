@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalManaPool;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalManaPool;
@@ -26,7 +28,7 @@ public class ScreenMechanicalManaPool extends ScreenBase<ContainerMenuMechanical
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_MANA_POOL_GUI);
 
         BlockEntityMechanicalManaPool blockEntity = this.menu.getBlockEntity();
-        if (blockEntity.getInventory().getStackInSlot(0).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 0).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(blockEntity.getCatalysts().stream().map(ItemStack::new).toList(), guiGraphics, this.relX + 53, this.relY + 47);
         }
     }

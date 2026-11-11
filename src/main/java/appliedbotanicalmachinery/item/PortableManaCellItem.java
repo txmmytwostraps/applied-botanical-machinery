@@ -1,11 +1,15 @@
 package appliedbotanicalmachinery.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,14 +43,14 @@ public class PortableManaCellItem extends AbstractPortableCell implements IManaC
     }
 
     @Override
-    public ResourceLocation getRecipeId() {
+    public Identifier getRecipeId() {
         return AppliedBotanics.id(Objects.requireNonNull(getRegistryName()).getPath());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> lines,
             TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
         addCellInformationToTooltip(stack, lines);
     }
 

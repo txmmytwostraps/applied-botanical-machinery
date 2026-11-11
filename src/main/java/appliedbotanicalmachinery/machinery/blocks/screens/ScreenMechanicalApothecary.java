@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalApothecary;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalApothecary;
@@ -49,7 +51,7 @@ public class ScreenMechanicalApothecary extends AbstractContainerScreen<Containe
 
         guiGraphics.blit(LibResources.MECHANICAL_APOTHECARY_GUI, this.relX, this.relY, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (this.tile.getInventory().getStackInSlot(0).isEmpty()) {
+        if (Inventories.get(this.tile.getInventory(), 0).isEmpty()) {
             //noinspection DataFlowIssue,OptionalGetWithoutIsPresent
             List<ItemStack> items = this.minecraft.level.registryAccess().registry(Registries.ITEM).get().getOrCreateTag(Tags.Items.SEEDS).stream().map(Holder::value).map(ItemStack::new).toList();
             GhostItemRenderer.renderGhostItem(items, guiGraphics, this.relX + 90, this.relY + 43);

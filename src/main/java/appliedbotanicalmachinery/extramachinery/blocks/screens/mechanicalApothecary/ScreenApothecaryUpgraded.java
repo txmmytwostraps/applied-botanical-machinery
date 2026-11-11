@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalApothecary;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalApothecary.ContainerApothecaryUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenAddInventory;
@@ -70,7 +72,7 @@ public class ScreenApothecaryUpgraded extends ExtraScreenBase<ContainerApothecar
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.upgraded_apothecary",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
-        if (this.blockEntity.getInventory().getStackInSlot(0).isEmpty()) {
+        if (Inventories.get(this.blockEntity.getInventory(), 0).isEmpty()) {
             GhostItemRenderer.renderGhostItem(items, guiGraphics, this.leftPos + 90, this.topPos + 95);
         }
 

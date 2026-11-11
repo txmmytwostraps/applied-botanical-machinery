@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.pattern;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionSource;
@@ -30,10 +34,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.RunicAltarRecipe;
 import velrondevs.botania.client.fx.SparkleParticleData;
@@ -98,20 +101,20 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
                     .validator((stack) -> {return stack.getItem() == BotaniaBlocks.livingrock.asItem();}, LIVINGROCK_SLOT_1, LIVINGROCK_SLOT_2, LIVINGROCK_SLOT_3)
                     .validator((stack) -> {return (stack.getItem() == ModItems.catalystManaInfinity.asItem() || stack.getItem() == ModItems.catalystLivingRockInfinity.asItem());}, UPGRADE_SLOT_1)
                     .validator((stack) -> {return (stack.getItem() == ModItems.catalystManaInfinity.asItem() || stack.getItem() == ModItems.catalystLivingRockInfinity.asItem()) ;}, UPGRADE_SLOT_2)
-                    .validator((stack) -> {return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> {return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2).output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         } else if (isUpgrade[0]){
             inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
                     .validator((stack) -> {return stack.getItem() == BotaniaBlocks.livingrock.asItem();}, LIVINGROCK_SLOT_1, LIVINGROCK_SLOT_2, LIVINGROCK_SLOT_3)
                     .validator((stack) -> {return stack.getItem() == ModItems.catalystManaInfinity.asItem() || stack.getItem() == ModItems.catalystLivingRockInfinity.asItem();}, UPGRADE_SLOT_1)
-                    .validator((stack) -> {return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> {return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2).output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         } else {
             inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
                     .validator((stack) -> {return stack.getItem() == BotaniaBlocks.livingrock.asItem();}, LIVINGROCK_SLOT_1, LIVINGROCK_SLOT_2, LIVINGROCK_SLOT_3)
-                    .validator((stack) -> {return this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> {return this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.RUNE_TYPE, stack);}, Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2).output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1)).contentsChanged(() -> {this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
         }
@@ -128,11 +131,11 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
         for (int i = 0; i < 3; i++){
             if (livingRockBuffer == 0) break;
 
-            if (this.inventory.getStackInSlot(i).isEmpty()) continue;
+            if (Inventories.get(this.inventory, i).isEmpty()) continue;
 
             int old = livingRockBuffer;
-            livingRockBuffer = livingRockBuffer > this.inventory.getStackInSlot(i).getCount() ? livingRockBuffer - this.inventory.getStackInSlot(i).getCount(): 0;
-            this.inventory.extractItem(0, livingRockBuffer == 0 ? old : this.inventory.getStackInSlot(i).getCount(), false);
+            livingRockBuffer = livingRockBuffer > Inventories.get(this.inventory, i).getCount() ? livingRockBuffer - Inventories.get(this.inventory, i).getCount(): 0;
+            Inventories.extract(this.inventory, 0, livingRockBuffer == 0 ? old : Inventories.get(this.inventory, i).getCount(), false);
         }
     }
 
@@ -155,7 +158,7 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
 
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (!this.getMainNode().isReady()){
                 this.getMainNode().create(this.level, this.getBlockPos());
             }
@@ -172,17 +175,17 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
                 }
             }
 
-            if (!this.inventory.getStackInSlot(0).isEmpty() && livingRockBuffer != 0) bufferCheck();
+            if (!Inventories.get(this.inventory, 0).isEmpty() && livingRockBuffer != 0) bufferCheck();
 
 
             isInfinityMana = (
-                (UPGRADE_SLOT_1 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_1).getItem() == ModItems.catalystManaInfinity) ||
-                (UPGRADE_SLOT_2 != -1 && this.inventory.getStackInSlot(UPGRADE_SLOT_2).getItem() == ModItems.catalystManaInfinity)
+                (UPGRADE_SLOT_1 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_1).getItem() == ModItems.catalystManaInfinity) ||
+                (UPGRADE_SLOT_2 != -1 && Inventories.get(this.inventory, UPGRADE_SLOT_2).getItem() == ModItems.catalystManaInfinity)
             );
 
-            if (inventory.getStackInSlot(LIVINGROCK_SLOT_1).isEmpty() ||
-                inventory.getStackInSlot(LIVINGROCK_SLOT_2).isEmpty() ||
-                inventory.getStackInSlot(LIVINGROCK_SLOT_3).isEmpty()) {
+            if (Inventories.get(inventory, LIVINGROCK_SLOT_1).isEmpty() ||
+                Inventories.get(inventory, LIVINGROCK_SLOT_2).isEmpty() ||
+                Inventories.get(inventory, LIVINGROCK_SLOT_3).isEmpty()) {
 
                 if (getSlotUpgrade1().is(ModItems.catalystLivingRockInfinity) || getSlotUpgrade2().is(ModItems.catalystLivingRockInfinity)) {
                     addLivingRockSlots();
@@ -197,8 +200,8 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
         } else if (this.level != null && LibXClientConfig.RenderingVisualContent.all && settingPattern.getConfigBoolean("mechanicalRunicAltarRender") && this.getMaxProgress() > 0 && this.getProgress() >= this.getMaxProgress() - 5 * this.getMaxManaPerTick()) {
             for (int i = 0; i < 5; ++i) {
-                SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), 10);
-                this.level.addParticle(data, (double) this.worldPosition.getX() + 0.3 + this.level.random.nextDouble() * 0.4, (double) this.worldPosition.getY() + 0.7, (double) this.worldPosition.getZ() + 0.3 + this.level.random.nextDouble() * 0.4, 0.0, 0.0, 0.0);
+                SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), 10);
+                this.level.addParticle(data, (double) this.worldPosition.getX() + 0.3 + this.level.getRandom().nextDouble() * 0.4, (double) this.worldPosition.getY() + 0.7, (double) this.worldPosition.getZ() + 0.3 + this.level.getRandom().nextDouble() * 0.4, 0.0, 0.0, 0.0);
             }
         }
     }
@@ -207,14 +210,14 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
         if (UPGRADE_SLOT_1 == -1){
             return ItemStack.EMPTY;
         }
-        return inventory.getStackInSlot(UPGRADE_SLOT_1);
+        return Inventories.get(inventory, UPGRADE_SLOT_1);
     }
 
     public ItemStack getSlotUpgrade2(){
         if (UPGRADE_SLOT_2 == -1){
             return ItemStack.EMPTY;
         }
-        return inventory.getStackInSlot(UPGRADE_SLOT_2);
+        return Inventories.get(inventory, UPGRADE_SLOT_2);
     }
 
     public void addLivingRockSlots(){
@@ -222,16 +225,16 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
         livingrock.setCount(64);
 
         if (LIVINGROCK_SLOT_1 == LIVINGROCK_SLOT_2 && LIVINGROCK_SLOT_2 == LIVINGROCK_SLOT_3
-                && inventory.getStackInSlot(LIVINGROCK_SLOT_1).isEmpty()){
-            inventory.setStackInSlot(LIVINGROCK_SLOT_1, livingrock);
+                && Inventories.get(inventory, LIVINGROCK_SLOT_1).isEmpty()){
+            Inventories.set(inventory, LIVINGROCK_SLOT_1, livingrock);
         } else{
-            if (inventory.getStackInSlot(LIVINGROCK_SLOT_1).isEmpty()) inventory.setStackInSlot(LIVINGROCK_SLOT_1, livingrock);
-            else if (inventory.getStackInSlot(LIVINGROCK_SLOT_2).isEmpty()) inventory.setStackInSlot(LIVINGROCK_SLOT_2, livingrock);
-            else if (inventory.getStackInSlot(LIVINGROCK_SLOT_3).isEmpty()) inventory.setStackInSlot(LIVINGROCK_SLOT_3, livingrock);
+            if (Inventories.get(inventory, LIVINGROCK_SLOT_1).isEmpty()) Inventories.set(inventory, LIVINGROCK_SLOT_1, livingrock);
+            else if (Inventories.get(inventory, LIVINGROCK_SLOT_2).isEmpty()) Inventories.set(inventory, LIVINGROCK_SLOT_2, livingrock);
+            else if (Inventories.get(inventory, LIVINGROCK_SLOT_3).isEmpty()) Inventories.set(inventory, LIVINGROCK_SLOT_3, livingrock);
         }
     }
 
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return (slot) -> {
             return slot >= FIRST_OUTPUT_SLOT && slot <= LAST_OUTPUT_SLOT;
         };
@@ -243,16 +246,16 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
     }
 
     protected boolean canMatchRecipes() {
-        return !this.inventory.getStackInSlot(LIVINGROCK_SLOT_1).isEmpty() ||
-                !this.inventory.getStackInSlot(LIVINGROCK_SLOT_2).isEmpty() ||
-                !this.inventory.getStackInSlot(LIVINGROCK_SLOT_3).isEmpty();
+        return !Inventories.get(this.inventory, LIVINGROCK_SLOT_1).isEmpty() ||
+                !Inventories.get(this.inventory, LIVINGROCK_SLOT_2).isEmpty() ||
+                !Inventories.get(this.inventory, LIVINGROCK_SLOT_3).isEmpty();
     }
 
     protected void onCrafted(RunicAltarRecipe recipe, int countCraft) {
         for (int slot: slotsLivingRock){
-            if (!inventory.getStackInSlot(slot).isEmpty()){
-                livingRockBuffer = countCraft > this.inventory.getStackInSlot(slot).getCount() ? countCraft - this.inventory.getStackInSlot(slot).getCount(): 0;
-                this.inventory.extractItem(slot, livingRockBuffer == 0 ? countCraft : this.inventory.getStackInSlot(slot).getCount(), false);
+            if (!Inventories.get(inventory, slot).isEmpty()){
+                livingRockBuffer = countCraft > Inventories.get(this.inventory, slot).getCount() ? countCraft - Inventories.get(this.inventory, slot).getCount(): 0;
+                Inventories.extract(this.inventory, slot, livingRockBuffer == 0 ? countCraft : Inventories.get(this.inventory, slot).getCount(), false);
                 if (livingRockBuffer == 0) return;
             }
         }
@@ -282,7 +285,7 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
     private boolean checkOutputSlots(){
         for (int i = FIRST_OUTPUT_SLOT; i < LAST_OUTPUT_SLOT + 1; i++){
-            if (!this.inventory.getStackInSlot(i).isEmpty()){
+            if (!Inventories.get(this.inventory, i).isEmpty()){
                 return true;
             }
         }
@@ -323,7 +326,7 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.slotsUsed.clear();
             this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray("slotsUsed")).boxed().toList());
             this.livingRockBuffer = nbt.getInt("livingRockBuffer");
@@ -332,7 +335,7 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
     @Nonnull
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -405,7 +408,7 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -419,14 +422,14 @@ public class BlockEntityRunicAltarPattern extends WorkingTile<RecipeInput, Runic
 
     private void exportResultsItemsME(){
         for (int slot = FIRST_OUTPUT_SLOT; slot <= LAST_OUTPUT_SLOT; slot++) {
-            ItemStack stackInSlot = this.inventory.getStackInSlot(slot);
+            ItemStack stackInSlot = Inventories.get(this.inventory, slot);
 
             if (!stackInSlot.isEmpty()) {
                 int getCountExport = Math.toIntExact(this.getMainNode().getGrid().getStorageService().getInventory().insert(AEItemKey.of(stackInSlot), stackInSlot.getCount(), Actionable.MODULATE, IActionSource.empty()));
 
                 if (getCountExport > 0) {
                     stackInSlot.shrink(getCountExport);
-                    this.inventory.setStackInSlot(slot, stackInSlot);
+                    Inventories.set(this.inventory, slot, stackInSlot);
                 }
             }
         }

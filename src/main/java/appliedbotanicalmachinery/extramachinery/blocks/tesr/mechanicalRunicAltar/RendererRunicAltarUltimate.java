@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalRunicAltar;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarUltimate;
@@ -23,9 +25,9 @@ public class RendererRunicAltarUltimate extends RotatedBlockRenderer<BlockEntity
 
     protected void doRender(@Nonnull BlockEntityRunicAltarUltimate tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.RunicAltarSettings.runicAltarUltimate) {
-            ItemStack livingRockStack_1 = tile.getInventory().getStackInSlot(0);
-            ItemStack livingRockStack_2 = tile.getInventory().getStackInSlot(1);
-            ItemStack livingRockStack_3 = tile.getInventory().getStackInSlot(2);
+            ItemStack livingRockStack_1 = Inventories.get(tile.getInventory(), 0);
+            ItemStack livingRockStack_2 = Inventories.get(tile.getInventory(), 1);
+            ItemStack livingRockStack_3 = Inventories.get(tile.getInventory(), 2);
             if ((!livingRockStack_1.isEmpty() && livingRockStack_1.getItem() instanceof BlockItem) ||
                     (!livingRockStack_2.isEmpty() && livingRockStack_2.getItem()instanceof BlockItem) ||
                     (!livingRockStack_3.isEmpty() && livingRockStack_3.getItem() instanceof BlockItem)) {
@@ -55,7 +57,7 @@ public class RendererRunicAltarUltimate extends RotatedBlockRenderer<BlockEntity
             int items = 0;
 
             for(int slot = 5; slot < 21; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     ++items;
                 }
             }
@@ -72,7 +74,7 @@ public class RendererRunicAltarUltimate extends RotatedBlockRenderer<BlockEntity
             int nextAngleIdx = 0;
 
             for(int slot = 5; slot < 21; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     double travelCenter = 1.0;
                     boolean shrink = false;
                     if (tile.isSlotUsedCurrently(slot)) {
@@ -97,7 +99,7 @@ public class RendererRunicAltarUltimate extends RotatedBlockRenderer<BlockEntity
                         poseStack.scale(0.3F, 0.3F, 0.3F);
                     }
 
-                    ItemStack stack = tile.getInventory().getStackInSlot(slot);
+                    ItemStack stack = Inventories.get(tile.getInventory(), slot);
                     Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
                     poseStack.popPose();
                 }

@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalAlfheimMarket.ContainerAlfheimMarketUltimate;
@@ -65,7 +67,7 @@ public class ScreenAlfheimMarketUltimate extends ExtraScreenBase<ContainerAlfhei
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.ultimate_alfheim_market",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
-        if (blockEntity.getInventory().getStackInSlot(0).isEmpty() && this.minecraft != null){
+        if (Inventories.get(blockEntity.getInventory(), 0).isEmpty() && this.minecraft != null){
             GhostItemRenderer.renderGhostItem(new ItemStack(ModItems.catalystManaInfinity), guiGraphics, this.leftPos + 90 , this.topPos + 96);
         }
 

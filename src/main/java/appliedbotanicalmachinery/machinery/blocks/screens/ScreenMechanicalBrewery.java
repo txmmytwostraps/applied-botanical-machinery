@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalBrewery;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalBrewery;
@@ -25,7 +27,7 @@ public class ScreenMechanicalBrewery extends ScreenBase<ContainerMenuMechanicalB
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_BREWERY_GUI);
 
         BlockEntityMechanicalBrewery blockEntity = this.menu.getBlockEntity();
-        if (blockEntity.getInventory().getStackInSlot(0).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 0).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(BlockEntityMechanicalBrewery.BREW_CONTAINER.stream().map(ItemStack::new).toList(), guiGraphics, this.relX + 44, this.relY + 48);
         }
 

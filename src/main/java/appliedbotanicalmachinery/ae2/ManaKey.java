@@ -8,7 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ public class ManaKey extends AEKey {
 
     public static final AEKey KEY = new ManaKey();
 
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("botania", "mana");
+    private static final Identifier ID = Identifier.fromNamespaceAndPath("botania", "mana");
 
     private ManaKey() {
     }
@@ -49,7 +49,7 @@ public class ManaKey extends AEKey {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

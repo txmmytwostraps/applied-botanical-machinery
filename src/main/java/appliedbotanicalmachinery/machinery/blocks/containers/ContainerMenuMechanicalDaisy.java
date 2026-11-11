@@ -1,10 +1,12 @@
 package appliedbotanicalmachinery.machinery.blocks.containers;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalDaisy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.BlockItem;
@@ -41,13 +43,13 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
     }
 
     @Override
-    public void clicked(int slot, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
-        if (clickType == ClickType.PICKUP && slot >= 0 && slot < 8 && !this.getCarried().isEmpty() && this.getCarried().getCount() == 1) {
+    public void clicked(int slot, int dragType, @Nonnull ContainerInput clickType, @Nonnull Player player) {
+        if (clickType == ContainerInput.PICKUP && slot >= 0 && slot < 8 && !this.getCarried().isEmpty() && this.getCarried().getCount() == 1) {
             ItemStack inMouse = this.getCarried();
 
             //noinspection ConstantConditions
             @Nullable
-            IFluidHandlerItem fluidCap = inMouse.getCapability(Capabilities.FluidHandler.ITEM);
+            IFluidHandlerItem fluidCap = inMouse.getCapability(Capabilities.Fluid.ITEM);
 
             //noinspection ConstantConditions
             if (inMouse.getItem() instanceof BlockItem || fluidCap == null || fluidCap.getTanks() != 1) {
@@ -61,16 +63,16 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
                     int transferred = fluidCap.fill(this.inventory.getFluidInTank(slot).copy(), IFluidHandler.FluidAction.EXECUTE);
                     this.inventory.getFluidInTank(slot).shrink(transferred);
                     if (this.inventory.getFluidInTank(slot).getAmount() <= 0) {
-                        this.inventory.setStackInSlot(slot, FluidStack.EMPTY);
+                        Inventories.set(this.inventory, slot, FluidStack.EMPTY);
                     }
                 }
             } else {
                 // Fill the fluid
-                if (this.inventory.getFluidInTank(slot).isEmpty() && this.inventory.getStackInSlot(slot).isEmpty()) {
+                if (this.inventory.getFluidInTank(slot).isEmpty() && Inventories.get(this.inventory, slot).isEmpty()) {
                     FluidStack maxDrain = fluidCap.drain(this.inventory.getTankCapacity(slot), IFluidHandler.FluidAction.SIMULATE);
                     if (this.inventory.isFluidValid(slot, maxDrain)) {
                         fluidCap.drain(maxDrain, IFluidHandler.FluidAction.EXECUTE);
-                        this.inventory.setStackInSlot(slot, maxDrain);
+                        Inventories.set(this.inventory, slot, maxDrain);
                     }
                 }
             }
@@ -104,7 +106,7 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
                 slot.onQuickCraft(stack, itemstack);
             } else {
                 //noinspection ConstantConditions
-                IFluidHandlerItem fluidCap = stack.getCapability(Capabilities.FluidHandler.ITEM);
+                IFluidHandlerItem fluidCap = stack.getCapability(Capabilities.Fluid.ITEM);
                 //noinspection ConstantConditions
                 if (fluidCap != null && fluidCap.getTanks() == 1) {
                     this.getSlot(index).set(this.tryToDepositFluid(fluidCap));
@@ -217,11 +219,11 @@ public class ContainerMenuMechanicalDaisy extends BlockEntityMenu<BlockEntityMec
 
     private ItemStack tryToDepositFluid(IFluidHandlerItem fluidCap) {
         for (int i = 0; i < 8; i++) {
-            if (this.inventory.getStackInSlot(i).isEmpty() && this.inventory.getFluidInTank(i).isEmpty()) {
+            if (Inventories.get(this.inventory, i).isEmpty() && this.inventory.getFluidInTank(i).isEmpty()) {
                 FluidStack maxDrain = fluidCap.drain(this.inventory.getTankCapacity(i), IFluidHandler.FluidAction.SIMULATE);
                 if (this.inventory.isFluidValid(i, maxDrain)) {
                     fluidCap.drain(maxDrain, IFluidHandler.FluidAction.EXECUTE);
-                    this.inventory.setStackInSlot(i, maxDrain);
+                    Inventories.set(this.inventory, i, maxDrain);
                 }
             }
         }

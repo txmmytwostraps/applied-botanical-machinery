@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalManaInfuser;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalManaInfuser.ContainerManaInfuserAdvanced;
@@ -71,7 +73,7 @@ public class ScreenManaInfuserAdvanced extends ExtraScreenBase<ContainerManaInfu
 
 
         for (int i = 0; i < 2; i++){
-            if (blockEntity.getInventory().getStackInSlot(i).isEmpty() && this.minecraft != null){
+            if (Inventories.get(blockEntity.getInventory(), i).isEmpty() && this.minecraft != null){
                 List<ItemStack> items = new ArrayList<>();
                 items.add(new ItemStack(ModItems.catalystManaInfinity));
                 items.add(new ItemStack(ModItems.catalystSpeed));

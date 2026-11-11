@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalRunicAltar;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalRunicAltar;
@@ -29,7 +31,7 @@ public class ScreenMechanicalRunicAltar extends ScreenBase<ContainerMenuMechanic
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_RUNIC_ALTAR_GUI);
 
         BlockEntityMechanicalRunicAltar blockEntity = this.menu.getBlockEntity();
-        if (blockEntity.getInventory().getStackInSlot(0).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(blockEntity.getInventory(), 0).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(new ItemStack(BotaniaBlocks.livingrock), guiGraphics, this.relX + 90, this.relY + 43);
         }
 

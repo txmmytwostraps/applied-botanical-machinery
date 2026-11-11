@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalApothecary;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalApothecary.ContainerApothecaryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalApothecary.ContainerApothecaryUpgraded;
@@ -72,11 +74,11 @@ public class ScreenApothecaryAdvanced extends ExtraScreenBase<ContainerApothecar
         ScreenDrawLabelText.drawLabelText(guiGraphics, this.font, "block.appliedbotanicalmachinery.advanced_apothecary",
                 new int[] {this.leftPos, this.topPos}, new int[] {this.imageWidth, this.imageHeight}, 6);
 
-        if (this.blockEntity.getInventory().getStackInSlot(0).isEmpty()) {
+        if (Inventories.get(this.blockEntity.getInventory(), 0).isEmpty()) {
             GhostItemRenderer.renderGhostItem(items, guiGraphics, this.leftPos + 100, this.topPos + 100);
         }
 
-        if (this.blockEntity.getInventory().getStackInSlot(1).isEmpty() && this.minecraft != null) {
+        if (Inventories.get(this.blockEntity.getInventory(), 1).isEmpty() && this.minecraft != null) {
             GhostItemRenderer.renderGhostItem(this.blockEntity.getUpgrades(), guiGraphics, this.leftPos + 45, this.topPos + 100);
         }
 

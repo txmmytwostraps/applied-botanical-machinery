@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +12,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -58,10 +61,9 @@ public class ManaCellItem extends Item implements IManaCellItem, AEToolItem {
 
     @Override
     @ParametersAreNonnullByDefault
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         this.disassembleDrive(player.getItemInHand(hand), level, player);
-        return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     private boolean disassembleDrive(ItemStack stack, Level level, Player player) {
@@ -73,10 +75,10 @@ public class ManaCellItem extends Item implements IManaCellItem, AEToolItem {
             var playerInventory = player.getInventory();
             var inv = StorageCells.getCellInventory(stack, null);
 
-            if (inv != null && playerInventory.getSelected() == stack) {
+            if (inv != null && playerInventory.getSelectedItem() == stack) {
                 var list = inv.getAvailableStacks();
                 if (list.isEmpty()) {
-                    playerInventory.setItem(playerInventory.selected, ItemStack.EMPTY);
+                    playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
                     // drop core
                     playerInventory.placeItemBackInInventory(new ItemStack(coreItem));
@@ -91,7 +93,7 @@ public class ManaCellItem extends Item implements IManaCellItem, AEToolItem {
 
                     return true;
                 } else {
-                    player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
+                    player.sendOverlayMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
                 }
             }
         }
@@ -101,12 +103,12 @@ public class ManaCellItem extends Item implements IManaCellItem, AEToolItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                ? InteractionResult.SUCCESS
                 : InteractionResult.PASS;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents,
             TooltipFlag tooltipFlag) {
         addCellInformationToTooltip(stack, tooltipComponents);
     }

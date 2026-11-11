@@ -1,5 +1,15 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import com.mojang.logging.LogUtils;
+
+import net.minecraft.world.item.BlockItem;
+
+import net.minecraft.world.level.storage.TagValueOutput;
+
+import net.minecraft.util.ProblemReporter;
+
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -52,7 +62,7 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
     @Override
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
-        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, (tile, side) -> tile.getItemHandler()));
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Item.BLOCK, (tile, side) -> tile.getItemHandler()));
         builder.registerNamed(null, "mana_receiver", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), BotaniaCapabilities.MANA_RECEIVER, (tile, side) -> tile.actAsMana() ? tile : null));
         builder.registerNamed(null, "spark_attachable", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), BotaniaCapabilities.SPARK_ATTACHABLE, (tile, side) -> tile.actAsMana() ? tile : null));
     }
@@ -79,10 +89,15 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
 
     @Nonnull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull BlockState state, @Nonnull HitResult target, @Nonnull LevelReader level, @Nonnull BlockPos pos, @Nonnull Player player) {
+    public ItemStack getCloneItemStack(@Nonnull LevelReader level, @Nonnull BlockPos pos, @Nonnull BlockState state, boolean includeData, @Nonnull Player player) {
         ItemStack stack = new ItemStack(this);
         if (level.getBlockEntity(pos) instanceof BotanicalTile blockEntity) {
-            blockEntity.saveToItem(stack, level.registryAccess());
+            // the machine keeps its contents when picked, with or without includeData (as before 1.21.5)
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(blockEntity.problemPath(), LogUtils.getLogger())) {
+                TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
+                blockEntity.saveCustomOnly(output);
+                BlockItem.setBlockEntityData(stack, blockEntity.getType(), output);
+            }
         }
         return stack;
     }
@@ -104,17 +119,17 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
     }
 
     @Override
-    protected int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos) {
+    protected int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, Direction direction) {
         return this.getBlockEntity(level, pos).getComparatorOutput();
     }
 
     @Override
-    protected int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
-        return (!this.fullCube) ? 0 : super.getLightBlock(state, level, pos);
+    protected int getLightDampening(@Nonnull BlockState state) {
+        return (!this.fullCube) ? 0 : super.getLightDampening(state);
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return !this.fullCube;
     }
 

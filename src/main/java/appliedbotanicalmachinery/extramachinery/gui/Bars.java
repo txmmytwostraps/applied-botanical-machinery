@@ -6,7 +6,7 @@ import appliedbotanicalmachinery.extramachinery.util.NumberFormatter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
@@ -54,7 +54,7 @@ public class Bars {
 
     public void draw(GuiGraphics guiGraphics, int[] storage, int[] maxStorage, boolean infinityUpgrade) {
         for (int i = 0; i < this.x.size(); i++){
-            ResourceLocation barRL = bars.get(i).getResourceLocation();
+            Identifier barRL = bars.get(i).getResourceLocation();
 
             if (infinityUpgrade && (bars.get(i) == AllBars.MANA || bars.get(i) == AllBars.WATER)){
                 barRL = AllBars.INFINITY_MANA.getResourceLocation();

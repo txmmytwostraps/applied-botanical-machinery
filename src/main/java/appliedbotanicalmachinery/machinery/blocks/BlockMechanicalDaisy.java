@@ -47,8 +47,8 @@ public class BlockMechanicalDaisy extends MenuBlockBE<BlockEntityMechanicalDaisy
     @Override
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
-        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, BlockEntityMechanicalDaisy::getItemHandler));
-        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getInventory()));
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Item.BLOCK, BlockEntityMechanicalDaisy::getItemHandler));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Fluid.BLOCK, (tile, side) -> tile.getInventory()));
     }
 
     @Override
@@ -66,12 +66,12 @@ public class BlockMechanicalDaisy extends MenuBlockBE<BlockEntityMechanicalDaisy
     }
 
     @Override
-    protected int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    protected int getLightDampening(@Nonnull BlockState state) {
         return 0;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
@@ -89,7 +89,7 @@ public class BlockMechanicalDaisy extends MenuBlockBE<BlockEntityMechanicalDaisy
 
     @Nonnull
     @Override
-    protected VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    protected VoxelShape getOcclusionShape(BlockState state) {
         return SHAPE;
     }
 

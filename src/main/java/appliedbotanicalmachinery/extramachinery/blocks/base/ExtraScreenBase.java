@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 
@@ -11,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.moddingx.libx.menu.BlockEntityMenu;
@@ -45,7 +47,7 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, ResourceLocation screenLocation,
+    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, Identifier screenLocation,
                                               ScreenAddInventory addInventory, int[] storageAll, int[] maxStorageAll,
                                               Bars bars, SlotInfo slotInfo) {
         if (bars != null){
@@ -82,8 +84,8 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         assert blockEntity != null;
         if (blockEntity instanceof ExtraBotanicalTile && !(blockEntity instanceof BlockEntityGreenhouse)) {
             for (Integer slot: slotInfo.getSlotUpgrade()){
-                if (((ExtraBotanicalTile) blockEntity).getInventory().getStackInSlot(slot).getItem() == ModItems.catalystManaInfinity ||
-                        ((ExtraBotanicalTile) blockEntity).getInventory().getStackInSlot(slot).getItem() == ModItems.catalystWaterInfinity){
+                if (Inventories.get(((ExtraBotanicalTile) blockEntity).getInventory(), slot).getItem() == ModItems.catalystManaInfinity ||
+                        Inventories.get(((ExtraBotanicalTile) blockEntity).getInventory(), slot).getItem() == ModItems.catalystWaterInfinity){
                     return true;
                 }
             }

@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,8 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -49,7 +51,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     protected void updateRecipeIfNeeded(Runnable doUpdate, BiConsumer<ItemStack, Integer> usedStacks) {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
         if (this.needsRecipeUpdate) {
             this.needsRecipeUpdate = false;
             doUpdate.run();
@@ -62,18 +64,18 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     protected void updateRecipe(BiConsumer<ItemStack, Integer> usedStacks) {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
         if (!this.canMatchRecipes()) {
             this.recipe = null;
             return;
         }
         IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
-        List<ItemStack> stacks = IntStream.range(this.firstInputSlot, this.firstOutputSlot).mapToObj(inventory::getStackInSlot).toList();
-        for (RecipeHolder<T> holder : this.level.getRecipeManager().getAllRecipesFor(this.recipeType)) {
+        List<ItemStack> stacks = IntStream.range(this.firstInputSlot, this.firstOutputSlot).mapToObj(slot -> Inventories.get(inventory, slot)).toList();
+        for (RecipeHolder<T> holder : Recipes.all(this.level, this.recipeType)) {
             T recipe = holder.value();
             if (this.matchRecipe(recipe, stacks)) {
                 List<ItemStack> consumedStacks = new ArrayList<>();
-                for (Ingredient ingredient : recipe.getIngredients()) {
+                for (Ingredient ingredient : this.ingredientsOf(recipe)) {
                     for (int stackIdx = 0; stackIdx < stacks.size(); stackIdx += 1) {
                         if (ingredient.test(stacks.get(stackIdx))) {
                             ItemStack theStack = stacks.get(stackIdx).copy();
@@ -85,7 +87,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
                     }
                 }
                 List<ItemStack> resultItems = this.resultItems(recipe, consumedStacks);
-                if (resultItems.isEmpty() || inventory.hasSpaceFor(resultItems, this.firstOutputSlot, inventory.getSlots())) {
+                if (resultItems.isEmpty() || inventory.hasSpaceFor(resultItems, this.firstOutputSlot, inventory.size())) {
                     this.recipe = recipe;
                 } else {
                     this.recipe = null;
@@ -101,14 +103,14 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     protected void craftRecipe(BiConsumer<ItemStack, Integer> usedStacks) {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
         if (this.recipe != null) {
             IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
             List<ItemStack> consumedStacks = new ArrayList<>();
-            for (Ingredient ingredient : this.recipe.getIngredients()) {
+            for (Ingredient ingredient : this.ingredientsOf(this.recipe)) {
                 for (int slot = this.firstInputSlot; slot < this.firstOutputSlot; slot++) {
-                    if (ingredient.test(inventory.getStackInSlot(slot))) {
-                        ItemStack extracted = inventory.extractItem(slot, 1, false);
+                    if (ingredient.test(Inventories.get(inventory, slot))) {
+                        ItemStack extracted = Inventories.extract(inventory, slot, 1, false);
                         if (!extracted.isEmpty()) {
                             consumedStacks.add(extracted.copy());
                             usedStacks.accept(extracted, slot);
@@ -132,7 +134,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
 
     // May not modify the stacks
     protected boolean matchRecipe(T recipe, List<ItemStack> stacks) {
-        return RecipeHelper.matches(recipe, stacks, false);
+        return Recipes.matches(this.ingredientsOf(recipe), stacks, false);
     }
 
     protected void onCrafted(T recipe) {
@@ -142,17 +144,17 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     // May not modify the stacks
     protected List<ItemStack> resultItems(T recipe, List<ItemStack> stacks) {
         //noinspection DataFlowIssue
-        ItemStack stack = recipe.getResultItem(this.level.registryAccess());
+        ItemStack stack = this.resultOf(recipe);
         if (stack.isEmpty()) return List.of();
         return List.of(stack.copy());
     }
 
     protected void putIntoOutputOrDrop(ItemStack stack) {
-        if (this.level == null || this.level.isClientSide) return;
+        if (this.level == null || this.level.isClientSide()) return;
         IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
         ItemStack left = stack.copy();
-        for (int slot = this.firstOutputSlot; slot < inventory.getSlots(); slot++) {
-            left = inventory.insertItem(slot, left, false);
+        for (int slot = this.firstOutputSlot; slot < inventory.size(); slot++) {
+            left = Inventories.insert(inventory, slot, left, false);
             if (left.isEmpty()) return;
         }
         if (!left.isEmpty()) {
@@ -162,7 +164,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     }
 
     protected void tryPushToAdjacentInventory() {
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             return;
         }
 
@@ -181,7 +183,7 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
                 continue;
             }
 
-            IItemHandler itemHandler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, target, dir.getOpposite());
+            IItemHandler itemHandler = this.level.getCapability(Capabilities.Item.BLOCK, target, dir.getOpposite());
             if (itemHandler == null) {
                 continue;
             }
@@ -190,24 +192,24 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
         }
 
         IAdvancedItemHandlerModifiable inventory = this.getInventory().getUnrestricted();
-        for (int i = this.firstOutputSlot; i < inventory.getSlots(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
+        for (int i = this.firstOutputSlot; i < inventory.size(); i++) {
+            ItemStack stack = Inventories.get(inventory, i);
             for (IItemHandler itemHandler : itemHandlers) {
-                stack = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+                stack = Inventories.insert(itemHandler, stack, false);
                 if (stack.isEmpty()) {
                     break;
                 }
             }
 
-            inventory.setStackInSlot(i, stack);
+            Inventories.set(inventory, i, stack);
         }
     }
 
     protected boolean hasItemsInOutputSlots() {
         IAdvancedItemHandlerModifiable inv = this.getInventory().getUnrestricted();
-        int slots = inv.getSlots();
+        int slots = inv.size();
         for (int i = this.firstOutputSlot; i < slots; i++) {
-            if (!inv.getStackInSlot(i).isEmpty()) {
+            if (!Inventories.get(inv, i).isEmpty()) {
                 return true;
             }
         }
@@ -223,5 +225,20 @@ public abstract class RecipeTile<I extends RecipeInput, T extends Recipe<I>> ext
     protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.loadAdditional(nbt, registries);
         this.needsRecipeUpdate = true;
+    }
+
+    /**
+     * The ingredients of a recipe of this machine. Override for recipes that are not Botania recipes.
+     */
+    protected List<Ingredient> ingredientsOf(T recipe) {
+        return Recipes.ingredients(recipe);
+    }
+
+    /**
+     * The result of a recipe of this machine. Override for recipes that are not Botania recipes.
+     */
+    protected ItemStack resultOf(T recipe) {
+        //noinspection DataFlowIssue
+        return Recipes.result(recipe, this.level.registryAccess());
     }
 }

@@ -18,7 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.lwjgl.opengl.GL11;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
@@ -73,13 +73,13 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
      * This can be used to add canExtract or canInsert to the wrapper used as capability. You may call the supplier
      * inside the canExtract and canInsert lambda.
      */
-    protected IItemHandler createItemHandler(Supplier<IItemHandlerModifiable> inventory) {
+    protected IItemHandler createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return new FilterItemHandler(inventory.get(), this.getExtracts(inventory), this.getInserts(inventory));
     }
 
-    protected abstract Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory);
+    protected abstract Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory);
 
-    protected BiPredicate<Integer, ItemStack> getInserts(Supplier<IItemHandlerModifiable> inventory) {
+    protected BiPredicate<Integer, ItemStack> getInserts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return null;
     }
 
@@ -116,7 +116,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         this.getInventory().deserializeNBT(registries, tag.getCompound(TileTags.INVENTORY));
         this.mana = tag.getInt(TileTags.MANA);
         if (tag.contains(TileTags.INPUT_KEY)) this.inputKey = tag.getString(TileTags.INPUT_KEY);
@@ -126,7 +126,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         nbt.put(TileTags.INVENTORY, this.getInventory().serializeNBT(registries));
         nbt.putInt(TileTags.MANA, this.getCurrentMana());

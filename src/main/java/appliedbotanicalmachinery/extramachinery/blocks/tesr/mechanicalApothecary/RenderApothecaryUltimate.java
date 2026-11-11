@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalApothecary;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -32,13 +34,13 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
         if (RenderingVisualContent.all && RenderingVisualContent.ApothecarySettings.apothecaryUltimate) {
             int items;
             double offsetPerPetal;
-            if (!tile.getInventory().getStackInSlot(0).isEmpty()) {
+            if (!Inventories.get(tile.getInventory(), 0).isEmpty()) {
                 float time = (float) ClientTickHandler.ticksInGame + partialTick;
                 poseStack.pushPose();
                 poseStack.translate(0.5, 0.89375, 0.5);
                 poseStack.scale(0.375F, 0.375F, 0.375F);
                 poseStack.mulPose(Axis.YP.rotationDegrees(time / 1.3F));
-                ItemStack stack = tile.getInventory().getStackInSlot(0);
+                ItemStack stack = Inventories.get(tile.getInventory(), 0);
                 if (tile.getProgress() > 0) {
                     items = tile.getProgress();
                     if (items > tile.getMaxProgress() / 2) {
@@ -72,7 +74,7 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
             items = 0;
 
             for(int slot = 3; slot < 19; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     ++items;
                 }
             }
@@ -86,7 +88,7 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
             boolean hasFluid = tile.getFluidInventory().getFluidAmount() > 0;
 
             for(int slot = 3; slot < 19; ++slot) {
-                if (!tile.getInventory().getStackInSlot(slot).isEmpty()) {
+                if (!Inventories.get(tile.getInventory(), slot).isEmpty()) {
                     int i = nextIdx++;
                     double offset = offsetPerPetal * (double)i;
                     double deg;
@@ -126,7 +128,7 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
                     }
 
                     poseStack.translate(-0.0625, -0.0625, -0.0625);
-                    ItemStack stack = tile.getInventory().getStackInSlot(slot);
+                    ItemStack stack = Inventories.get(tile.getInventory(), slot);
                     Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlay, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
                     poseStack.popPose();
                 }

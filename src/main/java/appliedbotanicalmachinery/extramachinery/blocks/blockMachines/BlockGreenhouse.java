@@ -39,7 +39,7 @@ public class BlockGreenhouse extends ExtraBotanicalBlock<BlockEntityGreenhouse, 
     @Override
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
-        builder.registerNamed(null, "energy_storage", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.EnergyStorage.BLOCK, (tile, side) -> tile));
+        builder.registerNamed(null, "energy_storage", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Energy.BLOCK, (tile, side) -> tile));
     }
 
     @Override
@@ -62,16 +62,6 @@ public class BlockGreenhouse extends ExtraBotanicalBlock<BlockEntityGreenhouse, 
         return SHAPE.getShape(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
     }
 
-    @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()){
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof BlockEntityGreenhouse){
-                ((BlockEntityGreenhouse) blockEntity).drops();
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 
     static {
         SHAPE = new RotationShape(box(0, 0, 0, 16, 16, 16));

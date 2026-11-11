@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.AppliedBotanics;
@@ -10,7 +12,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -21,15 +23,15 @@ import javax.annotation.Nullable;
 
 public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhouse> {
 
-    BakedModel pylonsModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/pylons")));
+    BakedModel pylonsModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/pylons")));
 
     BakedModel[] circleModels = new BakedModel[] {
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_3"))),
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_2"))),
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_1")))
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_3"))),
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_2"))),
+            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_1")))
     };
 
-    BakedModel gardenBedModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/garden_bed")));
+    BakedModel gardenBedModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/garden_bed")));
 
     public RenderGreenhouse() {
     }
@@ -106,9 +108,9 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
         poseStack.popPose();
 
 
-        for (int i = 0; i < blockEntity.getFlowerInventory().getSlots(); i++) {
-            if (!blockEntity.getFlowerInventory().getStackInSlot(i).isEmpty()) {
-                ItemStack flowerStack = blockEntity.getFlowerInventory().getStackInSlot(i);
+        for (int i = 0; i < blockEntity.getFlowerInventory().size(); i++) {
+            if (!Inventories.get(blockEntity.getFlowerInventory(), i).isEmpty()) {
+                ItemStack flowerStack = Inventories.get(blockEntity.getFlowerInventory(), i);
 
                 if (flowerStack.getItem() instanceof BlockItem blockItem) {
                     Block flowerBlock = blockItem.getBlock();
@@ -118,8 +120,8 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
                     poseStack.translate(0.4, 0.485 + bounce, 0.4);
                     poseStack.scale(0.2f, 0.2f, 0.2f);
 
-                    double flowerOffsetX = Math.cos(i * Math.PI * 2 / blockEntity.getFlowerInventory().getSlots()) * 0.7;
-                    double flowerOffsetZ = Math.sin(i * Math.PI * 2 / blockEntity.getFlowerInventory().getSlots()) * 0.7;
+                    double flowerOffsetX = Math.cos(i * Math.PI * 2 / blockEntity.getFlowerInventory().size()) * 0.7;
+                    double flowerOffsetZ = Math.sin(i * Math.PI * 2 / blockEntity.getFlowerInventory().size()) * 0.7;
 
                     poseStack.translate(flowerOffsetX , 0, flowerOffsetZ);
 

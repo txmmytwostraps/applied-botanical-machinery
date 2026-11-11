@@ -4,9 +4,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeType;
-import org.moddingx.libx.crafting.RecipeHelper;
+import appliedbotanicalmachinery.util.Recipes;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -17,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Safe/cautious approach:
  *  - Do NOT cache ItemStacks that have NBT tags (to avoid incorrect positives for NBT-sensitive ingredients)
  *  - Cache by (RecipeType, Item) for stacks without NBT and without tags
- *  - Invalidate type-specific cache if the provided RecipeManager instance changes (weak ref)
+ *  - Invalidate type-specific cache if the provided RecipeMap instance changes (weak ref)
  */
 public final class RecipeValidityCache {
 
@@ -25,12 +27,13 @@ public final class RecipeValidityCache {
 
     private RecipeValidityCache() {}
 
-    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(RecipeManager manager, RecipeType<T> type, ItemStack stack) {
+    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(Level level, RecipeType<T> type, ItemStack stack) {
+        RecipeMap manager = BotaniaRecipeTypes.recipeMap(level);
         if (stack == null || stack.isEmpty()) return false;
 
         // If stack contains NBT, don't cache — Ingredients may match based on NBT
         if (!stack.getComponentsPatch().isEmpty()) {
-            return RecipeHelper.isItemValidInput(manager, type, stack);
+            return Recipes.isItemValidInput(level, type, stack);
         }
 
         Item item = stack.getItem();
@@ -40,7 +43,7 @@ public final class RecipeValidityCache {
                 TypeCache tc = new TypeCache(manager);
                 return tc;
             } else {
-                RecipeManager ref = old.managerRef.get();
+                RecipeMap ref = old.managerRef.get();
                 if (ref == null || ref != manager) {
                     // recipe manager instance changed or was GC'd -> reset cache
                     return new TypeCache(manager);
@@ -53,7 +56,7 @@ public final class RecipeValidityCache {
         Boolean cached = typeCache.map.get(item);
         if (cached != null) return cached;
 
-        boolean res = RecipeHelper.isItemValidInput(manager, type, stack);
+        boolean res = Recipes.isItemValidInput(level, type, stack);
         typeCache.map.put(item, res);
         return res;
     }
@@ -66,10 +69,10 @@ public final class RecipeValidityCache {
     }
 
     private static final class TypeCache {
-        final WeakReference<RecipeManager> managerRef;
+        final WeakReference<RecipeMap> managerRef;
         final ConcurrentHashMap<Item, Boolean> map = new ConcurrentHashMap<>();
 
-        TypeCache(RecipeManager manager) {
+        TypeCache(RecipeMap manager) {
             this.managerRef = new WeakReference<>(Objects.requireNonNull(manager));
         }
     }

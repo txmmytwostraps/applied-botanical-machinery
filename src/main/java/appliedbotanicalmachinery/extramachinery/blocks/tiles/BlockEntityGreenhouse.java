@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
@@ -29,11 +31,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
-import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import velrondevs.botania.client.fx.WispParticleData;
 
 import java.util.*;
@@ -131,7 +132,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     public void updateUpgradeSlot(int slot){
-        if (this.upgradeInventory.getStackInSlot(slot).isEmpty()){
+        if (Inventories.get(this.upgradeInventory, slot).isEmpty()){
             switch (slot){
                 case 0 -> {
                     flowerInventory.setSlotLimits(1);
@@ -162,7 +163,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         } else {
             boolean stop = false;
             for (ItemUpgrade item: getUpgradeSlot(slot)){
-                if (this.upgradeInventory.getStackInSlot(slot).getItem() == item){
+                if (Inventories.get(this.upgradeInventory, slot).getItem() == item){
 
                     switch (slot) {
                         case 0 -> {
@@ -184,8 +185,8 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
                             stop = true;
                         }
                         case 4 -> {
-                            if (this.upgradeInventory.getStackInSlot(slot).getItem() == ModItems.upgradeTickGenMana_1) upgrade_speed_craft = ModItems.upgradeTickGenMana_1.getValueItem() / 100f;
-                            else if (this.upgradeInventory.getStackInSlot(slot).getItem() == ModItems.upgradeTickGenMana_2) upgrade_speed_craft = ModItems.upgradeTickGenMana_2.getValueItem() / 100f;
+                            if (Inventories.get(this.upgradeInventory, slot).getItem() == ModItems.upgradeTickGenMana_1) upgrade_speed_craft = ModItems.upgradeTickGenMana_1.getValueItem() / 100f;
+                            else if (Inventories.get(this.upgradeInventory, slot).getItem() == ModItems.upgradeTickGenMana_2) upgrade_speed_craft = ModItems.upgradeTickGenMana_2.getValueItem() / 100f;
                             stop = true;
                         }
                         case 5 -> {
@@ -276,7 +277,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
     public boolean isCheckFuelSlot(ItemStack fuel){
                 for (Integer slot: flowerSlots.keySet()){
-            if (GenFlowers.availableFuelItem(this.getFlowerInventory().getStackInSlot(slot), fuel)){
+            if (GenFlowers.availableFuelItem(Inventories.get(this.getFlowerInventory(), slot), fuel)){
                 return true;
             }
         }
@@ -286,29 +287,29 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
     public void reloadFuelSlots(){
         if (flowerSlots.isEmpty()) {
-            for (int slotFlower = 0; slotFlower < this.getFlowerInventory().getSlots(); slotFlower++){
+            for (int slotFlower = 0; slotFlower < this.getFlowerInventory().size(); slotFlower++){
                 flowerChanged(slotFlower);
             }
         }
     }
 
     public void flowerChanged(int slot){
-        if (!this.flowerInventory.getStackInSlot(slot).isEmpty()){
-            ItemStack itemStack = this.flowerInventory.getStackInSlot(slot);
+        if (!Inventories.get(this.flowerInventory, slot).isEmpty()){
+            ItemStack itemStack = Inventories.get(this.flowerInventory, slot);
             flowerSlots.put(slot, itemStack);
         } else flowerSlots.remove(slot);
     }
 
     public void fuelChanged(int slot){
-        if (!this.fuelInventory.getStackInSlot(slot).isEmpty()){
-            ItemStack itemStack = this.fuelInventory.getStackInSlot(slot);
+        if (!Inventories.get(this.fuelInventory, slot).isEmpty()){
+            ItemStack itemStack = Inventories.get(this.fuelInventory, slot);
             fuelSlots.put(slot, itemStack);
         } else fuelSlots.remove(slot);
     }
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             if (this.getMainNode() != null && !this.getMainNode().isReady()){
                 this.getMainNode().create(this.level, this.getBlockPos());
             }
@@ -349,14 +350,14 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
                         GenFlowers genFlowers = (GenFlowers) a.get(0);
                         int fSlot = (Integer) a.get(1);
 
-                        int[] b = receiveManaCraft(genFlowers, flower.getCount(), this.fuelInventory.getStackInSlot(fSlot).copy());
+                        int[] b = receiveManaCraft(genFlowers, flower.getCount(), Inventories.get(this.fuelInventory, fSlot).copy());
                         if (b != null){
                             int addMana = b[0];
                             int fuelExtract = b[1];
                             int removeEnergy = b[2];
 
                             IAdvancedItemHandlerModifiable inventory = this.fuelInventory.getUnrestricted();
-                            inventory.extractItem(fSlot, fuelExtract, false);
+                            Inventories.extract(inventory, fSlot, fuelExtract, false);
                             this.receiveMana(addMana);
                             this.receiveEnergy(-removeEnergy, false);
 
@@ -392,7 +393,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
                 for (int i = 0; i < 2; i++){
                     WispParticleData data = WispParticleData.wisp((float)Math.random() / 3.0F, red, green, blue, 2.0F);
                     assert this.level != null;
-                    this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.random.nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.5 + this.level.random.nextDouble() * 0.25, (double)this.worldPosition.getZ() + 0.3 + this.level.random.nextDouble() * 0.4, 0.0, this.level.random.nextFloat() / 25.0F, 0.0);
+                    this.level.addParticle(data, (double)this.worldPosition.getX() + 0.3 + this.level.getRandom().nextDouble() * 0.4, (double)this.worldPosition.getY() + 0.5 + this.level.getRandom().nextDouble() * 0.25, (double)this.worldPosition.getZ() + 0.3 + this.level.getRandom().nextDouble() * 0.4, 0.0, this.level.getRandom().nextFloat() / 25.0F, 0.0);
                 }
             }
         }
@@ -446,7 +447,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> supplier) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> supplier) {
         return (slot) -> false;
     }
 
@@ -484,10 +485,10 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
 
         this.reloadFuelSlots();
 
-        for (int i = 0; i < this.getUpgradeInventory().getSlots(); i++){
+        for (int i = 0; i < this.getUpgradeInventory().size(); i++){
             updateUpgradeSlot(i);
         }
-        for (int i = 0; i < this.getInventory().getSlots(); i++){
+        for (int i = 0; i < this.getInventory().size(); i++){
             fuelChanged(i);
         }
 
@@ -511,7 +512,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     @Override
     public void handleUpdateTag(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.getFlowerInventory().deserializeNBT(registries, nbt.getCompound("invFlower"));
             this.getUpgradeInventory().deserializeNBT(registries, nbt.getCompound("invUpgrade"));
             this.fuelInventoryEmpty = nbt.getBoolean("fuelInventoryEmpty");
@@ -519,7 +520,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
             this.energy_capacity = nbt.getInt("energyCapacity");
             this.count_heat = nbt.getInt("countHeat");
 
-            for (int i = 0; i < this.getUpgradeInventory().getSlots(); i++){
+            for (int i = 0; i < this.getUpgradeInventory().size(); i++){
                 updateUpgradeSlot(i);
             }
         }
@@ -528,7 +529,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     @NotNull
     @Override
     public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -549,15 +550,15 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         IAdvancedItemHandlerModifiable inventoryUpgrade = this.getUpgradeInventory().getUnrestricted();
         IAdvancedItemHandlerModifiable inventoryFlower = this.getFlowerInventory().getUnrestricted();
 
-        for (int i = 0; i < inventoryUpgrade.getSlots(); i++){
-            ItemStack itemStack = inventoryUpgrade.getStackInSlot(i);
+        for (int i = 0; i < inventoryUpgrade.size(); i++){
+            ItemStack itemStack = Inventories.get(inventoryUpgrade, i);
             if (itemStack.isEmpty()) continue;
             ItemEntity ie = new ItemEntity(this.level, (double)this.worldPosition.getX() + 0.5, (double)this.worldPosition.getY() + 0.7, (double)this.worldPosition.getZ() + 0.5, itemStack.copy());
             this.level.addFreshEntity(ie);
         }
 
-        for (int i = 0; i < inventoryFlower.getSlots(); i++){
-            ItemStack itemStack = inventoryFlower.getStackInSlot(i);
+        for (int i = 0; i < inventoryFlower.size(); i++){
+            ItemStack itemStack = Inventories.get(inventoryFlower, i);
             if (itemStack.isEmpty()) continue;
             ItemEntity ie = new ItemEntity(this.level, (double)this.worldPosition.getX() + 0.5, (double)this.worldPosition.getY() + 0.7, (double)this.worldPosition.getZ() + 0.5, itemStack.copy());
             this.level.addFreshEntity(ie);
@@ -568,13 +569,13 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         if (this.level == null) return;
 
         IAdvancedItemHandlerModifiable inventoryFlower = this.getFlowerInventory().getUnrestricted();
-        for (int i = 0; i < flowerInventory.getSlots(); i++){
-            ItemStack itemStack = inventoryFlower.getStackInSlot(i).copy();
+        for (int i = 0; i < flowerInventory.size(); i++){
+            ItemStack itemStack = Inventories.get(inventoryFlower, i).copy();
             if (itemStack.isEmpty()) continue;
 
             itemStack.setCount(itemStack.getCount() - this.slotLimit);
 
-            inventoryFlower.extractItem(i, itemStack.getCount(), false);
+            Inventories.extract(inventoryFlower, i, itemStack.getCount(), false);
             ItemEntity ie = new ItemEntity(this.level, (double)this.worldPosition.getX() + 0.5, (double)this.worldPosition.getY() + 0.7, (double)this.worldPosition.getZ() + 0.5, itemStack);
             this.level.addFreshEntity(ie);
         }
@@ -678,7 +679,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
     @Override
     public void saveChanges() {
         if (level != null) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 this.setChanged();
             } else {
                 this.level.blockEntityChanged(this.worldPosition);
@@ -695,4 +696,11 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements IEnergy
         return AECableType.SMART;
     }
     //endregion
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        // the block's onRemove did this before 1.21.5
+        this.drops();
+        super.preRemoveSideEffects(pos, state);
+    }
 }

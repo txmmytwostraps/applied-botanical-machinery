@@ -9,8 +9,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
+import org.moddingx.libx.menu.slot.BaseSlot;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -20,10 +20,10 @@ public class ContainerJadedAmaranthus  extends BlockEntityMenu<BlockEntityJadedA
 
     public ContainerJadedAmaranthus(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
         super(type, windowId, level, pos, player, playerContainer, 2, 18);
-        IItemHandlerModifiable inventory = this.blockEntity.getInventory();
+        IAdvancedItemHandlerModifiable inventory = this.blockEntity.getInventory();
 
-        this.addSlot(new SlotItemHandler(inventory, 0, 72, 23));
-        this.addSlot(new SlotItemHandler(inventory, 1, 108, 23));
+        this.addSlot(new BaseSlot(inventory, inventory, 0, 72, 23));
+        this.addSlot(new BaseSlot(inventory, inventory, 1, 108, 23));
 
         this.addSlotBox(inventory, 2, 27, 49, 8, 18, 2, 18, UnrestrictedOutputSlot::new);
 

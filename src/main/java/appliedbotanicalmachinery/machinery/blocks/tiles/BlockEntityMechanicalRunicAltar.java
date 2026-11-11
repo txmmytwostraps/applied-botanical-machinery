@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.google.common.collect.Range;
 import com.google.common.collect.Streams;
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
@@ -13,8 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.moddingx.libx.crafting.RecipeHelper;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.RunicAltarRecipe;
 import velrondevs.botania.client.fx.SparkleParticleData;
@@ -41,7 +44,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
         super(type, BotaniaRecipeTypes.RUNE_TYPE, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalRunicAltar, 1, 17);
         this.inventory = BaseItemStackHandler.builder(33)
                 .validator(stack -> stack.getItem() == BotaniaBlocks.livingrock.asItem(), 0)
-                .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.RUNE_TYPE, stack), Range.closedOpen(1, 17))
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.RUNE_TYPE, stack), Range.closedOpen(1, 17))
                 .output(Range.closedOpen(17, 33))
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -52,7 +55,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return slot -> slot >= 17 && slot <= 33;
     }
 
@@ -64,14 +67,14 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.runRecipeTick(this.slotsUsed::clear, (stack, slot) -> this.slotsUsed.add(slot), (stack, slot) -> {
             });
         } else if (this.level != null && LibXClientConfig.AdvancedRendering.all && LibXClientConfig.AdvancedRendering.industrialAgglomerationFactory) {
             if (this.getMaxProgress() > 0 && this.getProgress() >= (this.getMaxProgress() - (5 * this.getMaxManaPerTick()))) {
                 for (int i = 0; i < 5; ++i) {
-                    SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), 10);
-                    this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.random.nextDouble() * 0.4), this.worldPosition.getY() + 0.7, this.worldPosition.getZ() + 0.3 + (this.level.random.nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
+                    SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), 10);
+                    this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), this.worldPosition.getY() + 0.7, this.worldPosition.getZ() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
                 }
             }
         }
@@ -79,7 +82,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
 
     @Override
     protected boolean canMatchRecipes() {
-        return !this.inventory.getStackInSlot(0).isEmpty();
+        return !Inventories.get(this.inventory, 0).isEmpty();
     }
 
     @Override
@@ -92,7 +95,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
 
     @Override
     protected void onCrafted(RunicAltarRecipe recipe) {
-        this.inventory.extractItem(0, 1, false);
+        Inventories.extract(this.inventory, 0, 1, false);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         this.slotsUsed.clear();
         this.slotsUsed.addAll(Arrays.stream(nbt.getIntArray(TileTags.SLOTS_USED)).boxed().toList());
     }
@@ -133,7 +136,7 @@ public class BlockEntityMechanicalRunicAltar extends WorkingTile<RecipeInput, Ru
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         nbt.putIntArray(TileTags.SLOTS_USED, this.slotsUsed);
         return nbt;

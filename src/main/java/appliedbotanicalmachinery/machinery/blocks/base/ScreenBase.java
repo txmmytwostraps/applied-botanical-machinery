@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
@@ -53,7 +53,7 @@ public abstract class ScreenBase<X extends BlockEntityMenu<?>> extends AbstractC
         guiGraphics.drawString(this.font, this.playerInventoryTitle.getString(), 8.0F, (float) (this.imageHeight - 96 + 2), Color.DARK_GRAY.getRGB(), false);
     }
 
-    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, ResourceLocation screenLocation) {
+    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, Identifier screenLocation) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(screenLocation, this.relX, this.relY, 0, 0, this.imageWidth, this.imageHeight);

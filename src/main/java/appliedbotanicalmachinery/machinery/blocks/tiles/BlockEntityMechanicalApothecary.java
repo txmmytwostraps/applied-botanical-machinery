@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tiles;
 
+import appliedbotanicalmachinery.util.Recipes;
+
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.google.common.collect.Range;
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
@@ -18,9 +22,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.TickingBlock;
-import org.moddingx.libx.crafting.RecipeHelper;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
 import velrondevs.botania.api.recipe.CustomApothecaryColor;
 import velrondevs.botania.api.recipe.PetalApothecaryRecipe;
@@ -48,7 +51,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
         super(type, BotaniaRecipeTypes.PETAL_TYPE, pos, state, 0, 1, 17);
         this.inventory = BaseItemStackHandler.builder(21)
                 .validator(stack -> stack.is(BotaniaTags.Items.SEED_APOTHECARY_REAGENT), 0)
-                .validator(stack -> this.level != null && RecipeHelper.isItemValidInput(this.level.getRecipeManager(), BotaniaRecipeTypes.PETAL_TYPE, stack), Range.closedOpen(1, 17))
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, BotaniaRecipeTypes.PETAL_TYPE, stack), Range.closedOpen(1, 17))
                 .output(17, 18, 19, 20)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -60,7 +63,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
 
     @Override
     public void tick() {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.runRecipeTick();
             if (this.recipe != null) {
                 this.currentOutput = this.recipe.getResultItem(this.level.registryAccess()).copy();
@@ -75,18 +78,18 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
             if (this.fluidInventory.getFluidAmount() > 0) {
                 if (this.getMaxProgress() > 0 && this.getProgress() > this.getMaxProgress() - 5) {
                     for (int i = 0; i < 5; i++) {
-                        SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), this.level.random.nextFloat(), 10);
-                        this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.random.nextDouble() * 0.4), this.worldPosition.getY() + 0.6, this.worldPosition.getZ() + 0.3 + (this.level.random.nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
+                        SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), this.level.getRandom().nextFloat(), 10);
+                        this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), this.worldPosition.getY() + 0.6, this.worldPosition.getZ() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
                     }
                     this.level.playLocalSound(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5, BotaniaSounds.altarCraft, SoundSource.BLOCKS, 1.0F, 1.0F, false);
                 } else {
-                    for (int slot = 0; slot < this.inventory.getSlots(); slot++) {
-                        ItemStack stack = this.inventory.getStackInSlot(slot);
+                    for (int slot = 0; slot < this.inventory.size(); slot++) {
+                        ItemStack stack = Inventories.get(this.inventory, slot);
                         if (stack.isEmpty()) {
                             continue;
                         }
 
-                        if (this.level.random.nextFloat() >= 0.97f) {
+                        if (this.level.getRandom().nextFloat() >= 0.97f) {
                             int color = stack.getItem() instanceof CustomApothecaryColor item ? item.getParticleColor(stack) : 0x888888;
                             float red = (float) (color >> 16 & 255) / 255f;
                             float green = (float) (color >> 8 & 255) / 255f;
@@ -94,8 +97,8 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
                             if (Math.random() >= 0.75) {
                                 this.level.playSound(null, this.worldPosition, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.1F, 10.0F);
                             }
-                            SparkleParticleData data = SparkleParticleData.sparkle(this.level.random.nextFloat(), red, green, blue, 10);
-                            this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.random.nextDouble() * 0.4), this.worldPosition.getY() + 0.6, this.worldPosition.getZ() + 0.3 + (this.level.random.nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
+                            SparkleParticleData data = SparkleParticleData.sparkle(this.level.getRandom().nextFloat(), red, green, blue, 10);
+                            this.level.addParticle(data, this.worldPosition.getX() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), this.worldPosition.getY() + 0.6, this.worldPosition.getZ() + 0.3 + (this.level.getRandom().nextDouble() * 0.4), 0.0D, 0.0D, 0.0D);
                         }
                     }
                 }
@@ -104,7 +107,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
     }
 
     @Override
-    protected Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> inventory) {
+    protected Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return slot -> slot >= 17 && slot <= 20;
     }
 
@@ -130,7 +133,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
 
     @Override
     protected boolean canMatchRecipes() {
-        if (this.inventory.getStackInSlot(0).isEmpty()) return false;
+        if (Inventories.get(this.inventory, 0).isEmpty()) return false;
         FluidStack fluid = this.getFluidInventory().getFluid();
 
         return !fluid.isEmpty() && fluid.getFluid() == Fluids.WATER && fluid.getAmount() >= FluidType.BUCKET_VOLUME;
@@ -138,7 +141,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
 
     @Override
     protected void onCrafted(PetalApothecaryRecipe recipe) {
-        this.inventory.extractItem(0, 1, false);
+        Inventories.extract(this.inventory, 0, 1, false);
         FluidStack fluid = this.getFluidInventory().getFluid().copy();
         if (fluid.getFluid() != Fluids.WATER) return;
         int newAmount = Math.max(0, fluid.getAmount() - FluidType.BUCKET_VOLUME);
@@ -177,7 +180,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(nbt, registries);
-        if (this.level != null && !this.level.isClientSide) return;
+        if (this.level != null && !this.level.isClientSide()) return;
         this.fluidInventory.setFluid(FluidStack.parseOptional(registries, nbt.getCompound(TileTags.FLUID)));
         this.currentOutput = ItemStack.parseOptional(registries, nbt.getCompound(TileTags.CURRENT_OUTPUT));
     }
@@ -185,7 +188,7 @@ public class BlockEntityMechanicalApothecary extends WorkingTile<RecipeInput, Pe
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) return super.getUpdateTag(registries);
+        if (this.level != null && this.level.isClientSide()) return super.getUpdateTag(registries);
         CompoundTag nbt = super.getUpdateTag(registries);
         nbt.put(TileTags.FLUID, this.getFluidInventory().getFluid().saveOptional(registries));
         nbt.put(TileTags.CURRENT_OUTPUT, this.currentOutput.saveOptional(registries));

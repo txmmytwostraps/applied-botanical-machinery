@@ -44,8 +44,8 @@ public class BlockDaisyUpgraded extends MenuBlockBE<BlockEntityDaisyUpgraded, Co
     @Override
     public void registerAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerAdditional(ctx, builder);
-        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.ItemHandler.BLOCK, BlockEntityDaisyPattern::getItemHandler));
-        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.FluidHandler.BLOCK, (tile, side) -> tile.getFluidHandler()));
+        builder.registerNamed(null, "item_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Item.BLOCK, BlockEntityDaisyPattern::getItemHandler));
+        builder.registerNamed(null, "fluid_handler", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), Capabilities.Fluid.BLOCK, (tile, side) -> tile.getFluidHandler()));
         builder.registerNamed(null, "grid_node_host", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), AECapabilities.IN_WORLD_GRID_NODE_HOST, (tile, side) -> tile));
     }
 
@@ -65,11 +65,11 @@ public class BlockDaisyUpgraded extends MenuBlockBE<BlockEntityDaisyUpgraded, Co
         });
     }
 
-    public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    public int getLightDampening(@Nonnull BlockState state) {
         return 0;
     }
 
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
@@ -84,20 +84,10 @@ public class BlockDaisyUpgraded extends MenuBlockBE<BlockEntityDaisyUpgraded, Co
     }
 
     @Nonnull
-    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state) {
         return SHAPE;
     }
 
-    @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()){
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof BlockEntityDaisyUpgraded){
-                ((BlockEntityDaisyUpgraded) blockEntity).drops();
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 
     static {
         COLLISION_SHAPE = Shapes.joinUnoptimized(box(0.0, 0.0, 0.0, 16.0, 2.0, 16.0), box(5.0, 2.0, 5.0, 11.0, 3.0, 11.0), BooleanOp.OR);

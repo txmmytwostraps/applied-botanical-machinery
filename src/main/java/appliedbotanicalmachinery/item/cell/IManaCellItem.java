@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.item.cell;
 
+import java.util.function.Consumer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public interface IManaCellItem extends ICellWorkbenchItem {
     default void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
     }
 
-    default void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+    default void addCellInformationToTooltip(ItemStack is, Consumer<Component> lines) {
         Preconditions.checkArgument(is.getItem() == this);
         ManaCellHandler.INSTANCE.addCellInformationToTooltip(is, lines);
     }

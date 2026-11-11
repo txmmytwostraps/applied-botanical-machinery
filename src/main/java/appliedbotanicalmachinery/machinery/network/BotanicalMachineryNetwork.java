@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.network;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.moddingx.libx.mod.ModX;
@@ -19,8 +21,8 @@ public class BotanicalMachineryNetwork extends NetworkX {
     }
 
     public void updateLockedState(BlockEntityManaBattery tile) {
-        if (tile.getLevel() != null && tile.getLevel().isClientSide) {
-            PacketDistributor.sendToServer(new ManaBatteryLockedMessage(tile.getBlockPos(), tile.isSlot1Locked(), tile.isSlot2Locked()));
+        if (tile.getLevel() != null && tile.getLevel().isClientSide()) {
+            ClientPacketDistributor.sendToServer(new ManaBatteryLockedMessage(tile.getBlockPos(), tile.isSlot1Locked(), tile.isSlot2Locked()));
         }
     }
 }

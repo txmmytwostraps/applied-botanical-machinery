@@ -29,7 +29,7 @@ public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> ex
     }
 
     protected void runRecipeTick(Runnable doUpdate, BiConsumer<ItemStack, Integer> updateStack, BiConsumer<ItemStack, Integer> consumeStack) {
-        if (this.level != null && !this.level.isClientSide) {
+        if (this.level != null && !this.level.isClientSide()) {
             this.updateRecipeIfNeeded(doUpdate, updateStack);
             if (this.recipe != null) {
                 int newMaxProgress = this.getMaxProgress(this.recipe);
@@ -102,7 +102,7 @@ public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> ex
 
     @Nonnull
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);
@@ -114,7 +114,7 @@ public abstract class WorkingTile<I extends RecipeInput, T extends Recipe<I>> ex
 
     public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
         super.handleUpdateTag(tag, registries);
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.progress = tag.getInt("progress");
             this.maxProgress = tag.getInt("maxProgress");
         }

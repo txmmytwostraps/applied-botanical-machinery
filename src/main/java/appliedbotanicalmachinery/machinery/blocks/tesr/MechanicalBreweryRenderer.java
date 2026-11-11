@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import appliedbotanicalmachinery.util.Inventories;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -86,7 +88,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
 
             int segments = 3;
             for (int i = 1; i <= 6; i++) {
-                if (!tile.getInventory().getStackInSlot(i).isEmpty())
+                if (!Inventories.get(tile.getInventory(), i).isEmpty())
                     segments += 1;
             }
 
@@ -107,8 +109,8 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
 
                 int fromColor = this.waterColor;
                 for (int i = 6; i >= 1; i--) {
-                    if (!tile.getInventory().getStackInSlot(i).isEmpty()) {
-                        fromColor = this.getColor(tile.getInventory().getStackInSlot(i));
+                    if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
+                        fromColor = this.getColor(Inventories.get(tile.getInventory(), i));
                         break;
                     }
                 }
@@ -122,15 +124,15 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
                 int toColor = this.waterColor;
 
                 for (int i = 1; i <= 6; i++) {
-                    if (!tile.getInventory().getStackInSlot(i).isEmpty()) {
+                    if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
                         if (idx <= 0) {
                             slotToMove = i;
                             travelCenter = segmentProgress;
-                            toColor = this.getColor(tile.getInventory().getStackInSlot(i));
+                            toColor = this.getColor(Inventories.get(tile.getInventory(), i));
                             break;
                         } else {
                             if (idx == 1) {
-                                fromColor = this.getColor(tile.getInventory().getStackInSlot(i));
+                                fromColor = this.getColor(Inventories.get(tile.getInventory(), i));
                             }
                             idx -= 1;
                         }
@@ -141,11 +143,11 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
             }
         }
 
-        ItemStack topStack = tile.getInventory().getStackInSlot(7);
+        ItemStack topStack = Inventories.get(tile.getInventory(), 7);
         if (showOutput && !tile.getCurrentOutput().isEmpty()) {
             topStack = tile.getCurrentOutput();
         } else if (topStack.isEmpty() || tile.getProgress() > 0) {
-            topStack = tile.getInventory().getStackInSlot(0);
+            topStack = Inventories.get(tile.getInventory(), 0);
         }
 
         poseStack.pushPose();
@@ -161,7 +163,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
 
         int itemAmount = 0;
         for (int i = 1; i <= 6; i++) {
-            if (!tile.getInventory().getStackInSlot(i).isEmpty()) {
+            if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
                 itemAmount += 1;
             }
         }
@@ -171,7 +173,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
 
         int idx = 0;
         for (int i = 1; i <= 6; i++) {
-            if (!tile.getInventory().getStackInSlot(i).isEmpty()) {
+            if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
                 int idxNow = idx++;
                 if (i < slotToMove)
                     continue;
@@ -188,7 +190,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
                 poseStack.mulPose(Axis.YP.rotationDegrees(90f));
                 poseStack.translate(0, 0.075 * Math.sin((time + (idxNow * 10)) / 5d), 0);
 
-                Minecraft.getInstance().getItemRenderer().renderStatic(tile.getInventory().getStackInSlot(i), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+                Minecraft.getInstance().getItemRenderer().renderStatic(Inventories.get(tile.getInventory(), i), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
                 poseStack.popPose();
             }

@@ -18,7 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 import org.moddingx.libx.base.tile.BlockEntityBase;
 import org.moddingx.libx.base.tile.TickingBlock;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -69,13 +69,13 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
         return this.itemHandler;
     }
 
-    protected IItemHandler createItemHandler(Supplier<IItemHandlerModifiable> inventory) {
+    protected IItemHandler createItemHandler(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return new FilterItemHandler(inventory.get(), this.getExtracts(inventory), this.getInserts(inventory));
     }
 
-    protected abstract Predicate<Integer> getExtracts(Supplier<IItemHandlerModifiable> var1);
+    protected abstract Predicate<Integer> getExtracts(Supplier<IAdvancedItemHandlerModifiable> var1);
 
-    protected BiPredicate<Integer, ItemStack> getInserts(Supplier<IItemHandlerModifiable> inventory) {
+    protected BiPredicate<Integer, ItemStack> getInserts(Supplier<IAdvancedItemHandlerModifiable> inventory) {
         return null;
     }
 
@@ -111,7 +111,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider registries) {
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             this.getInventory().deserializeNBT(registries, tag.getCompound("inv"));
             this.mana = tag.getInt("mana");
             manaCap = tag.getInt("manaCap");
@@ -121,7 +121,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        if (this.level != null && this.level.isClientSide) {
+        if (this.level != null && this.level.isClientSide()) {
             return super.getUpdateTag(registries);
         } else {
             CompoundTag nbt = super.getUpdateTag(registries);

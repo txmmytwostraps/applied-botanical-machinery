@@ -2,7 +2,7 @@ package appliedbotanicalmachinery.extramachinery.client;
 
 import appliedbotanicalmachinery.AppliedBotanics;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 
 public class ModModels {
@@ -21,8 +21,8 @@ public class ModModels {
         return new Material(InventoryMenu.BLOCK_ATLAS, res(name));
     }
 
-    private static ResourceLocation res(String name){
-        return ResourceLocation.fromNamespaceAndPath(AppliedBotanics.MOD_ID, name);
+    private static Identifier res(String name){
+        return Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, name);
     }
 
 }

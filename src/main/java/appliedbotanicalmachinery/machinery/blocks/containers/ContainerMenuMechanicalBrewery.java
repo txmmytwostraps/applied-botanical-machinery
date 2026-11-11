@@ -8,8 +8,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
+import org.moddingx.libx.menu.slot.BaseSlot;
 import org.moddingx.libx.menu.BlockEntityMenu;
 
 public class ContainerMenuMechanicalBrewery extends BlockEntityMenu<BlockEntityMechanicalBrewery> {
@@ -17,14 +17,14 @@ public class ContainerMenuMechanicalBrewery extends BlockEntityMenu<BlockEntityM
     public ContainerMenuMechanicalBrewery(MenuType<? extends BlockEntityMenu<?>> type, int windowId, Level level, BlockPos pos, Player player, Inventory playerContainer) {
         super(type, windowId, level, pos, player, playerContainer, 7, 8);
 
-        IItemHandlerModifiable inventory = ((BotanicalTile) this.blockEntity).getInventory();
-        this.addSlot(new SlotItemHandler(inventory, 0, 44, 48));
-        this.addSlot(new SlotItemHandler(inventory, 1, 29, 18));
-        this.addSlot(new SlotItemHandler(inventory, 2, 59, 18));
-        this.addSlot(new SlotItemHandler(inventory, 3, 14, 48));
-        this.addSlot(new SlotItemHandler(inventory, 4, 74, 48));
-        this.addSlot(new SlotItemHandler(inventory, 5, 29, 78));
-        this.addSlot(new SlotItemHandler(inventory, 6, 59, 78));
+        IAdvancedItemHandlerModifiable inventory = ((BotanicalTile) this.blockEntity).getInventory();
+        this.addSlot(new BaseSlot(inventory, inventory, 0, 44, 48));
+        this.addSlot(new BaseSlot(inventory, inventory, 1, 29, 18));
+        this.addSlot(new BaseSlot(inventory, inventory, 2, 59, 18));
+        this.addSlot(new BaseSlot(inventory, inventory, 3, 14, 48));
+        this.addSlot(new BaseSlot(inventory, inventory, 4, 74, 48));
+        this.addSlot(new BaseSlot(inventory, inventory, 5, 29, 78));
+        this.addSlot(new BaseSlot(inventory, inventory, 6, 59, 78));
         this.addSlot(new UnrestrictedOutputSlot(inventory, 7, 128, 49));
         this.layoutPlayerInventorySlots(8, 110);
     }

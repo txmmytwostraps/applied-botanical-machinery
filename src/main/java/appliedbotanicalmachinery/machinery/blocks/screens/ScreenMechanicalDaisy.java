@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenuMechanicalDaisy> {
 
-    private static final ResourceLocation PURE_DAISY_TEXTURE = ResourceLocation.fromNamespaceAndPath("botania", "block/pure_daisy");
+    private static final Identifier PURE_DAISY_TEXTURE = Identifier.fromNamespaceAndPath("botania", "block/pure_daisy");
 
     public ScreenMechanicalDaisy(ContainerMenuMechanicalDaisy menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -58,7 +58,7 @@ public class ScreenMechanicalDaisy extends AbstractContainerScreen<ContainerMenu
                 int yPos = slot.y + 16 - yHeight;
 
                 IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(stack.getFluid());
-                ResourceLocation still = fluidTypeExtensions.getStillTexture(stack);
+                Identifier still = fluidTypeExtensions.getStillTexture(stack);
                 TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(still);
                 RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
                 int fluidColor = fluidTypeExtensions.getTintColor(stack);
