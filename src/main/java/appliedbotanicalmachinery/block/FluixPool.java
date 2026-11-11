@@ -18,8 +18,8 @@ import velrondevs.botania.registry.BotaniaBlocks;
 
 public class FluixPool extends ManaPoolBlock {
 
-    public FluixPool() {
-        super(ManaPoolBlock.Variant.FABULOUS, BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock));
+    public FluixPool(BlockBehaviour.Properties properties) {
+        super(ManaPoolBlock.Variant.FABULOUS, properties);
     }
 
     @Override

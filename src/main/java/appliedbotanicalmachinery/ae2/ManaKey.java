@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.ae2;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -39,8 +41,8 @@ public class ManaKey extends AEKey {
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider registries) {
-        return new CompoundTag();
+    public void toTag(ValueOutput output) {
+        // the mana key has no data
     }
 
     @Override

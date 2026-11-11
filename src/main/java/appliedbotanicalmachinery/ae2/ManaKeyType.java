@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.ae2;
 
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +49,7 @@ public class ManaKeyType extends AEKeyType {
     }
 
     @Override
-    public @Nullable AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
+    public @Nullable AEKey loadKeyFromTag(ValueInput input) {
         return ManaKey.KEY;
     }
 
