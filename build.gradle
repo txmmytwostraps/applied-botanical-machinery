@@ -150,16 +150,13 @@ dependencies {
     implementation("org.moddingx:LibX:${libx_version}")
     implementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
 
-    // Botania Revived 1.0.3 and Masterful Botany 1.0.0
+    // Botania Revived 2.0.1 and Masterful Botany 1.0.2
     implementation("curse.maven:botania-revived-1725641:${botania_revived_id}")
     compileOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
     runtimeOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
 
-    // dev: Extra Botany Revived is not on a maven. Put its release jar in libs/ to run with it
-    def extraBotany = file("libs/ExtraBotany-${minecraft_version}-${extrabotany_version}-NeoForge.jar")
-    if (extraBotany.exists()) {
-        runtimeOnly(files(extraBotany))
-    }
+    // dev: Extra Botany Revived 1.0.2, so the test instance runs with it
+    runtimeOnly("curse.maven:extra-botany-revived-1764698:${extrabotany_id}")
     runtimeOnly("vazkii.patchouli:Patchouli:${patchouli_version}")
     runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 

@@ -28,7 +28,7 @@ own license and notices.
 
 Changes made to the original works:
 - Ported from Minecraft 1.20.1 and Forge (the machinery mods) and from official Botania (Applied Botanics) to
-  Minecraft 1.21.1, NeoForge 21.1 and Botania Revived 1.0.3: data components, recipe inputs, block capabilities,
+  Minecraft 1.21.1, NeoForge 21.1 and Botania Revived 2: data components, recipe inputs, block capabilities,
   payload networking, the 1.21 data formats and LibX 1.21.
 - Moved every item, block, block entity, recipe, tag, loot table, lang key, texture and config to the
   appliedbotanicalmachinery namespace, and the Java code to the appliedbotanicalmachinery package.

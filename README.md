@@ -18,8 +18,8 @@ mod, for Botania Revived.
 - Runs on Botania Revived instead of Botania.
 - The Mechanical Mana Infuser and the Extra Machinery mana infusers use Masterful Botany instead of MythicBotany.
 
-Needs NeoForge 21.1.240 or newer, Botania Revived 1.0.3, Applied Energistics 2 19.2.18 and LibX 1.21.1-6.0.15. Masterful
-Botany and JEI are optional.
+Needs NeoForge 21.1.240 or newer, Botania Revived 2.0.1 or newer, Applied Energistics 2 19.2.18 and LibX 1.21.1-6.0.15.
+Masterful Botany (1.0.2 or newer), JEI, EMI and MEGA Cells are optional.
 
 Report issues with this port here, not to the original authors.
 
