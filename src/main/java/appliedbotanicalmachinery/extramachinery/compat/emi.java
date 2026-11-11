@@ -5,6 +5,7 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
+import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
@@ -64,6 +65,11 @@ public class emi implements EmiPlugin {
                     new ItemStack(ModBlocks.upgradedManaInfuser),
                     new ItemStack(ModBlocks.advancedManaInfuser),
                     new ItemStack(ModBlocks.ultimateManaInfuser));
+        }
+
+        if (LargeManaCellsClient.hidden()) {
+            var hidden = InitAppbot.megaSizedItems();
+            registry.removeEmiStacks(stack -> hidden.contains(stack.getItemStack().getItem()));
         }
     }
 

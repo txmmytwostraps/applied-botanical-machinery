@@ -10,6 +10,10 @@ public class LibXServerConfig {
     public LibXServerConfig() {
     }
 
+    @Config({"With MEGA Cells installed, its mana cells replace the 1M to 256M mana cells and storage components of this",
+            "mod: ours are hidden and can't be crafted. Set to true to keep ours visible and craftable as well."})
+    public static boolean keepManaCellsWithMegaCells = false;
+
     @Group({"Spark rate"})
     public static class SparkTier {
 

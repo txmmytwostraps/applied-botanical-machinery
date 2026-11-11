@@ -19,7 +19,10 @@ mod, for Botania Revived.
 - The Mechanical Mana Infuser and the Extra Machinery mana infusers use Masterful Botany instead of MythicBotany.
 
 Needs NeoForge 21.1.240 or newer, Botania Revived 2.0.1 or newer, Applied Energistics 2 19.2.18 and LibX 1.21.1-6.0.15.
-Masterful Botany (1.0.2 or newer), JEI, EMI and MEGA Cells are optional.
+Masterful Botany (1.0.2 or newer), JEI, EMI and MEGA Cells are optional. With MEGA Cells installed, its mana cells
+replace the Extra Machinery 1M to 256M mana cells: those are hidden and can't be crafted, but cells you already have keep
+working. To keep both, set `keepManaCellsWithMegaCells` to `true` in
+`config/appliedbotanicalmachinery/extramachinery/server.json5`.
 
 Report issues with this port here, not to the original authors.
 

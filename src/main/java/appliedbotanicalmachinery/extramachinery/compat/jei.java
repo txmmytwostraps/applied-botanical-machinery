@@ -2,10 +2,13 @@ package appliedbotanicalmachinery.extramachinery.compat;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
+import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketBase;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketUltimate;
@@ -55,6 +58,14 @@ public class jei implements IModPlugin {
     @Nonnull
     public ResourceLocation getPluginUid() {
         return AppliedBotanics.id("extra_machinery");
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime runtime) {
+        if (LargeManaCellsClient.hidden()) {
+            runtime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
+                    InitAppbot.megaSizedItems().stream().map(ItemStack::new).toList());
+        }
     }
 
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {

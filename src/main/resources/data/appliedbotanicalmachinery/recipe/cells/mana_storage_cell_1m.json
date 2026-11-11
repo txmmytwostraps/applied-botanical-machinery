@@ -1,4 +1,9 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "appliedbotanicalmachinery:large_mana_cells"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {

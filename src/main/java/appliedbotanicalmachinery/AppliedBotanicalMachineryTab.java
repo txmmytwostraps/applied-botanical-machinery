@@ -1,5 +1,6 @@
 package appliedbotanicalmachinery;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.moddingx.libx.creativetab.CreativeTabX;
@@ -7,6 +8,8 @@ import org.moddingx.libx.mod.ModX;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+
+import appliedbotanicalmachinery.extramachinery.init.InitAppbot;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
@@ -25,8 +28,12 @@ public class AppliedBotanicalMachineryTab extends CreativeTabX {
 
     @Override
     protected void addItems(TabContext ctx) {
+        var hidden = InitAppbot.replacedByMegaCells() ? InitAppbot.megaSizedItems() : List.of();
         // Powered items also show up fully charged
         this.addModItemStacks(ctx, item -> {
+            if (hidden.contains(item)) {
+                return Stream.empty();
+            }
             var stack = new ItemStack(item);
             if (item instanceof IAEItemPowerStorage storage) {
                 var charged = stack.copy();
