@@ -3,7 +3,7 @@
   "category": "botania:appliedbotanicalmachinery",
   "icon": "appliedbotanicalmachinery:mechanical_apothecary",
   "entry_color": "aa00aa",
-  "advancement": "botania:recipes/redstone/apothecary_default",
+  "advancement": "botania:recipes/decorations/apothecary_default",
   "pages": [
     {
       "type": "text",
