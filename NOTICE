@@ -4,7 +4,7 @@ Copyright (c) 2026 txmmytwostraps
 This is an unofficial port. It is not affiliated with, endorsed by or supported by the authors of the mods it is
 based on. Report issues here, not to them.
 
-It combines three mods, ported to Minecraft 1.21.1, NeoForge and Botania Revived, in one mod with the id
+It combines three mods, ported to Minecraft 1.21.1 and 26.1.2, NeoForge and Botania Revived, in one mod with the id
 appliedbotanicalmachinery:
 
 - Applied Botanics by ramidzkh
@@ -36,3 +36,5 @@ Changes made to the original works:
 - The MythicBotany integration of both machinery mods now uses Masterful Botany, the Botania Revived port of
   MythicBotany.
 - Restored two Applied Botanics 1.5.2 fixes that the 1.21.1 port had lost.
+- Ported to Minecraft 26.1.2, NeoForge 26.1.2, AE2 26.1 and LibX 7: value-based saving, the transfer API for
+  inventories and fluids, render states, the new GUI drawing and the 26.1 data formats.
