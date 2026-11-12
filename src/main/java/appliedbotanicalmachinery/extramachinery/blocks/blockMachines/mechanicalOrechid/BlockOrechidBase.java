@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalOrechid;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalOrechid.ContainerOrechidBase;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid.ScreenOrechidBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalOrechid.RenderOrechidBase;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalOrechid.BlockEntityOrechidBase;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -16,8 +19,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.tile.MenuBlockBE;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -34,8 +35,8 @@ public class BlockOrechidBase extends MenuBlockBE<BlockEntityOrechidBase, Contai
     private static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape SHAPE;
 
-    public BlockOrechidBase(ModX mod, Class<BlockEntityOrechidBase> teClass, AdvancedMenuType<ContainerOrechidBase, BlockPos> menu) {
-        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockOrechidBase(ModX mod, Class<BlockEntityOrechidBase> teClass, AdvancedMenuType<ContainerOrechidBase, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, properties.strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
     }
 
     @Override
@@ -47,17 +48,13 @@ public class BlockOrechidBase extends MenuBlockBE<BlockEntityOrechidBase, Contai
     @Override
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenOrechidBase::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderOrechidBase();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderOrechidBase());
     }
 
     public int getLightDampening(@Nonnull BlockState state) {

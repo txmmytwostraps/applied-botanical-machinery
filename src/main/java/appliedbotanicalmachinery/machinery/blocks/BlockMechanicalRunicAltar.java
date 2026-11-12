@@ -1,14 +1,15 @@
 package appliedbotanicalmachinery.machinery.blocks;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.machinery.blocks.base.BotanicalBlock;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalRunicAltar;
 import appliedbotanicalmachinery.machinery.blocks.screens.ScreenMechanicalRunicAltar;
 import appliedbotanicalmachinery.machinery.blocks.tesr.MechanicalRunicAltarRenderer;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalRunicAltar;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.RegistrationContext;
@@ -17,8 +18,8 @@ import org.moddingx.libx.registration.util.ClientExtensionInfo;
 
 public class BlockMechanicalRunicAltar extends BotanicalBlock<BlockEntityMechanicalRunicAltar, ContainerMenuMechanicalRunicAltar> {
 
-    public BlockMechanicalRunicAltar(ModX mod, Class<BlockEntityMechanicalRunicAltar> teClass, AdvancedMenuType<ContainerMenuMechanicalRunicAltar, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockMechanicalRunicAltar(ModX mod, Class<BlockEntityMechanicalRunicAltar> teClass, AdvancedMenuType<ContainerMenuMechanicalRunicAltar, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -27,10 +28,9 @@ public class BlockMechanicalRunicAltar extends BotanicalBlock<BlockEntityMechani
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenMechanicalRunicAltar::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), context -> new MechanicalRunicAltarRenderer());
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new MechanicalRunicAltarRenderer());
     }
 }

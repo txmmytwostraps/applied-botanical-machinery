@@ -24,6 +24,9 @@ neoForge {
     runs {
         client {
             client()
+
+            // 26.1.2 runs keep their own folders, apart from the 1.21.1 line's worlds
+            gameDirectory = project.file("run26")
         }
 
         server {
@@ -31,7 +34,7 @@ neoForge {
             programArgument "--nogui"
 
             // Separate from the client's run directory so both can run at once
-            gameDirectory = project.file("run-server")
+            gameDirectory = project.file("run26-server")
         }
 
         // One clientData run with --all generates both the client (assets) and server (data) providers
@@ -42,7 +45,7 @@ neoForge {
             programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
 
             // Data runs get their own game directory so the mods in dataMods load only here
-            gameDirectory = project.file("run-data")
+            gameDirectory = project.file("run26-data")
         }
 
         // applies to all the run configs above
@@ -149,7 +152,10 @@ dependencies {
     // Botania Revived, Masterful Botany and Extra Botany Revived for 26.1.2 (CurseForge files)
     implementation("curse.maven:botania-revived-1725641:${botania_revived_id}")
     compileOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
-    runtimeOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
+    // dev: -Pwithout_masterfulbotany leaves it out of the runs (its 26.1.2 build does not start on a dedicated server)
+    if (!project.hasProperty("without_masterfulbotany")) {
+        runtimeOnly("curse.maven:masterful-botany-1764701:${masterfulbotany_id}")
+    }
 
     // dev: Extra Botany Revived, so the test instance runs with it
     runtimeOnly("curse.maven:extra-botany-revived-1764698:${extrabotany_id}")
@@ -183,7 +189,7 @@ dependencies {
 
 var syncDataMods = tasks.register("syncDataMods", Sync) {
     from configurations.dataMods
-    into "run-data/mods"
+    into "run26-data/mods"
 }
 tasks.matching { it.name == "runData" }.configureEach { dependsOn syncDataMods }
 

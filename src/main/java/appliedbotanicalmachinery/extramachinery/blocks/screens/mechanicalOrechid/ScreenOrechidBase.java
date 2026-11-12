@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid;
 
+import javax.annotation.Nonnull;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalAlfheimMarket.ContainerAlfheimMarketBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalOrechid.ContainerOrechidBase;
@@ -11,11 +13,9 @@ import appliedbotanicalmachinery.extramachinery.core.LibResources;
 import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +28,10 @@ public class ScreenOrechidBase extends ExtraScreenBase<ContainerOrechidBase> {
     SlotInfo slotInfo;
 
     public ScreenOrechidBase(ContainerOrechidBase menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerAlfheimMarketBase.WIDTH_GUI, ContainerAlfheimMarketBase.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerAlfheimMarketBase.WIDTH_GUI;
-        this.imageHeight = ContainerAlfheimMarketBase.HEIGHT_GUI;
 
         bars.setBar(AllBars.MANA);
         bars.setDrawCoord(33, 104);
@@ -58,8 +55,8 @@ public class ScreenOrechidBase extends ExtraScreenBase<ContainerOrechidBase> {
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.BASE_ORECHID_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, slotInfo);
 

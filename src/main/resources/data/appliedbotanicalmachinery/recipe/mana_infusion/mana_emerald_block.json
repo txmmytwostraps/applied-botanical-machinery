@@ -1,8 +1,6 @@
 {
   "type": "botania:mana_infusion",
-  "input": {
-    "tag": "c:storage_blocks/emerald"
-  },
+  "input": "#c:storage_blocks/emerald",
   "output": {
     "count": 1,
     "id": "appliedbotanicalmachinery:mana_emerald_block"

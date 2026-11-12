@@ -1,17 +1,19 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaInfuser;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaInfuser.BlockEntityManaInfuserAdvanced;
 import net.minecraft.client.renderer.MultiBufferSource;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 
 import javax.annotation.Nonnull;
 
-public class RenderManaInfuserAdvanced extends RotatedBlockRenderer<BlockEntityManaInfuserAdvanced> {
+public class RenderManaInfuserAdvanced extends LegacyRotatedRenderer<BlockEntityManaInfuserAdvanced> {
     public RenderManaInfuserAdvanced() {
     }
 
-    protected void doRender(@Nonnull BlockEntityManaInfuserAdvanced tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityManaInfuserAdvanced tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
 
     }
 }

@@ -1,8 +1,10 @@
 package appliedbotanicalmachinery.machinery.gui;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.core.LibResources;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -30,23 +32,23 @@ public class ManaBar {
                 && this.guiTop + this.y < mouseY && mouseY < this.guiTop + this.y + this.height;
     }
 
-    public void draw(GuiGraphics guiGraphics, float mana) {
+    public void draw(GuiGraphicsExtractor guiGraphics, float mana) {
         int relX;
         int relY;
         relX = this.guiLeft + this.x;
         relY = this.guiTop + this.y;
-        guiGraphics.blit(LibResources.MANA_BAR, relX, relY, 0, 0, this.width, this.height, this.width, this.height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BAR, relX, relY, 0, 0, this.width, this.height, this.width, this.height);
         relX += 1;
         relY += 1;
         float pct = Math.min(mana / this.capacity, 1.0F);
         int relHeight = (int) ((this.height - 2) * pct);
-        guiGraphics.blit(LibResources.MANA_BAR_CURRENT, relX, relY + (this.height - 2 - relHeight), 0, 0, this.width - 2, relHeight, this.width - 2, this.height - 2);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BAR_CURRENT, relX, relY + (this.height - 2 - relHeight), 0, 0, this.width - 2, relHeight, this.width - 2, this.height - 2);
     }
 
-    public void renderHoveredToolTip(GuiGraphics guiGraphics, int mouseX, int mouseY, int mana) {
+    public void renderHoveredToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int mana) {
         if (this.isMouseOver(mouseX, mouseY) && LibXClientConfig.numericalMana) {
             Component text = Component.literal(String.format("%s / %s Mana", mana, this.capacity));
-            guiGraphics.renderTooltip(this.parent.getMinecraft().font, text, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(this.parent.getMinecraft().font, text, mouseX, mouseY);
         }
     }
 }

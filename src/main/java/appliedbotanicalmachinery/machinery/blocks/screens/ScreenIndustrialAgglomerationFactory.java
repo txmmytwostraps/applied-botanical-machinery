@@ -4,7 +4,7 @@ import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuIndustrialAgglomerationFactory;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityIndustrialAgglomerationFactory;
 import appliedbotanicalmachinery.machinery.core.LibResources;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -13,14 +13,14 @@ import javax.annotation.Nonnull;
 public class ScreenIndustrialAgglomerationFactory extends ScreenBase<ContainerMenuIndustrialAgglomerationFactory> {
 
     public ScreenIndustrialAgglomerationFactory(ContainerMenuIndustrialAgglomerationFactory menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageHeight = 195;
+        super(menu, inventory, title, 176, 195);
         this.manaBar.x -= 5;
         this.manaBar.y += 23;
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.INDUSTRIAL_AGGLOMERATION_FACTORY_GUI);
         BlockEntityIndustrialAgglomerationFactory blockEntity = this.menu.getBlockEntity();
 

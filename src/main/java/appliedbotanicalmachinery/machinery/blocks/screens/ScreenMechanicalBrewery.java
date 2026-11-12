@@ -7,7 +7,7 @@ import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechan
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalBrewery;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -17,13 +17,13 @@ import javax.annotation.Nonnull;
 public class ScreenMechanicalBrewery extends ScreenBase<ContainerMenuMechanicalBrewery> {
 
     public ScreenMechanicalBrewery(ContainerMenuMechanicalBrewery menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageHeight = 192;
+        super(menu, inventory, title, 176, 192);
         this.manaBar.y = 28;
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_BREWERY_GUI);
 
         BlockEntityMechanicalBrewery blockEntity = this.menu.getBlockEntity();

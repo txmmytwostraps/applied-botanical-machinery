@@ -5,6 +5,9 @@ build/
 run/
 run-data/
 run-server/
+run26/
+run26-data/
+run26-server/
 runs/
 logs/
 crash-reports/

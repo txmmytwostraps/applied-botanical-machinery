@@ -8,18 +8,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "appliedbotanicalmachinery:malachite_ingot_block"
-    },
-    "b": {
-      "item": "appliedbotanicalmachinery:shadow_ingot"
-    },
-    "c": {
-      "item": "appliedbotanicalmachinery:upgraded_mana_infuser"
-    },
-    "d": {
-      "item": "appliedbotanicalmachinery:shadow_dragonstone_block"
-    }
+    "a": "appliedbotanicalmachinery:malachite_ingot_block",
+    "b": "appliedbotanicalmachinery:shadow_ingot",
+    "c": "appliedbotanicalmachinery:upgraded_mana_infuser",
+    "d": "appliedbotanicalmachinery:shadow_dragonstone_block"
   },
   "pattern": ["aba", "bcb", "ddd"],
   "result": {

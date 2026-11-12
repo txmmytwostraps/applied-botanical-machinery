@@ -13,12 +13,10 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -31,13 +29,10 @@ public class ScreenManaPoolUpgraded extends ExtraScreenBase<ContainerManaPoolUpg
     SlotInfo slotInfo;
 
     public ScreenManaPoolUpgraded(ContainerManaPoolUpgraded menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerManaPoolUpgraded.WIDTH_GUI, ContainerManaPoolUpgraded.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerManaPoolUpgraded.WIDTH_GUI;
-        this.imageHeight = ContainerManaPoolUpgraded.HEIGHT_GUI;
 
         bars.setBar(AllBars.MANA);
         bars.setDrawCoord(33, 102);
@@ -56,8 +51,8 @@ public class ScreenManaPoolUpgraded extends ExtraScreenBase<ContainerManaPoolUpg
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_MECHANICAL_MANA_POOL_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, slotInfo);
 

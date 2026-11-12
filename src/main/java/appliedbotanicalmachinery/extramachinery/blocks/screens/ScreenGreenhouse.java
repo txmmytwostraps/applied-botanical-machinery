@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens;
 
+import javax.annotation.Nonnull;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,7 +16,7 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -36,13 +38,10 @@ public class ScreenGreenhouse extends ExtraScreenBase<ContainerGreenhouse> {
 
 
     public ScreenGreenhouse(ContainerGreenhouse menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerGreenhouse.WIDTH_GUI, ContainerGreenhouse.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerGreenhouse.WIDTH_GUI;
-        this.imageHeight = ContainerGreenhouse.HEIGHT_GUI;
 
         Map<Integer, int[]> slots = new HashMap<>();
         String[] translates = new String[8];
@@ -77,7 +76,8 @@ public class ScreenGreenhouse extends ExtraScreenBase<ContainerGreenhouse> {
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.GREENHOUSE_GUI, screenAddInventory,
                 new int[] { blockEntity.getCurrentMana(), blockEntity.getEnergyStored(), blockEntity.getCountHeat(), blockEntity.getCountHeat() },
                 new int[] { blockEntity.getMaxMana(), blockEntity.getMaxEnergyStored(), blockEntity.getMaxCountHeat(), blockEntity.getMaxCountHeat() },

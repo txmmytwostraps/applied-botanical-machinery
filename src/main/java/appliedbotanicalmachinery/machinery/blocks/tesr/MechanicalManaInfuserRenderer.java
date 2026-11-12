@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,26 +13,26 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
 
-public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEntityMechanicalManaInfuser> {
+public class MechanicalManaInfuserRenderer extends LegacyRotatedRenderer<BlockEntityMechanicalManaInfuser> {
 
     public MechanicalManaInfuserRenderer() {}
 
     @Override
-    protected void doRender(@Nonnull BlockEntityMechanicalManaInfuser tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityMechanicalManaInfuser tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalManaInfuser)
             return;
 
         double progressLeft = 1 - (tile.getProgress() / (double) tile.getMaxProgress());
 
-        this.renderStack(Inventories.get(tile.getInventory(), 0), poseStack, buffer, partialTick, progressLeft, 0, light);
-        this.renderStack(Inventories.get(tile.getInventory(), 1), poseStack, buffer, partialTick, progressLeft, 120, light);
-        this.renderStack(Inventories.get(tile.getInventory(), 2), poseStack, buffer, partialTick, progressLeft, 240, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 0), poseStack, buffer, collector, partialTick, progressLeft, 0, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 1), poseStack, buffer, collector, partialTick, progressLeft, 120, light);
+        this.renderStack(Inventories.get(tile.getInventory(), 2), poseStack, buffer, collector, partialTick, progressLeft, 240, light);
 
         if (!Inventories.get(tile.getInventory(), 3).isEmpty()) {
             float time = ClientTickHandler.ticksInGame + partialTick;
@@ -41,7 +43,7 @@ public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEnt
             poseStack.mulPose(Axis.YP.rotationDegrees(-time));
             poseStack.translate(0, 0.075 * Math.sin(time / 5d), 0);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(Inventories.get(tile.getInventory(), 3), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+            velrondevs.botania.client.core.helper.RenderHelper.renderItem(Inventories.get(tile.getInventory(), 3), ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
             poseStack.popPose();
         }
@@ -58,7 +60,7 @@ public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEnt
         }
     }
 
-    private void renderStack(ItemStack stack, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, float partialTick, double progressLeft, float angle, int light) {
+    private void renderStack(ItemStack stack, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, float partialTick, double progressLeft, float angle, int light) {
         if (!stack.isEmpty()) {
             double progressLeftScaled = progressLeft * 0.95;
             float time = ClientTickHandler.ticksInGame + partialTick;
@@ -71,7 +73,7 @@ public class MechanicalManaInfuserRenderer extends RotatedBlockRenderer<BlockEnt
             poseStack.mulPose(Axis.YP.rotationDegrees(90f));
             poseStack.translate(0, 0.075 * Math.sin((time + angle) / 5d), 0);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, Minecraft.getInstance().level, 0);
+            velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, Minecraft.getInstance().level, 0);
 
             poseStack.popPose();
         }

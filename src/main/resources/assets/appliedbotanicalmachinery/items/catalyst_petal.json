@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "appliedbotanicalmachinery:item/catalyst_petal",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "appliedbotanicalmachinery:catalyst_rainbow"
+      }
+    ]
+  }
+}

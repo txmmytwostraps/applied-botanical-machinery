@@ -1,12 +1,16 @@
 package appliedbotanicalmachinery.machinery.blocks.screens;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
+import net.minecraft.client.input.MouseButtonEvent;
+
 import appliedbotanicalmachinery.AppliedBotanicalMachinery;
 import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuManaBattery;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.SoundHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -35,7 +39,8 @@ public class ScreenManaBattery extends ScreenBase<ContainerMenuManaBattery> {
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MANA_BATTERY_GUI);
 
         BlockPos tilePos = this.menu.getPos();
@@ -43,24 +48,27 @@ public class ScreenManaBattery extends ScreenBase<ContainerMenuManaBattery> {
         if (blockEntity == null) return;
 
         if (mouseX >= this.xB1 && mouseX < this.xB1 + 20 && mouseY >= this.yB1 && mouseY < this.yB1 + 20) {
-            guiGraphics.blit(LibResources.MANA_BATTERY_GUI, this.xB1, this.yB1, 20, blockEntity.isSlot1Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BATTERY_GUI, this.xB1, this.yB1, 20, blockEntity.isSlot1Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20, 256, 256);
         } else {
-            guiGraphics.blit(LibResources.MANA_BATTERY_GUI, this.xB1, this.yB1, 0, blockEntity.isSlot1Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BATTERY_GUI, this.xB1, this.yB1, 0, blockEntity.isSlot1Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20, 256, 256);
         }
 
         if (mouseX >= this.xB2 && mouseX < this.xB2 + 20 && mouseY >= this.yB2 && mouseY < this.yB2 + 20) {
-            guiGraphics.blit(LibResources.MANA_BATTERY_GUI, this.xB2, this.yB2, 20, blockEntity.isSlot2Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BATTERY_GUI, this.xB2, this.yB2, 20, blockEntity.isSlot2Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20, 256, 256);
         } else {
-            guiGraphics.blit(LibResources.MANA_BATTERY_GUI, this.xB2, this.yB2, 0, blockEntity.isSlot2Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.MANA_BATTERY_GUI, this.xB2, this.yB2, 0, blockEntity.isSlot2Locked() ? this.imageHeight + 20 : this.imageHeight, 20, 20, 256, 256);
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@Nonnull MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (button == 0) {
             BlockPos tilePos = this.menu.getPos();
             BlockEntityManaBattery blockEntity = (BlockEntityManaBattery) this.menu.getLevel().getBlockEntity(tilePos);
-            if (blockEntity == null) return super.mouseClicked(mouseX, mouseY, button);
+            if (blockEntity == null) return super.mouseClicked(event, doubleClick);
 
             if (mouseX >= this.xB1 && mouseX < this.xB1 + 20 && mouseY >= this.yB1 && mouseY < this.yB1 + 20) {
                 blockEntity.setSlot1Locked(!blockEntity.isSlot1Locked());
@@ -75,6 +83,6 @@ public class ScreenManaBattery extends ScreenBase<ContainerMenuManaBattery> {
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 }

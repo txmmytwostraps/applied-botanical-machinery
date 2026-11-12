@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import appliedbotanicalmachinery.client.LegacyBlockRenderer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalDaisy;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
@@ -11,12 +15,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MechanicalDaisyRenderer implements BlockEntityRenderer<BlockEntityMechanicalDaisy> {
+public class MechanicalDaisyRenderer extends LegacyBlockRenderer<BlockEntityMechanicalDaisy> {
 
     private static final float SCALE = 0.3125f;
 
     @Override
-    public void render(@Nonnull BlockEntityMechanicalDaisy blockEntity, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void render(@Nonnull BlockEntityMechanicalDaisy blockEntity, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalDaisy) {
             return;
         }
@@ -40,7 +44,7 @@ public class MechanicalDaisyRenderer implements BlockEntityRenderer<BlockEntityM
             poseStack.pushPose();
             poseStack.translate(translateX, 0, translateZ);
             //noinspection deprecation
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, light, overlay);
             poseStack.popPose();
         }
     }

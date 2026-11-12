@@ -1,12 +1,8 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:malachite_ingot"
-    },
-    {
-      "item": "botania:dragonstone"
-    }
+    "appliedbotanicalmachinery:malachite_ingot",
+    "botania:dragonstone"
   ],
   "output": [
     {

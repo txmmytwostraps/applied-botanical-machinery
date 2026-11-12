@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import appliedbotanicalmachinery.client.FluidRender;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,23 +16,21 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.moddingx.libx.render.RenderHelper;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
-public class MechanicalApothecaryRenderer extends RotatedBlockRenderer<BlockEntityMechanicalApothecary> {
+public class MechanicalApothecaryRenderer extends LegacyRotatedRenderer<BlockEntityMechanicalApothecary> {
 
     @Override
-    protected void doRender(@Nonnull BlockEntityMechanicalApothecary tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityMechanicalApothecary tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalApothecary)
             return;
 
@@ -52,7 +54,7 @@ public class MechanicalApothecaryRenderer extends RotatedBlockRenderer<BlockEnti
                 poseStack.translate(0, -amount, 0);
             }
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+            velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
             poseStack.popPose();
         }
@@ -66,12 +68,11 @@ public class MechanicalApothecaryRenderer extends RotatedBlockRenderer<BlockEnti
             poseStack.scale(1 / 16f, 1 / 16f, 1 / 16f);
 
             FluidStack fluidStack = tile.getFluidInventory().getFluid();
-            IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidTypeExtensions.getStillTexture(fluidStack));
+            TextureAtlasSprite sprite = FluidRender.stillSprite(fluidStack);
 
-            int fluidColor = fluidTypeExtensions.getTintColor(fluidStack);
+            int fluidColor = FluidRender.tint(fluidStack);
 
-            VertexConsumer vertex = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+            VertexConsumer vertex = buffer.getBuffer(Sheets.translucentBlockSheet());
             RenderHelper.renderIconColored(poseStack, vertex, 0, 0, sprite, 8, 8, 1.0F, fluidColor, light, OverlayTexture.NO_OVERLAY);
 
             poseStack.popPose();
@@ -139,7 +140,7 @@ public class MechanicalApothecaryRenderer extends RotatedBlockRenderer<BlockEnti
                 poseStack.translate(-0.0625f, -0.0625f, -0.0625f);
 
                 ItemStack stack = Inventories.get(tile.getInventory(), slot);
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlay, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong() + slot);
+                velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, overlay, tile.getLevel(), (int) tile.getBlockPos().asLong() + slot);
                 poseStack.popPose();
             }
         }

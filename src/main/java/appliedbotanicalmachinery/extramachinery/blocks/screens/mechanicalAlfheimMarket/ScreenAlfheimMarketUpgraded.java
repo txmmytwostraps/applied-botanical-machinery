@@ -9,11 +9,9 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalAlfheimMa
 import appliedbotanicalmachinery.extramachinery.core.LibResources;
 import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -25,12 +23,9 @@ public class ScreenAlfheimMarketUpgraded extends ExtraScreenBase<ContainerAlfhei
     Bars bars;
 
     public ScreenAlfheimMarketUpgraded(ContainerAlfheimMarketUpgraded menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerAlfheimMarketUpgraded.WIDTH_GUI, ContainerAlfheimMarketUpgraded.HEIGHT_GUI);
 
         bars = new Bars(this);
-
-        this.imageWidth = ContainerAlfheimMarketUpgraded.WIDTH_GUI;
-        this.imageHeight = ContainerAlfheimMarketUpgraded.HEIGHT_GUI;
 
         this.bars.setBar(AllBars.MANA);
         this.bars.setDrawCoord(33, 102);
@@ -43,8 +38,8 @@ public class ScreenAlfheimMarketUpgraded extends ExtraScreenBase<ContainerAlfhei
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_ALFHEIM_MARKET_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, null);
 

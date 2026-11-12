@@ -13,13 +13,11 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.Tags;
 import velrondevs.botania.client.core.helper.RenderHelper;
 
@@ -37,13 +35,10 @@ public class ScreenApothecaryBase extends ExtraScreenBase<ContainerApothecaryBas
     SlotInfo slotInfo;
 
     public ScreenApothecaryBase(ContainerApothecaryBase screenMenu, Inventory inventory, Component title) {
-        super(screenMenu, inventory, title);
+        super(screenMenu, inventory, title, ContainerApothecaryBase.WIDTH_GUI, ContainerApothecaryBase.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerApothecaryBase.WIDTH_GUI;
-        this.imageHeight = ContainerApothecaryBase.HEIGHT_GUI;
 
         bars.setBar(AllBars.WATER);
         bars.setDrawCoord(33, 100);
@@ -64,8 +59,8 @@ public class ScreenApothecaryBase extends ExtraScreenBase<ContainerApothecaryBas
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.BASE_MECHANICAL_APOTHECARY_GUI, screenAddInventory,
                 new int[] {blockEntity.getFluidInventory().getFluidAmount()}, new int[] {blockEntity.getFluidInventory().getCapacity()}, bars, slotInfo);
 

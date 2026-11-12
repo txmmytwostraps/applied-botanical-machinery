@@ -1,12 +1,8 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:mazarine_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:aureate_dragonstone"
-    }
+    "appliedbotanicalmachinery:mazarine_ingot",
+    "appliedbotanicalmachinery:aureate_dragonstone"
   ],
   "output": [
     {

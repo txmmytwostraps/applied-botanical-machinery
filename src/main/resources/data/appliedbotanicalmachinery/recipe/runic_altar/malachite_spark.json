@@ -1,33 +1,15 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "item": "botania:rune_water"
-    },
-    {
-      "item": "botania:rune_fire"
-    },
-    {
-      "item": "botania:rune_earth"
-    },
-    {
-      "item": "botania:rune_air"
-    },
-    {
-      "item": "botania:rune_mana"
-    },
-    {
-      "item": "appliedbotanicalmachinery:base_spark"
-    },
-    {
-      "item": "appliedbotanicalmachinery:malachite_ingot_block"
-    },
-    {
-      "item": "appliedbotanicalmachinery:malachite_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:malachite_dragonstone_block"
-    }
+    "botania:rune_water",
+    "botania:rune_fire",
+    "botania:rune_earth",
+    "botania:rune_air",
+    "botania:rune_mana",
+    "appliedbotanicalmachinery:base_spark",
+    "appliedbotanicalmachinery:malachite_ingot_block",
+    "appliedbotanicalmachinery:malachite_ingot",
+    "appliedbotanicalmachinery:malachite_dragonstone_block"
   ],
   "mana": 50000,
   "output": {

@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.world.item.BlockItem;
@@ -38,7 +40,6 @@ import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
 import org.moddingx.libx.registration.util.CapabilityInfo;
-import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 import velrondevs.botania.api.BotaniaCapabilities;
 import velrondevs.botania.api.BotaniaClientCapabilities;
@@ -51,8 +52,8 @@ public class ExtraBotanicalBlock<T extends ExtraBotanicalTile, C extends BlockEn
     public final boolean fullCube;
     public final boolean specialRender;
 
-    public ExtraBotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender) {
-        super(mod, teClass, menu, fullCube ? Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F) : Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().noOcclusion().forceSolidOn(), new Item.Properties());
+    public ExtraBotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, fullCube ? properties.strength(2.0F, 10.0F) : properties.strength(2.0F, 10.0F).dynamicShape().noOcclusion().forceSolidOn(), new Item.Properties());
         this.fullCube = fullCube;
         this.specialRender = specialRender;
     }
@@ -74,7 +75,6 @@ public class ExtraBotanicalBlock<T extends ExtraBotanicalTile, C extends BlockEn
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
         builder.registerNamed(null, "wand_hud", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), BotaniaClientCapabilities.WAND_HUD, (tile, side) -> tile.actAsMana() ? tile : null));
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
     }
 
     @Override

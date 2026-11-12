@@ -1,5 +1,17 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr;
 
+import java.util.List;
+
+import appliedbotanicalmachinery.extramachinery.events.ClientModEventSubscriber;
+
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import appliedbotanicalmachinery.client.LegacyBlockRenderer;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,8 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -21,17 +31,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhouse> {
+public class RenderGreenhouse extends LegacyBlockRenderer<BlockEntityGreenhouse> {
 
-    BakedModel pylonsModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/pylons")));
+    private static final StandaloneModelKey<BlockStateModelPart>[] CIRCLES = List.of(
+            ClientModEventSubscriber.GREENHOUSE_CIRCLE_3,
+            ClientModEventSubscriber.GREENHOUSE_CIRCLE_2,
+            ClientModEventSubscriber.GREENHOUSE_CIRCLE_1).toArray(StandaloneModelKey[]::new);
 
-    BakedModel[] circleModels = new BakedModel[] {
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_3"))),
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_2"))),
-            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/circle_1")))
-    };
-
-    BakedModel gardenBedModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(AppliedBotanics.MOD_ID, "block/greenhouse/garden_bed")));
+    private static BlockStateModelPart model(StandaloneModelKey<BlockStateModelPart> key) {
+        return Minecraft.getInstance().getModelManager().getStandaloneModel(key);
+    }
 
     public RenderGreenhouse() {
     }
@@ -40,14 +49,14 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
         if (state != null) {
             poseStack.pushPose();
             poseStack.translate(translateX, 0.0, translateZ);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, light, overlay);
             poseStack.popPose();
         }
 
     }
 
     @Override
-    public void render(BlockEntityGreenhouse blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+    protected void render(BlockEntityGreenhouse blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
 
@@ -55,13 +64,7 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
         poseStack.mulPose(Axis.YP.rotationDegrees(angle));
         poseStack.translate(-0.5, -0.5, -0.5);
 
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(
-                poseStack.last(),
-                buffer.getBuffer(Sheets.translucentCullBlockSheet()),
-                null,
-                pylonsModel,
-                1, 1, 1,
-                light, overlay);
+        velrondevs.botania.client.core.helper.RenderHelper.renderQuads(poseStack.last(), buffer.getBuffer(Sheets.translucentBlockSheet()), velrondevs.botania.client.core.helper.RenderHelper.allQuads(model(ClientModEventSubscriber.GREENHOUSE_PYLONS)), -1, light, overlay);
         poseStack.popPose();
 
         float[] y_offset = new float[] {0.017f, 0.025f, 0.06f};
@@ -79,13 +82,7 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
 
             poseStack.translate(-0.5, bounce, -0.5);
 
-            Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(
-                    poseStack.last(),
-                    buffer.getBuffer(Sheets.cutoutBlockSheet()),
-                    blockEntity.getBlockState(),
-                    circleModels[i],
-                    1, 1, 1,
-                    light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderQuads(poseStack.last(), buffer.getBuffer(Sheets.cutoutBlockSheet()), velrondevs.botania.client.core.helper.RenderHelper.allQuads(model(CIRCLES[i])), -1, light, overlay);
             poseStack.popPose();
         }
 
@@ -98,13 +95,7 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
         double bounce = Math.sin((blockEntity.getLevel().getGameTime() + partialTick) * 0.1) * 0.02;
         poseStack.translate(-0.5, bounce, -0.5);
 
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(
-                poseStack.last(),
-                buffer.getBuffer(Sheets.translucentCullBlockSheet()),
-                blockEntity.getBlockState(),
-                gardenBedModel,
-                1, 1, 1,
-                light, overlay);
+        velrondevs.botania.client.core.helper.RenderHelper.renderQuads(poseStack.last(), buffer.getBuffer(Sheets.translucentBlockSheet()), velrondevs.botania.client.core.helper.RenderHelper.allQuads(model(ClientModEventSubscriber.GREENHOUSE_GARDEN_BED)), -1, light, overlay);
         poseStack.popPose();
 
 
@@ -126,13 +117,7 @@ public class RenderGreenhouse implements BlockEntityRenderer<BlockEntityGreenhou
                     poseStack.translate(flowerOffsetX , 0, flowerOffsetZ);
 
                     // Рендерим модель блока
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                            flowerBlock.defaultBlockState(),
-                            poseStack,
-                            buffer,
-                            light,
-                            overlay
-                    );
+                    velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(flowerBlock.defaultBlockState(), poseStack, buffer, null, -1, light, overlay);
 
                     poseStack.popPose();
                 }

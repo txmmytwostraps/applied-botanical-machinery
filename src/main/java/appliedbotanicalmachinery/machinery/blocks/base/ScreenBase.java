@@ -1,8 +1,12 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
+import net.minecraft.util.ARGB;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.gui.ManaBar;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -20,7 +24,11 @@ public abstract class ScreenBase<X extends BlockEntityMenu<?>> extends AbstractC
     public int relY;
 
     public ScreenBase(X menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        this(menu, inventory, title, 176, 166);
+    }
+
+    public ScreenBase(X menu, Inventory inventory, Component title, int imageWidth, int imageHeight) {
+        super(menu, inventory, title, imageWidth, imageHeight);
         if (this.menu.getBlockEntity() instanceof BotanicalTile botanicalTile) {
             this.manaBar = new ManaBar(this, botanicalTile.getMaxMana());
         } else {
@@ -36,27 +44,24 @@ public abstract class ScreenBase<X extends BlockEntityMenu<?>> extends AbstractC
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.manaBar.guiTop = this.topPos;
         this.manaBar.guiLeft = this.leftPos;
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         if (this.menu.getBlockEntity() instanceof BotanicalTile botanicalTile) {
             this.manaBar.renderHoveredToolTip(guiGraphics, mouseX, mouseY, botanicalTile.getCurrentMana());
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         String s = this.title.getString();
-        guiGraphics.drawString(this.font, s, (float) (this.imageWidth / 2 - this.font.width(s) / 2), 6.0F, Color.DARK_GRAY.getRGB(), false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle.getString(), 8.0F, (float) (this.imageHeight - 96 + 2), Color.DARK_GRAY.getRGB(), false);
+        guiGraphics.text(this.font, s, (int) (this.imageWidth / 2 - this.font.width(s) / 2), 6, ARGB.opaque(Color.DARK_GRAY.getRGB()), false);
+        guiGraphics.text(this.font, this.playerInventoryTitle.getString(), 8, (int) (this.imageHeight - 96 + 2), ARGB.opaque(Color.DARK_GRAY.getRGB()), false);
     }
 
-    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, Identifier screenLocation) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(screenLocation, this.relX, this.relY, 0, 0, this.imageWidth, this.imageHeight);
+    public void drawDefaultGuiBackgroundLayer(GuiGraphicsExtractor guiGraphics, Identifier screenLocation) {
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, screenLocation, this.relX, this.relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (this.menu.getBlockEntity() instanceof BotanicalTile botanicalTile) {
             this.manaBar.draw(guiGraphics, botanicalTile.getCurrentMana());
         }

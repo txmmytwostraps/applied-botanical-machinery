@@ -1,20 +1,21 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalAlfheimMarket;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalAlfheimMarket.BlockEntityAlfheimMarketAdvanced;
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.common.lib.ResourceLocationHelper;
@@ -22,23 +23,23 @@ import velrondevs.botania.common.lib.ResourceLocationHelper;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class RenderAlpheimMarketAdvanced extends RotatedBlockRenderer<BlockEntityAlfheimMarketAdvanced> {
+public class RenderAlpheimMarketAdvanced extends LegacyRotatedRenderer<BlockEntityAlfheimMarketAdvanced> {
 
     private final TextureAtlasSprite portalSprite;
 
     public RenderAlpheimMarketAdvanced() {
-        this.portalSprite = Objects.requireNonNull(Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocationHelper.prefix("block/alfheim_portal_swirl")));
+        this.portalSprite = velrondevs.botania.client.core.helper.RenderHelper.blockSprite(ResourceLocationHelper.prefix("block/alfheim_portal_swirl"));
     }
 
-    public void doRender(@Nonnull BlockEntityAlfheimMarketAdvanced tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    public void doRender(@Nonnull BlockEntityAlfheimMarketAdvanced tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.AlfheimMarketSettings.alfheimMarketAdvanced) {
             poseStack.pushPose();
             poseStack.scale(0.0625F, 0.0625F, 0.0625F);
             poseStack.translate(3.2, 2.0, 3.6);
             poseStack.scale(3.6F, 3.6F, 3.6F);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(BotaniaBlocks.naturaPylon.defaultBlockState(), poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(BotaniaBlocks.naturaPylon.defaultBlockState(), poseStack, buffer, null, -1, light, overlay);
             poseStack.translate(1.5555555555555556, 0.0, 0.0);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(BotaniaBlocks.naturaPylon.defaultBlockState(), poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(BotaniaBlocks.naturaPylon.defaultBlockState(), poseStack, buffer, null, -1, light, overlay);
             poseStack.popPose();
             if (tile.getCurrentMana() > 0) {
                 poseStack.pushPose();
@@ -66,8 +67,8 @@ public class RenderAlpheimMarketAdvanced extends RotatedBlockRenderer<BlockEntit
                     poseStack.scale(5.4F, 5.4F, 5.4F);
                     poseStack.translate(0.0, yPos, zPos);
                     poseStack.scale(-1.0F, 1.0F, -1.0F);
-                    poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-                    Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong());
+                    poseStack.mulPose(this.camera.orientation);
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong());
                     poseStack.popPose();
                 }
             }
@@ -76,11 +77,11 @@ public class RenderAlpheimMarketAdvanced extends RotatedBlockRenderer<BlockEntit
     }
 
     private void renderPortal(PoseStack poseStack, MultiBufferSource buffer, TextureAtlasSprite sprite, int x, int y, int width, int height, float alpha, int overlay) {
-        VertexConsumer vertex = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+        VertexConsumer vertex = buffer.getBuffer(Sheets.translucentBlockSheet());
         PoseStack.Pose pose = poseStack.last();
-        vertex.addVertex(pose, (float)x, (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
-        vertex.addVertex(pose, (float)(x + width), (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
-        vertex.addVertex(pose, (float)(x + width), (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
-        vertex.addVertex(pose, (float)x, (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0()).setOverlay(overlay).setLight(LightTexture.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)x, (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1()).setOverlay(overlay).setLight(LightCoordsUtil.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)(x + width), (float)(y + height), 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1()).setOverlay(overlay).setLight(LightCoordsUtil.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)(x + width), (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0()).setOverlay(overlay).setLight(LightCoordsUtil.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
+        vertex.addVertex(pose, (float)x, (float)y, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0()).setOverlay(overlay).setLight(LightCoordsUtil.pack(15, 15)).setNormal(pose, 1.0F, 0.0F, 0.0F);
     }
 }

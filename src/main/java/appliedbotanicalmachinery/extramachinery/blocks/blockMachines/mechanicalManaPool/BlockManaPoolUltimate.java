@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalManaPool;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalManaPool.ContainerManaPoolUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalManaPool.ScreenManaPoolUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaPool.RenderManaPoolUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.BlockEntityManaPoolUltimate;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -14,8 +17,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -29,8 +30,8 @@ import javax.annotation.Nonnull;
 public class BlockManaPoolUltimate extends ExtraBotanicalBlock<BlockEntityManaPoolUltimate, ContainerManaPoolUltimate> {
     public static final RotationShape SHAPE;
 
-    public BlockManaPoolUltimate(ModX mod, Class<BlockEntityManaPoolUltimate> teClass, AdvancedMenuType<ContainerManaPoolUltimate, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockManaPoolUltimate(ModX mod, Class<BlockEntityManaPoolUltimate> teClass, AdvancedMenuType<ContainerManaPoolUltimate, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -39,13 +40,10 @@ public class BlockManaPoolUltimate extends ExtraBotanicalBlock<BlockEntityManaPo
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenManaPoolUltimate::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderManaPoolUltimate();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderManaPoolUltimate());
     }
 
     @Nonnull

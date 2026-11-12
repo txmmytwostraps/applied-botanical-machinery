@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaPool;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,16 +11,14 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaPool.
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.api.mana.PoolOverlayProvider;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.client.core.handler.MiscellaneousModels;
@@ -26,7 +26,7 @@ import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
 
-public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPoolBase> {
+public class RenderManaPoolBase extends LegacyRotatedRenderer<BlockEntityManaPoolBase> {
     public static final double INNER_POOL_HEIGHT = 0.28125;
     public static final double POOL_BOTTOM_HEIGHT = 0.071875;
     private static final TextureAtlasSprite MANA_WATER_SPRITE;
@@ -34,7 +34,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
     public RenderManaPoolBase() {
     }
 
-    protected void doRender(@Nonnull BlockEntityManaPoolBase tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityManaPoolBase tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.ManaPoolSettings.manaPoolBase) {
             ItemStack catalystStack = Inventories.get(tile.getInventory(), 0);
             if (!catalystStack.isEmpty() && catalystStack.getItem() instanceof BlockItem) {
@@ -42,7 +42,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
                 if (block instanceof PoolOverlayProvider) {
                     PoolOverlayProvider catalyst = (PoolOverlayProvider)block;
                     Identifier spriteId = catalyst.getIcon(tile.getLevel(), tile.getBlockPos());
-                    TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(spriteId);
+                    TextureAtlasSprite sprite = velrondevs.botania.client.core.helper.RenderHelper.blockSprite(spriteId);
                     poseStack.pushPose();
                     poseStack.translate(0.125, POOL_BOTTOM_HEIGHT, 0.125);
                     poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
@@ -79,7 +79,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
 
                     poseStack.scale(0.4375F, 0.4375F, 0.4375F);
                     poseStack.mulPose(Axis.YP.rotationDegrees((float)ClientTickHandler.ticksInGame + partialTick));
-                    Minecraft.getInstance().getItemRenderer().renderStatic(output_1, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong());
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(output_1, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong());
                     poseStack.popPose();
                 }
 
@@ -89,7 +89,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
 
                     poseStack.scale(0.4375F, 0.4375F, 0.4375F);
                     poseStack.mulPose(Axis.YP.rotationDegrees((float)ClientTickHandler.ticksInGame + partialTick));
-                    Minecraft.getInstance().getItemRenderer().renderStatic(output_2, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong());
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(output_2, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong());
                     poseStack.popPose();
                 }
             }
@@ -106,7 +106,7 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
 
                     poseStack.scale(0.4375F, 0.4375F, 0.4375F);
                     poseStack.mulPose(Axis.YP.rotationDegrees((float)(ClientTickHandler.ticksInGame % 360)));
-                    Minecraft.getInstance().getItemRenderer().renderStatic(input, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong());
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(input, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong());
                     poseStack.popPose();
                 }
             }
@@ -116,6 +116,6 @@ public class RenderManaPoolBase extends RotatedBlockRenderer<BlockEntityManaPool
     }
 
     static {
-        MANA_WATER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(Identifier.fromNamespaceAndPath("botania", "block/mana_water"));
+        MANA_WATER_SPRITE = velrondevs.botania.client.core.helper.RenderHelper.blockSprite(Identifier.fromNamespaceAndPath("botania", "block/mana_water"));
     }
 }

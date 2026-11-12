@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.base;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,7 +11,7 @@ import appliedbotanicalmachinery.extramachinery.ModItems;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.uitlScreen.ScreenAddInventory;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
 import appliedbotanicalmachinery.extramachinery.gui.*;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -22,6 +24,10 @@ import org.moddingx.libx.menu.BlockEntityMenu;
 public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends AbstractContainerScreen<X> {
     public ExtraScreenBase(X menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+    }
+
+    public ExtraScreenBase(X menu, Inventory inventory, Component title, int imageWidth, int imageHeight) {
+        super(menu, inventory, title, imageWidth, imageHeight);
     }
 
     @Override
@@ -42,12 +48,11 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         this.titleLabelY = -9999;
     }
 
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    public void drawDefaultGuiBackgroundLayer(GuiGraphics guiGraphics, Identifier screenLocation,
+    public void drawDefaultGuiBackgroundLayer(GuiGraphicsExtractor guiGraphics, Identifier screenLocation,
                                               ScreenAddInventory addInventory, int[] storageAll, int[] maxStorageAll,
                                               Bars bars, SlotInfo slotInfo) {
         if (bars != null){
@@ -56,15 +61,9 @@ public abstract class ExtraScreenBase<X extends BlockEntityMenu<?>> extends Abst
         if (slotInfo != null){
             slotInfo.setGuiCoord(this.leftPos, this.topPos);
         }
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, screenLocation, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(screenLocation, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-
-        guiGraphics.blit(addInventory.getInventoryScreen().getResourceLocation(),
-                addInventory.getXBlitScreen(this.leftPos, addInventory.getWidthGuiMax(this.imageWidth)),
-                addInventory.getYBlitScreen(this.topPos, addInventory.getHeightGuiMax(this.imageHeight)),
-                0, 0, addInventory.getInventoryScreen().getWidth(), addInventory.getInventoryScreen().getHeight());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, addInventory.getInventoryScreen().getResourceLocation(), addInventory.getXBlitScreen(this.leftPos, addInventory.getWidthGuiMax(this.imageWidth)), addInventory.getYBlitScreen(this.topPos, addInventory.getHeightGuiMax(this.imageHeight)), 0, 0, addInventory.getInventoryScreen().getWidth(), addInventory.getInventoryScreen().getHeight(), 256, 256);
 
         if (bars != null && storageAll.length != 0 && maxStorageAll.length != 0){
             bars.draw(guiGraphics, storageAll, maxStorageAll, checkUpgradeInfinityMana(slotInfo));

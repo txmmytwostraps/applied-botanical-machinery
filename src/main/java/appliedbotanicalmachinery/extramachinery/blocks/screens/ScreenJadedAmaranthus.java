@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens;
 
+import javax.annotation.Nonnull;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appliedbotanicalmachinery.extramachinery.ModItems;
@@ -14,12 +16,10 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,13 +35,10 @@ public class ScreenJadedAmaranthus extends ExtraScreenBase<ContainerJadedAmarant
 
 
     public ScreenJadedAmaranthus(ContainerJadedAmaranthus menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerJadedAmaranthus.WIDTH_GUI, ContainerJadedAmaranthus.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerJadedAmaranthus.WIDTH_GUI;
-        this.imageHeight = ContainerJadedAmaranthus.HEIGHT_GUI;
 
         blockEntity = this.menu.getBlockEntity();
 
@@ -66,8 +63,8 @@ public class ScreenJadedAmaranthus extends ExtraScreenBase<ContainerJadedAmarant
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.JADED_AMARANTHUS_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, slotInfo);
 

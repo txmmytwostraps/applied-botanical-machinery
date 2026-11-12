@@ -1,11 +1,7 @@
 package appliedbotanicalmachinery.item;
 
-import java.util.function.Consumer;
-
-import net.minecraft.world.item.component.TooltipDisplay;
-
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,6 +13,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -108,7 +105,8 @@ public class ManaCellItem extends Item implements IManaCellItem, AEToolItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> tooltipComponents,
             TooltipFlag tooltipFlag) {
         addCellInformationToTooltip(stack, tooltipComponents);
     }

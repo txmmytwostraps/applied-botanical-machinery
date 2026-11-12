@@ -1,12 +1,8 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:shadow_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:saffron_dragonstone"
-    }
+    "appliedbotanicalmachinery:shadow_ingot",
+    "appliedbotanicalmachinery:saffron_dragonstone"
   ],
   "output": [
     {

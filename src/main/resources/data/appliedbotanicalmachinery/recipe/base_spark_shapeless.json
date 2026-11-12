@@ -1,11 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "ingredients": [
-    {
-      "item": "botania:spark"
-    }
-  ],
+  "ingredients": ["botania:spark"],
   "result": {
     "count": 1,
     "id": "appliedbotanicalmachinery:base_spark"

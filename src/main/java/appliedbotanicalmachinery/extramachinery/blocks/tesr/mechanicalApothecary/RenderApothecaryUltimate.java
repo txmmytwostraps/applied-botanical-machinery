@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalApothecary;
 
+import appliedbotanicalmachinery.client.FluidRender;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,27 +14,24 @@ import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig.Renderin
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.moddingx.libx.render.RenderHelper;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
-public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityApothecaryUltimate> {
+public class RenderApothecaryUltimate extends LegacyRotatedRenderer<BlockEntityApothecaryUltimate> {
     public RenderApothecaryUltimate() {
     }
 
-    protected void doRender(@Nonnull BlockEntityApothecaryUltimate tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityApothecaryUltimate tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (RenderingVisualContent.all && RenderingVisualContent.ApothecarySettings.apothecaryUltimate) {
             int items;
             double offsetPerPetal;
@@ -52,7 +53,7 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
                     poseStack.translate(0.0, -offsetPerPetal, 0.0);
                 }
 
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong());
+                velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong());
                 poseStack.popPose();
             }
 
@@ -63,10 +64,9 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
                 poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
                 poseStack.scale(0.0625F, 0.0625F, 0.0625F);
                 FluidStack fluidStack = tile.getFluidInventory().getFluid();
-                IClientFluidTypeExtensions fluidTypeExtensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-                TextureAtlasSprite sprite = (TextureAtlasSprite)Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidTypeExtensions.getStillTexture(fluidStack));
-                int fluidColor = fluidTypeExtensions.getTintColor(fluidStack);
-                VertexConsumer vertex = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+                TextureAtlasSprite sprite = FluidRender.stillSprite(fluidStack);
+                int fluidColor = FluidRender.tint(fluidStack);
+                VertexConsumer vertex = buffer.getBuffer(Sheets.translucentBlockSheet());
                 RenderHelper.renderIconColored(poseStack, vertex, 0.0F, 0.0F, sprite, 8.0F, 8.0F, 1.0F, fluidColor, light, OverlayTexture.NO_OVERLAY);
                 poseStack.popPose();
             }
@@ -129,7 +129,7 @@ public class RenderApothecaryUltimate extends RotatedBlockRenderer<BlockEntityAp
 
                     poseStack.translate(-0.0625, -0.0625, -0.0625);
                     ItemStack stack = Inventories.get(tile.getInventory(), slot);
-                    Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlay, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, overlay, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
                     poseStack.popPose();
                 }
             }

@@ -1,7 +1,5 @@
 package appliedbotanicalmachinery;
 
-import static appliedbotanicalmachinery.AppliedBotanics.id;
-
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.Direction;
@@ -26,7 +24,6 @@ import velrondevs.botania.common.integration.corporea.CorporeaNodeDetectors;
 import appeng.api.AECapabilities;
 import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.behaviors.GenericSlotCapacities;
-import appeng.api.client.StorageCellModels;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
@@ -104,21 +101,6 @@ public class AppliedBotanicsForge {
                 P2PTunnelAttunement.registerAttunementTag(ABItems.MANA_P2P_TUNNEL.get());
 
                 StorageCells.addCellHandler(ManaCellHandler.INSTANCE);
-                StorageCellModels.registerModel(ABItems.MANA_CELL_1K.get(), id("block/drive/cells/1k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.PORTABLE_MANA_CELL_1K.get(),
-                        id("block/drive/cells/1k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.MANA_CELL_4K.get(), id("block/drive/cells/4k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.PORTABLE_MANA_CELL_4K.get(),
-                        id("block/drive/cells/4k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.MANA_CELL_16K.get(), id("block/drive/cells/16k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.PORTABLE_MANA_CELL_16K.get(),
-                        id("block/drive/cells/16k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.MANA_CELL_64K.get(), id("block/drive/cells/64k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.PORTABLE_MANA_CELL_64K.get(),
-                        id("block/drive/cells/64k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.MANA_CELL_256K.get(), id("block/drive/cells/256k_mana_cell"));
-                StorageCellModels.registerModel(ABItems.PORTABLE_MANA_CELL_256K.get(),
-                        id("block/drive/cells/256k_mana_cell"));
             });
         });
     }

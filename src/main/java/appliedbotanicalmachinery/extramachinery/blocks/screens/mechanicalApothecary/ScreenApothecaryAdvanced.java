@@ -14,13 +14,11 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.Tags;
 import velrondevs.botania.client.core.helper.RenderHelper;
 
@@ -38,13 +36,10 @@ public class ScreenApothecaryAdvanced extends ExtraScreenBase<ContainerApothecar
     SlotInfo slotInfo;
 
     public ScreenApothecaryAdvanced(ContainerApothecaryAdvanced screenMenu, Inventory inventory, Component title) {
-        super(screenMenu, inventory, title);
+        super(screenMenu, inventory, title, ContainerApothecaryAdvanced.WIDTH_GUI, ContainerApothecaryAdvanced.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerApothecaryAdvanced.WIDTH_GUI;
-        this.imageHeight = ContainerApothecaryAdvanced.HEIGHT_GUI;
 
         bars.setBar(AllBars.WATER);
         bars.setDrawCoord(44, 121);
@@ -66,8 +61,8 @@ public class ScreenApothecaryAdvanced extends ExtraScreenBase<ContainerApothecar
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ADVANCED_MECHANICAL_APOTHECARY_GUI, screenAddInventory,
                 new int[] {blockEntity.getFluidInventory().getFluidAmount()}, new int[] {blockEntity.getFluidInventory().getCapacity()}, bars, slotInfo);
 

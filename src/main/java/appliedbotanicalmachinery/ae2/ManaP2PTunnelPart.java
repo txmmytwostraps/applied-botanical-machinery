@@ -1,7 +1,6 @@
 package appliedbotanicalmachinery.ae2;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
-import appliedbotanicalmachinery.AppliedBotanics;
 import velrondevs.botania.api.BotaniaCapabilities;
 import velrondevs.botania.api.mana.ManaPool;
 import velrondevs.botania.api.mana.ManaReceiver;
@@ -36,7 +34,6 @@ public class ManaP2PTunnelPart extends CapabilityP2PTunnelPart<ManaP2PTunnelPart
         inputHandler = new InputHandler();
         emptyHandler = new EmptyHandler();
     }
-
 
     @Nullable
     public SparkAttachable getSparkAttachable() {

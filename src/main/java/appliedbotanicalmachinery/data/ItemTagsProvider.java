@@ -3,12 +3,7 @@ package appliedbotanicalmachinery.data;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.ExistingFileHelper.ResourceType;
 
 import appliedbotanicalmachinery.ABItems;
 import appliedbotanicalmachinery.AppliedBotanics;
@@ -16,18 +11,14 @@ import velrondevs.botania.common.lib.BotaniaTags;
 
 import appeng.api.features.P2PTunnelAttunement;
 
-public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
+public class ItemTagsProvider extends net.neoforged.neoforge.common.data.ItemTagsProvider {
 
-    public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-            CompletableFuture<TagLookup<Block>> blockTagsProvider, ExistingFileHelper existingFileHelper) {
-        super(packOutput, registries, blockTagsProvider, AppliedBotanics.MOD_ID, existingFileHelper);
-
-        existingFileHelper.trackGenerated(BotaniaTags.Items.PETALS.location(),
-                new ResourceType(PackType.SERVER_DATA, ".json", Registries.tagsDirPath(Registries.ITEM)));
+    public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(packOutput, registries, AppliedBotanics.MOD_ID);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider arg) {
+    protected void addTags(HolderLookup.Provider registries) {
         tag(P2PTunnelAttunement.getAttunementTag(ABItems.MANA_P2P_TUNNEL.get()))
                 .addTag(BotaniaTags.Items.PETALS);
     }

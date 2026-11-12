@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalOrechid;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalOrechid.ContainerOrechidUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid.ScreenOrechidUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalOrechid.RenderOrechidUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalOrechid.BlockEntityOrechidUpgraded;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -16,8 +19,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.tile.MenuBlockBE;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -34,8 +35,8 @@ public class BlockOrechidUpgraded extends MenuBlockBE<BlockEntityOrechidUpgraded
     private static final VoxelShape COLLISION_SHAPE;
     public static final VoxelShape SHAPE;
 
-    public BlockOrechidUpgraded(ModX mod, Class<BlockEntityOrechidUpgraded> teClass, AdvancedMenuType<ContainerOrechidUpgraded, BlockPos> menu) {
-        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockOrechidUpgraded(ModX mod, Class<BlockEntityOrechidUpgraded> teClass, AdvancedMenuType<ContainerOrechidUpgraded, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, properties.strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
     }
 
     @Override
@@ -47,17 +48,13 @@ public class BlockOrechidUpgraded extends MenuBlockBE<BlockEntityOrechidUpgraded
     @Override
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenOrechidUpgraded::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderOrechidUpgraded();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderOrechidUpgraded());
     }
 
     public int getLightDampening(@Nonnull BlockState state) {

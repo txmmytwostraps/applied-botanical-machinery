@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,15 +15,15 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
-public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEntityMechanicalRunicAltar> {
+public class MechanicalRunicAltarRenderer extends LegacyRotatedRenderer<BlockEntityMechanicalRunicAltar> {
     
     @Override
-    protected void doRender(@Nonnull BlockEntityMechanicalRunicAltar tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityMechanicalRunicAltar tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalRunicAltar)
             return;
 
@@ -39,7 +41,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
             poseStack.translate(-0.5, 0, -0.5);
 
             //noinspection deprecation
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, 200, OverlayTexture.NO_OVERLAY);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, 200, OverlayTexture.NO_OVERLAY);
 
             poseStack.popPose();
         }
@@ -88,7 +90,7 @@ public class MechanicalRunicAltarRenderer extends RotatedBlockRenderer<BlockEnti
                 }
 
                 ItemStack stack = Inventories.get(tile.getInventory(), slot);
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong() + slot);
+                velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int) tile.getBlockPos().asLong() + slot);
 
                 poseStack.popPose();
             }

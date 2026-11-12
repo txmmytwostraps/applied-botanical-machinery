@@ -1,24 +1,12 @@
 {
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:aureate_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:aureate_ingot_block"
-    }
+    "appliedbotanicalmachinery:aureate_ingot",
+    "botania:gaia_ingot",
+    "botania:gaia_ingot",
+    "botania:gaia_ingot",
+    "botania:gaia_ingot",
+    "appliedbotanicalmachinery:aureate_ingot_block"
   ],
   "mana": 5000000,
   "result": {

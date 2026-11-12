@@ -7,21 +7,11 @@
   ],
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:mana_cell_housing"
-    },
-    {
-      "item": "botania:mana_pearl"
-    },
-    {
-      "item": "botania:mana_diamond"
-    },
-    {
-      "item": "ae2:sky_dust"
-    },
-    {
-      "item": "ae2:quartz_vibrant_glass"
-    }
+    "appliedbotanicalmachinery:mana_cell_housing",
+    "botania:mana_pearl",
+    "botania:mana_diamond",
+    "ae2:sky_dust",
+    "ae2:quartz_vibrant_glass"
   ],
   "mana": 10000,
   "result": {

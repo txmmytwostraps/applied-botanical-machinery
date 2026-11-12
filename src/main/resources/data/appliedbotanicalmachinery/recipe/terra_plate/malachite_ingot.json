@@ -1,15 +1,9 @@
 {
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "botania:terrasteel_ingot"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:elementium_ingot"
-    }
+    "botania:terrasteel_ingot",
+    "botania:life_essence",
+    "botania:elementium_ingot"
   ],
   "mana": 750000,
   "result": {

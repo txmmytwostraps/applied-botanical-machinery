@@ -7,18 +7,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "appliedbotanicalmachinery:malachite_dragonstone"
-    },
-    "b": {
-      "item": "appliedbotanicalmachinery:malachite_ingot"
-    },
-    "c": {
-      "item": "appliedbotanicalmachinery:cell_component_1m"
-    },
-    "d": {
-      "item": "appliedbotanicalmachinery:crystal_ingot"
-    }
+    "a": "appliedbotanicalmachinery:malachite_dragonstone",
+    "b": "appliedbotanicalmachinery:malachite_ingot",
+    "c": "appliedbotanicalmachinery:cell_component_1m",
+    "d": "appliedbotanicalmachinery:crystal_ingot"
   },
   "pattern": ["aba", "cdc", "aca"],
   "result": {

@@ -8,7 +8,7 @@ import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.core.TileTags;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -19,8 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
@@ -47,7 +45,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-@OnlyIn(value = Dist.CLIENT, _interface = WandHUD.class)
 public abstract class BotanicalTile extends BlockEntityBase implements ManaPool, KeyLocked, SparkAttachable, ThrottledPacket, WandHUD, TickingBlock {
 
     private int mana;
@@ -122,7 +119,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
 
 
     @Override
-    public void renderHUD(GuiGraphics guiGraphics, Minecraft minecraft) {
+    public void renderHUD(GuiGraphicsExtractor guiGraphics, Minecraft minecraft) {
         ItemStack block = new ItemStack(this.getBlockState().getBlock());
         String name = block.getHoverName().getString();
         int centerX = minecraft.getWindow().getGuiScaledWidth() / 2;
@@ -130,11 +127,6 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
         int width = Math.max(102, minecraft.font.width(name)) + 4;
         RenderHelper.renderHUDBox(guiGraphics, centerX - width / 2, centerY + 8, centerX + width / 2, centerY + 28);
         HUDHandler.drawSimpleManaHUD(guiGraphics, 0x4444FF, this.getCurrentMana(), this.getMaxMana(), name);
-
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        RenderSystem.disableBlend();
     }
 
     @Override

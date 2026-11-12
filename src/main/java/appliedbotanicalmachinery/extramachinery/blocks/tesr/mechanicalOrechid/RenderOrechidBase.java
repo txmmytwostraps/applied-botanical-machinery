@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalOrechid;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import appliedbotanicalmachinery.client.LegacyBlockRenderer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalOrechid.BlockEntityOrechidBase;
 import net.minecraft.client.Minecraft;
@@ -10,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RenderOrechidBase implements BlockEntityRenderer<BlockEntityOrechidBase> {
+public class RenderOrechidBase extends LegacyBlockRenderer<BlockEntityOrechidBase> {
     public RenderOrechidBase() {
     }
 
@@ -18,12 +22,12 @@ public class RenderOrechidBase implements BlockEntityRenderer<BlockEntityOrechid
         if (state != null) {
             poseStack.pushPose();
             poseStack.translate(translateX, 0.0, translateZ);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, light, overlay);
             poseStack.popPose();
         }
 
     }
 
     @Override
-    public void render(BlockEntityOrechidBase blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {}
+    protected void render(BlockEntityOrechidBase blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {}
 }

@@ -1,19 +1,16 @@
 package appliedbotanicalmachinery.ae2;
 
-import net.minecraft.world.level.storage.ValueOutput;
-
 import java.text.NumberFormat;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import velrondevs.botania.client.fx.WispParticleData;
 

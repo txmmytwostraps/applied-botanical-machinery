@@ -4,7 +4,6 @@ import appliedbotanicalmachinery.AppliedBotanics;
 import appliedbotanicalmachinery.AppliedBotanicsForge;
 import appliedbotanicalmachinery.extramachinery.config.LibXServerConfig;
 import appliedbotanicalmachinery.item.ManaCellItem;
-import appeng.api.client.StorageCellModels;
 import appeng.items.materials.StorageComponentItem;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
@@ -35,14 +34,6 @@ public class InitAppbot {
     public static void initialize(IEventBus bus) {
         ITEMS.register(bus);
         CONDITIONS.register(bus);
-
-        bus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(() ->{
-            StorageCellModels.registerModel(manaStorageCell_1m.get(), AppliedBotanics.id("block/drive/cells/mana_storage_cell_1m"));
-            StorageCellModels.registerModel(manaStorageCell_4m.get(), AppliedBotanics.id("block/drive/cells/mana_storage_cell_4m"));
-            StorageCellModels.registerModel(manaStorageCell_16m.get(), AppliedBotanics.id("block/drive/cells/mana_storage_cell_16m"));
-            StorageCellModels.registerModel(manaStorageCell_64m.get(), AppliedBotanics.id("block/drive/cells/mana_storage_cell_64m"));
-            StorageCellModels.registerModel(manaStorageCell_256m.get(), AppliedBotanics.id("block/drive/cells/mana_storage_cell_256m"));
-        }));
     }
 
     /**

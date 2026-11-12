@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalAlfheimMarket;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalAlfheimMarket.ContainerAlfheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalAlfheimMarket.ScreenAlfheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalAlfheimMarket.RenderAlpheimMarketUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalAlfheimMarket.BlockEntityAlfheimMarketUpgraded;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,8 +16,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
@@ -28,8 +29,8 @@ public class
 BlockAlfheimMarketUpgraded extends ExtraBotanicalBlock<BlockEntityAlfheimMarketUpgraded, ContainerAlfheimMarketUpgraded> {
     public static final RotationShape SHAPE;
 
-    public BlockAlfheimMarketUpgraded(ModX mod, Class<BlockEntityAlfheimMarketUpgraded> teClass, AdvancedMenuType<ContainerAlfheimMarketUpgraded, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockAlfheimMarketUpgraded(ModX mod, Class<BlockEntityAlfheimMarketUpgraded> teClass, AdvancedMenuType<ContainerAlfheimMarketUpgraded, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -38,11 +39,10 @@ BlockAlfheimMarketUpgraded extends ExtraBotanicalBlock<BlockEntityAlfheimMarketU
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenAlfheimMarketUpgraded::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> new RenderAlpheimMarketUpgraded());
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderAlpheimMarketUpgraded());
     }
 
     @Nonnull

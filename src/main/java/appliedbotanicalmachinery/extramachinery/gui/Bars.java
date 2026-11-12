@@ -1,9 +1,12 @@
 package appliedbotanicalmachinery.extramachinery.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.util.ARGB;
+
+import net.minecraft.client.renderer.RenderPipelines;
+
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.extramachinery.util.NumberFormatter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -52,9 +55,10 @@ public class Bars {
         return false;
     }
 
-    public void draw(GuiGraphics guiGraphics, int[] storage, int[] maxStorage, boolean infinityUpgrade) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int[] storage, int[] maxStorage, boolean infinityUpgrade) {
         for (int i = 0; i < this.x.size(); i++){
             Identifier barRL = bars.get(i).getResourceLocation();
+            int color = -1;
 
             if (infinityUpgrade && (bars.get(i) == AllBars.MANA || bars.get(i) == AllBars.WATER)){
                 barRL = AllBars.INFINITY_MANA.getResourceLocation();
@@ -65,32 +69,24 @@ public class Bars {
                 float green = ((rgb >> 8) & 0xFF) / 255F; // Средние 8 бит
                 float blue = (rgb & 0xFF) / 255F; // Младшие 8 бит
 
-                RenderSystem.setShaderColor(red, green, blue, 1.0F);
+                color = ARGB.colorFromFloat(1.0F, red, green, blue);
             }
 
-            RenderSystem.setShaderTexture(0, barRL);
 
 
             float pct = Math.min((float) storage[i] / (float) maxStorage[i], 1.0F);
             int rel = (int)((float)(bars.get(i).getHor() ? bars.get(i).getWidth() : bars.get(i).getHeight()) * pct);
 
-            guiGraphics.blit(
-                    barRL,
-                    this.guiLeft + this.x.get(i), this.guiTop + this.y.get(i),
-                    0.0F, 0.0F,
-                    bars.get(i).getHor() ? rel : bars.get(i).getWidth(), bars.get(i).getHor() ? bars.get(i).getHeight() : rel, bars.get(i).getWidth(),
-                    bars.get(i).getHeight()
-            );
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, barRL, this.guiLeft + this.x.get(i), this.guiTop + this.y.get(i), 0.0F, 0.0F, bars.get(i).getHor() ? rel : bars.get(i).getWidth(), bars.get(i).getHor() ? bars.get(i).getHeight() : rel, bars.get(i).getWidth(), bars.get(i).getHeight(), color);
         }
     }
 
-    public void renderHoveredToolTip(GuiGraphics guiGraphics, int mouseX, int mouseY, int storage, int maxStorage, int index) {
+    public void renderHoveredToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int storage, int maxStorage, int index) {
         if (this.isMouseOver(mouseX, mouseY, index) && LibXClientConfig.numericalTooltip) {
             Component text = Component.translatable(bars.get(index).getTranslatableCode(),
                     Component.literal(NumberFormatter.formatInteger(storage)),
                     Component.literal(NumberFormatter.formatInteger(maxStorage)));
-            guiGraphics.renderTooltip(this.parent.getMinecraft().font, text, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(this.parent.getMinecraft().font, text, mouseX, mouseY);
         }
 
     }

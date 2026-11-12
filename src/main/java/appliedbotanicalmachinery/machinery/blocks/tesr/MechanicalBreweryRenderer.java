@@ -1,5 +1,13 @@
 package appliedbotanicalmachinery.machinery.blocks.tesr;
 
+import net.minecraft.core.component.DataComponents;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+
+import appliedbotanicalmachinery.client.FluidRender;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.google.common.collect.ImmutableMap;
@@ -13,13 +21,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.joml.Quaternionf;
 import org.moddingx.libx.render.RenderHelper;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.api.brew.BrewItem;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.registry.BotaniaItems;
@@ -27,7 +33,7 @@ import velrondevs.botania.registry.BotaniaItems;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityMechanicalBrewery> {
+public class MechanicalBreweryRenderer extends LegacyRotatedRenderer<BlockEntityMechanicalBrewery> {
 
     public static final Map<Item, Integer> INGREDIENT_COLORS = ImmutableMap.<Item, Integer>builder()
             .put(Items.NETHER_WART, 0xbe3f4a)
@@ -66,14 +72,12 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
             .put(Items.MELON_SLICE, 0xbf3123)
             .build();
 
-    private final int waterColor;
 
     public MechanicalBreweryRenderer() {
-        this.waterColor = IClientFluidTypeExtensions.of(Fluids.WATER).getTintColor();
     }
 
     @Override
-    protected void doRender(@Nonnull BlockEntityMechanicalBrewery tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityMechanicalBrewery tile, float partialTick, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (!LibXClientConfig.AdvancedRendering.all || !LibXClientConfig.AdvancedRendering.mechanicalBrewery)
             return;
 
@@ -107,7 +111,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
             } else if (progress >= 1 - (2 * segment)) {
                 slotToMove = Integer.MAX_VALUE;
 
-                int fromColor = this.waterColor;
+                int fromColor = this.waterColor();
                 for (int i = 6; i >= 1; i--) {
                     if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
                         fromColor = this.getColor(Inventories.get(tile.getInventory(), i));
@@ -116,12 +120,12 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
                 }
                 this.renderFluid(poseStack, buffer, partialTick, light, 1, fromColor, this.getTargetColor(tile), segmentProgress);
             } else if (progress < segment) {
-                this.renderFluid(poseStack, buffer, partialTick, light, (float) segmentProgress, this.waterColor);
+                this.renderFluid(poseStack, buffer, partialTick, light, (float) segmentProgress, this.waterColor());
             } else {
                 int idx = (int) ((progress - segment) / segment);
 
-                int fromColor = this.waterColor;
-                int toColor = this.waterColor;
+                int fromColor = this.waterColor();
+                int toColor = this.waterColor();
 
                 for (int i = 1; i <= 6; i++) {
                     if (!Inventories.get(tile.getInventory(), i).isEmpty()) {
@@ -157,7 +161,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
         if (vialRotate != null)
             poseStack.mulPose(vialRotate);
 
-        Minecraft.getInstance().getItemRenderer().renderStatic(topStack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+        velrondevs.botania.client.core.helper.RenderHelper.renderItem(topStack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
         poseStack.popPose();
 
@@ -190,7 +194,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
                 poseStack.mulPose(Axis.YP.rotationDegrees(90f));
                 poseStack.translate(0, 0.075 * Math.sin((time + (idxNow * 10)) / 5d), 0);
 
-                Minecraft.getInstance().getItemRenderer().renderStatic(Inventories.get(tile.getInventory(), i), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int) tile.getBlockPos().asLong());
+                velrondevs.botania.client.core.helper.RenderHelper.renderItem(Inventories.get(tile.getInventory(), i), ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int) tile.getBlockPos().asLong());
 
                 poseStack.popPose();
             }
@@ -199,15 +203,15 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
 
     private int getColor(ItemStack stack) {
         if (stack.isEmpty()) {
-            return this.waterColor;
+            return this.waterColor();
         } else if (INGREDIENT_COLORS.containsKey(stack.getItem())) {
             return INGREDIENT_COLORS.get(stack.getItem());
         } else if (stack.getItem() instanceof DyeItem) {
-            return ((DyeItem) stack.getItem()).getDyeColor().getTextColor();
+            return stack.get(DataComponents.DYE).getTextColor();
         } else if (stack.getItem() instanceof BlockItem) {
             return ((BlockItem) stack.getItem()).getBlock().defaultMapColor().col;
         } else {
-            return this.waterColor;
+            return this.waterColor();
         }
     }
 
@@ -215,7 +219,7 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
         if (tile.getCurrentOutput().getItem() instanceof BrewItem brewItem) {
             return brewItem.getBrew(tile.getCurrentOutput()).getColor(tile.getCurrentOutput());
         } else {
-            return this.waterColor;
+            return this.waterColor();
         }
     }
 
@@ -243,11 +247,16 @@ public class MechanicalBreweryRenderer extends RotatedBlockRenderer<BlockEntityM
         poseStack.translate(4, 3 + (4.4 * fillLevel), 4);
         poseStack.mulPose(Axis.XP.rotationDegrees(90));
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(Fluids.WATER).getStillTexture());
+        TextureAtlasSprite sprite = FluidRender.stillSprite(new FluidStack(Fluids.WATER, 1000));
 
-        VertexConsumer vertex = buffer.getBuffer(Sheets.translucentCullBlockSheet());
+        VertexConsumer vertex = buffer.getBuffer(Sheets.translucentBlockSheet());
         RenderHelper.renderIconColored(poseStack, vertex, 0, 0, sprite, 8, 8, 1.0F, color, light, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
+    }
+
+    // Looked up when drawing: the renderer is created before item and fluid components exist.
+    private int waterColor() {
+        return FluidRender.tint(new FluidStack(Fluids.WATER, 1000));
     }
 }

@@ -17,10 +17,6 @@ public class ItemModels extends ItemModelProviderBase {
         this.manualModel(ModItems.catalystPetal);
         this.manualModel(ModItems.catalystPetalBlock);
         this.manualModel(ModBlocks.greenhouse.asItem());
-        this.manualModel(ModBlocks.baseManaInfuser.asItem());
-        this.manualModel(ModBlocks.upgradedManaInfuser.asItem());
-        this.manualModel(ModBlocks.advancedManaInfuser.asItem());
-        this.manualModel(ModBlocks.ultimateManaInfuser.asItem());
         this.manualModel(ModItems.aureateDragonstone);
         this.manualModel(ModItems.aureateIngot);
         this.manualModel(ModBlocks.aureateIngotBlock.asItem());
@@ -39,6 +35,11 @@ public class ItemModels extends ItemModelProviderBase {
 
     @Override
     protected void setup() {
+        // The mana infusers draw their item with the block entity renderer
+        this.specialBlock(ModBlocks.baseManaInfuser);
+        this.specialBlock(ModBlocks.upgradedManaInfuser);
+        this.specialBlock(ModBlocks.advancedManaInfuser);
+        this.specialBlock(ModBlocks.ultimateManaInfuser);
     }
 
 }

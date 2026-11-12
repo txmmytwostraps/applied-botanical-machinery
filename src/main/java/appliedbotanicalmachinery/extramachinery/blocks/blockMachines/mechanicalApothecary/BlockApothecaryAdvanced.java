@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalApothecary;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.util.SimpleFluidTank;
 
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
@@ -8,7 +12,6 @@ import appliedbotanicalmachinery.extramachinery.blocks.pattern.BlockEntityApothe
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalApothecary.ScreenApothecaryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalApothecary.RenderApothecaryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalApothecary.BlockEntityApothecaryAdvanced;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,8 +31,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.moddingx.libx.base.tile.MenuBlockBE;
@@ -49,8 +50,8 @@ import javax.annotation.Nullable;
 public class BlockApothecaryAdvanced extends MenuBlockBE<BlockEntityApothecaryAdvanced, ContainerApothecaryAdvanced> {
     public static final RotationShape SHAPE;
 
-    public BlockApothecaryAdvanced(ModX mod, Class<BlockEntityApothecaryAdvanced> teClass, AdvancedMenuType<ContainerApothecaryAdvanced, BlockPos> menu) {
-        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockApothecaryAdvanced(ModX mod, Class<BlockEntityApothecaryAdvanced> teClass, AdvancedMenuType<ContainerApothecaryAdvanced, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, properties.strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
     }
 
     @Override
@@ -63,15 +64,13 @@ public class BlockApothecaryAdvanced extends MenuBlockBE<BlockEntityApothecaryAd
     @Override
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenApothecaryAdvanced::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> new RenderApothecaryAdvanced());
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderApothecaryAdvanced());
     }
 
     @Nonnull
@@ -80,7 +79,7 @@ public class BlockApothecaryAdvanced extends MenuBlockBE<BlockEntityApothecaryAd
         if (!level.isClientSide()) {
             BlockEntityApothecaryPattern tile = this.getBlockEntity(level, pos);
             ItemStack held = player.getMainHandItem();
-            if (FluidUtil.interactWithFluidHandler(player, hand, pos, tile.getFluidInventory())) {
+            if (FluidUtil.interactWithFluidHandler(player, hand, pos, tile.getFluidInventory(), null)) {
                 tile.setDispatchable();
 
                 return InteractionResult.SUCCESS;

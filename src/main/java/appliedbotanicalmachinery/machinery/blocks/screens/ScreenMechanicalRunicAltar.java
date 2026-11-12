@@ -7,7 +7,7 @@ import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechan
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalRunicAltar;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -19,15 +19,14 @@ import javax.annotation.Nonnull;
 public class ScreenMechanicalRunicAltar extends ScreenBase<ContainerMenuMechanicalRunicAltar> {
 
     public ScreenMechanicalRunicAltar(ContainerMenuMechanicalRunicAltar menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageWidth = 216;
-        this.imageHeight = 195;
+        super(menu, inventory, title, 216, 195);
         this.manaBar.x += 40;
         this.manaBar.y += 20;
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_RUNIC_ALTAR_GUI);
 
         BlockEntityMechanicalRunicAltar blockEntity = this.menu.getBlockEntity();

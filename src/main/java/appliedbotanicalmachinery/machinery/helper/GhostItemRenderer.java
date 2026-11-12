@@ -1,16 +1,14 @@
 package appliedbotanicalmachinery.machinery.helper;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import java.util.List;
 
 public class GhostItemRenderer {
 
-    public static void renderGhostItem(List<ItemStack> stacks, GuiGraphics guiGraphics, int x, int y) {
+    public static void renderGhostItem(List<ItemStack> stacks, GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (stacks.isEmpty()) {
             return;
         }
@@ -19,14 +17,12 @@ public class GhostItemRenderer {
         renderGhostItem(stack, guiGraphics, x, y);
     }
 
-    public static void renderGhostItem(ItemStack stack, GuiGraphics guiGraphics, int x, int y) {
+    public static void renderGhostItem(ItemStack stack, GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (stack.isEmpty()) {
             return;
         }
 
-        guiGraphics.renderFakeItem(stack, x, y);
-        RenderSystem.depthFunc(GL11.GL_GREATER);
+        guiGraphics.fakeItem(stack, x, y);
         guiGraphics.fill(x, y, x + 16, y + 16, 0x30ffffff);
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 }

@@ -25,8 +25,8 @@ public class ForgeClientInitializer {
     }
 
     @SubscribeEvent
-    public static void registerItemColors(RegisterColorHandlersEvent.Item evt) {
-        ColorHandler.submitItems(evt::register);
+    public static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources evt) {
+        evt.register(ColorHandler.CatalystRainbow.ID, ColorHandler.CatalystRainbow.MAP_CODEC);
     }
 
     @SubscribeEvent

@@ -1,18 +1,10 @@
 {
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:saffron_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:malachite_ingot_block"
-    }
+    "appliedbotanicalmachinery:saffron_ingot",
+    "botania:gaia_ingot",
+    "botania:gaia_ingot",
+    "appliedbotanicalmachinery:malachite_ingot_block"
   ],
   "mana": 1500000,
   "result": {

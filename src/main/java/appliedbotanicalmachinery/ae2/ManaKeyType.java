@@ -1,15 +1,12 @@
 package appliedbotanicalmachinery.ae2;
 
-import net.minecraft.world.level.storage.ValueInput;
-
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.ValueInput;
 
 import appliedbotanicalmachinery.AppliedBotanics;
 import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;

@@ -1,12 +1,15 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalDaisy;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appeng.api.AECapabilities;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalDaisy.ContainerDaisyUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.pattern.BlockEntityDaisyPattern;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalDaisy.ScreenDaisyUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalDaisy.RenderDaisyUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalDaisy.BlockEntityDaisyUltimate;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -18,8 +21,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.base.tile.MenuBlockBE;
@@ -37,8 +38,8 @@ public class BlockDaisyUltimate extends MenuBlockBE<BlockEntityDaisyUltimate, Co
     private static final VoxelShape COLLISION_SHAPE;
     private static final VoxelShape SHAPE;
 
-    public BlockDaisyUltimate(ModX mod, Class<BlockEntityDaisyUltimate> teClass, AdvancedMenuType<ContainerDaisyUltimate, BlockPos> menu) {
-        super(mod, teClass, menu, Properties.ofFullCopy(Blocks.STONE).strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
+    public BlockDaisyUltimate(ModX mod, Class<BlockEntityDaisyUltimate> teClass, AdvancedMenuType<ContainerDaisyUltimate, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, properties.strength(2.0F, 10.0F).dynamicShape().forceSolidOn().noOcclusion(), new Item.Properties());
     }
 
     @Override
@@ -52,17 +53,13 @@ public class BlockDaisyUltimate extends MenuBlockBE<BlockEntityDaisyUltimate, Co
     @Override
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
-        builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenDaisyUltimate::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         ItemStackRenderer.addRenderBlock(this.getBlockEntityType(), true);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderDaisyUltimate();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderDaisyUltimate());
     }
 
     public int getLightDampening(@Nonnull BlockState state) {

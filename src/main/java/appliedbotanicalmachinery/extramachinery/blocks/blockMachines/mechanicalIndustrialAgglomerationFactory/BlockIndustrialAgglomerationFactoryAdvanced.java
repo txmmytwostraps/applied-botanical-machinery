@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalIndustrialAgglomerationFactory;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalIndustrialAgglomerationFactory.ContainerIndustrialAgglomerationFactoryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalIndustrialAgglomerationFactory.ScreenIndustrialAgglomerationFactoryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalIndustrialAgglomerationFactory.RenderIndustrialAgglomerationFactoryAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalIndustrialAgglomerationFactory.BlockEntityIndustrialAgglomerationFactoryAdvanced;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -15,8 +18,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -30,8 +31,8 @@ import javax.annotation.Nonnull;
 public class BlockIndustrialAgglomerationFactoryAdvanced extends ExtraBotanicalBlock<BlockEntityIndustrialAgglomerationFactoryAdvanced, ContainerIndustrialAgglomerationFactoryAdvanced> {
     public static final RotationShape SHAPE;
 
-    public BlockIndustrialAgglomerationFactoryAdvanced(ModX mod, Class<BlockEntityIndustrialAgglomerationFactoryAdvanced> teClass, AdvancedMenuType<ContainerIndustrialAgglomerationFactoryAdvanced, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockIndustrialAgglomerationFactoryAdvanced(ModX mod, Class<BlockEntityIndustrialAgglomerationFactoryAdvanced> teClass, AdvancedMenuType<ContainerIndustrialAgglomerationFactoryAdvanced, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -40,13 +41,10 @@ public class BlockIndustrialAgglomerationFactoryAdvanced extends ExtraBotanicalB
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenIndustrialAgglomerationFactoryAdvanced::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderIndustrialAgglomerationFactoryAdvanced();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderIndustrialAgglomerationFactoryAdvanced());
     }
 
     @Nonnull

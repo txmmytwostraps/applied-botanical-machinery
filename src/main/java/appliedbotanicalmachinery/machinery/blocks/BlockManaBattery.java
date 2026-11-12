@@ -1,12 +1,12 @@
 package appliedbotanicalmachinery.machinery.blocks;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.machinery.blocks.base.BotanicalBlock;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuManaBattery;
 import appliedbotanicalmachinery.machinery.blocks.screens.ScreenManaBattery;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityManaBattery;
 import net.minecraft.core.BlockPos;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.RegistrationContext;
@@ -18,8 +18,8 @@ public class BlockManaBattery extends BotanicalBlock<BlockEntityManaBattery, Con
 
     public final Variant variant;
 
-    public BlockManaBattery(ModX mod, Class<BlockEntityManaBattery> teClass, AdvancedMenuType<ContainerMenuManaBattery, BlockPos> menu, Variant variant) {
-        super(mod, teClass, menu, true, false);
+    public BlockManaBattery(ModX mod, Class<BlockEntityManaBattery> teClass, AdvancedMenuType<ContainerMenuManaBattery, BlockPos> menu, Variant variant, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, true, false, properties);
         this.variant = variant;
     }
 
@@ -29,7 +29,6 @@ public class BlockManaBattery extends BotanicalBlock<BlockEntityManaBattery, Con
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenManaBattery::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);

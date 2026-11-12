@@ -7,15 +7,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "botania:dragonstone"
-    },
-    "b": {
-      "item": "appliedbotanicalmachinery:crystal_ingot"
-    },
-    "c": {
-      "item": "botania:gaia_ingot"
-    }
+    "a": "botania:dragonstone",
+    "b": "appliedbotanicalmachinery:crystal_ingot",
+    "c": "botania:gaia_ingot"
   },
   "pattern": ["aba", "bcb", "aba"],
   "result": {

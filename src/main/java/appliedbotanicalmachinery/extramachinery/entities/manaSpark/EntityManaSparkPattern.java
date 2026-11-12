@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.entities.manaSpark;
 
+import net.minecraft.util.ARGB;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -15,7 +17,7 @@ import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalTile;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.BlockEntityGreenhouse;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -494,7 +496,7 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
             this.entity = entity;
         }
 
-        public void renderHUD(GuiGraphics gui, Minecraft mc) {
+        public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
             ItemStack sparkStack = new ItemStack(this.entity.getSparkItem());
             ItemStack augmentStack = SparkAugmentItem.getByType(this.entity.getUpgrade());
             DyeColor networkColor = this.entity.getNetwork();
@@ -509,7 +511,7 @@ public class EntityManaSparkPattern extends SparkBaseEntity implements ManaSpark
             RenderHelper.renderHUDBox(gui, centerX - width / 2, centerY + 8, centerX + width / 2, centerY + 8 + height);
             RenderHelper.renderItemWithNameCentered(gui, mc, sparkStack, centerY + 10, textColor);
             RenderHelper.renderItemWithNameCentered(gui, mc, augmentStack, centerY + 28, textColor);
-            gui.drawString(mc.font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
+            gui.text(mc.font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), ARGB.opaque(textColor));
         }
 
         public EntityManaSparkPattern entity() {

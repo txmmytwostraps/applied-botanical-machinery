@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalRunicAltar;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -8,22 +10,21 @@ import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAlta
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.moddingx.libx.render.block.RotatedBlockRenderer;
+import appliedbotanicalmachinery.client.LegacyRotatedRenderer;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 
 import javax.annotation.Nonnull;
 
-public class RendererRunicAltarUpgraded extends RotatedBlockRenderer<BlockEntityRunicAltarUpgraded> {
+public class RendererRunicAltarUpgraded extends LegacyRotatedRenderer<BlockEntityRunicAltarUpgraded> {
     public RendererRunicAltarUpgraded() {
     }
 
-    protected void doRender(@Nonnull BlockEntityRunicAltarUpgraded tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, int light, int overlay) {
+    protected void doRender(@Nonnull BlockEntityRunicAltarUpgraded tile, float partialTicks, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {
         if (LibXClientConfig.RenderingVisualContent.all && LibXClientConfig.RenderingVisualContent.RunicAltarSettings.runicAltarUpgraded) {
             ItemStack livingRockStack_1 = Inventories.get(tile.getInventory(), 0);
             ItemStack livingRockStack_2 = Inventories.get(tile.getInventory(), 1);
@@ -49,7 +50,7 @@ public class RendererRunicAltarUpgraded extends RotatedBlockRenderer<BlockEntity
                 poseStack.translate(0.5, 0.0, 0.5);
                 poseStack.mulPose(Axis.YP.rotationDegrees(-((float)ClientTickHandler.ticksInGame + partialTicks)));
                 poseStack.translate(-0.5, 0.0, -0.5);
-                Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, 200, OverlayTexture.NO_OVERLAY);
+                velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, 200, OverlayTexture.NO_OVERLAY);
                 poseStack.popPose();
             }
 
@@ -100,7 +101,7 @@ public class RendererRunicAltarUpgraded extends RotatedBlockRenderer<BlockEntity
                     }
 
                     ItemStack stack = Inventories.get(tile.getInventory(), slot);
-                    Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, buffer, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
+                    velrondevs.botania.client.core.helper.RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, poseStack, collector, light, OverlayTexture.NO_OVERLAY, tile.getLevel(), (int)tile.getBlockPos().asLong() + slot);
                     poseStack.popPose();
                 }
             }

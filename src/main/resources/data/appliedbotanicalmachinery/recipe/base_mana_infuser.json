@@ -8,18 +8,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "botania:mana_ring_greater"
-    },
-    "b": {
-      "item": "appliedbotanicalmachinery:malachite_ingot"
-    },
-    "c": {
-      "item": "masterfulbotany:mana_infuser"
-    },
-    "d": {
-      "item": "appliedbotanicalmachinery:malachite_dragonstone_block"
-    }
+    "a": "botania:mana_ring_greater",
+    "b": "appliedbotanicalmachinery:malachite_ingot",
+    "c": "masterfulbotany:mana_infuser",
+    "d": "appliedbotanicalmachinery:malachite_dragonstone_block"
   },
   "pattern": ["aba", "bcb", "ddd"],
   "result": {

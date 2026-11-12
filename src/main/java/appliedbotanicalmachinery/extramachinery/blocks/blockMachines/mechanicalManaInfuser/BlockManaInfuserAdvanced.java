@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalManaInfuser;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalManaInfuser.ContainerManaInfuserAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalManaInfuser.ScreenManaInfuserAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalManaInfuser.RenderManaInfuserAdvanced;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalManaInfuser.BlockEntityManaInfuserAdvanced;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,8 +16,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
@@ -27,8 +28,8 @@ import javax.annotation.Nonnull;
 public class BlockManaInfuserAdvanced extends ExtraBotanicalBlock<BlockEntityManaInfuserAdvanced, ContainerManaInfuserAdvanced> {
     public static final RotationShape SHAPE;
 
-    public BlockManaInfuserAdvanced(ModX mod, Class<BlockEntityManaInfuserAdvanced> teClass, AdvancedMenuType<ContainerManaInfuserAdvanced, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockManaInfuserAdvanced(ModX mod, Class<BlockEntityManaInfuserAdvanced> teClass, AdvancedMenuType<ContainerManaInfuserAdvanced, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -37,13 +38,10 @@ public class BlockManaInfuserAdvanced extends ExtraBotanicalBlock<BlockEntityMan
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenManaInfuserAdvanced::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RenderManaInfuserAdvanced();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RenderManaInfuserAdvanced());
     }
 
     @Nonnull

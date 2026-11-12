@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalOrechid;
 
+import javax.annotation.Nonnull;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appliedbotanicalmachinery.extramachinery.ModItems;
@@ -15,12 +17,10 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +36,10 @@ public class ScreenOrechidUltimate extends ExtraScreenBase<ContainerOrechidUltim
     SlotInfo slotInfo;
 
     public ScreenOrechidUltimate(ContainerOrechidUltimate menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerOrechidUltimate.WIDTH_GUI, ContainerOrechidUltimate.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerOrechidUltimate.WIDTH_GUI;
-        this.imageHeight = ContainerOrechidUltimate.HEIGHT_GUI;
 
         bars.setBar(AllBars.MANA);
         bars.setDrawCoord(38, 144);
@@ -74,8 +71,8 @@ public class ScreenOrechidUltimate extends ExtraScreenBase<ContainerOrechidUltim
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ULTIMATE_ORECHID_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, slotInfo);
 

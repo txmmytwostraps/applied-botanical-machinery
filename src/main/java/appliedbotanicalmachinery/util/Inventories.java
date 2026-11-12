@@ -1,11 +1,12 @@
 package appliedbotanicalmachinery.util;
 
+import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
+
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.moddingx.libx.inventory.IAdvancedItemHandlerModifiable;
 
 /**
  * Slot-based helpers over NeoForge's item {@link ResourceHandler}, matching the old item handler calls.

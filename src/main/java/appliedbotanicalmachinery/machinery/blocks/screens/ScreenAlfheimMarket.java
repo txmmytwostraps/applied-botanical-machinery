@@ -4,7 +4,7 @@ import appliedbotanicalmachinery.machinery.blocks.base.ScreenBase;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuAlfheimMarket;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityAlfheimMarket;
 import appliedbotanicalmachinery.machinery.core.LibResources;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -17,7 +17,8 @@ public class ScreenAlfheimMarket extends ScreenBase<ContainerMenuAlfheimMarket> 
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ALFHEIM_MARKET_GUI);
         BlockEntityAlfheimMarket blockEntity = this.menu.getBlockEntity();
 

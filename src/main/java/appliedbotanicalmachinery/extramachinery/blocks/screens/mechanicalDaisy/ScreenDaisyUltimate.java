@@ -11,11 +11,9 @@ import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalDaisy.ContainerDaisyUltimate;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalDaisy.BlockEntityDaisyUltimate;
 import appliedbotanicalmachinery.extramachinery.core.LibResources;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -27,12 +25,9 @@ public class ScreenDaisyUltimate extends ExtraScreenBase<ContainerDaisyUltimate>
     SlotInfo slotInfo;
 
     public ScreenDaisyUltimate(ContainerDaisyUltimate menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerDaisyUltimate.WIDTH_GUI, ContainerDaisyUltimate.HEIGHT_GUI);
 
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerDaisyUltimate.WIDTH_GUI;
-        this.imageHeight = ContainerDaisyUltimate.HEIGHT_GUI;
 
         Map<Integer, int[]> slots = new HashMap<>();
         slots.put(0, new int[] {166, 105});
@@ -48,8 +43,8 @@ public class ScreenDaisyUltimate extends ExtraScreenBase<ContainerDaisyUltimate>
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ULTIMATE_MECHANICAL_DAISY_GUI, screenAddInventory,
                 new int[] {}, new int[] {}, null, slotInfo);
 

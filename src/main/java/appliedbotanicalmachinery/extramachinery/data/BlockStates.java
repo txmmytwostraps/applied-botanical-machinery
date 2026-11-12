@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.extramachinery.data;
 
+import net.minecraft.client.data.models.model.TextureSlot;
+
+import net.minecraft.client.data.models.model.TextureMapping;
+
+import net.minecraft.client.data.models.model.ModelTemplates;
+
 import appliedbotanicalmachinery.ABBlocks;
 import appliedbotanicalmachinery.extramachinery.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -81,9 +87,9 @@ public class BlockStates extends BlockStateProviderBase {
     private void orientableBattery(Block block) {
         //noinspection ConstantConditions
         String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
-        this.manualModel(block, this.models().orientable(name,
-                this.modLoc("block/" + name + "_side"),
-                this.modLoc("block/" + name + "_front"),
-                this.modLoc("block/" + name + "_top")));
+        this.manualModel(block, this.createBlockModel(blockModelId(block), ModelTemplates.CUBE_ORIENTABLE, new TextureMapping()
+                .put(TextureSlot.SIDE, this.material(this.mod.id("block/" + name + "_side")))
+                .put(TextureSlot.FRONT, this.material(this.mod.id("block/" + name + "_front")))
+                .put(TextureSlot.TOP, this.material(this.mod.id("block/" + name + "_top")))));
     }
 }

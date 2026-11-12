@@ -1,19 +1,20 @@
 package appliedbotanicalmachinery.machinery.blocks;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.machinery.blocks.base.BotanicalBlock;
 import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechanicalManaInfuser;
 import appliedbotanicalmachinery.machinery.blocks.screens.ScreenMechanicalManaInfuser;
 import appliedbotanicalmachinery.machinery.blocks.tesr.MechanicalManaInfuserRenderer;
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalManaInfuser;
 import appliedbotanicalmachinery.machinery.compat.MasterfulBotanyCompat;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
 import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.RegistrationContext;
@@ -26,8 +27,8 @@ public class BlockMechanicalManaInfuser extends BotanicalBlock<BlockEntityMechan
 
     private final Item item;
 
-    public BlockMechanicalManaInfuser(ModX mod, Class<BlockEntityMechanicalManaInfuser> teClass, AdvancedMenuType<ContainerMenuMechanicalManaInfuser, BlockPos> menu) {
-        super(mod, teClass, menu, false, true, null);
+    public BlockMechanicalManaInfuser(ModX mod, Class<BlockEntityMechanicalManaInfuser> teClass, AdvancedMenuType<ContainerMenuMechanicalManaInfuser, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, null, properties);
         this.item = new BlockItem(this, new Item.Properties()) {
 
             @Override
@@ -43,11 +44,10 @@ public class BlockMechanicalManaInfuser extends BotanicalBlock<BlockEntityMechan
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenMechanicalManaInfuser::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), context -> new MechanicalManaInfuserRenderer());
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new MechanicalManaInfuserRenderer());
     }
 
     @Override

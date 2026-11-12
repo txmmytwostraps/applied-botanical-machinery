@@ -7,12 +7,10 @@ import appliedbotanicalmachinery.machinery.blocks.containers.ContainerMenuMechan
 import appliedbotanicalmachinery.machinery.blocks.tiles.BlockEntityMechanicalManaPool;
 import appliedbotanicalmachinery.machinery.core.LibResources;
 import appliedbotanicalmachinery.machinery.helper.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
@@ -22,9 +20,9 @@ public class ScreenMechanicalManaPool extends ScreenBase<ContainerMenuMechanical
         super(menu, inventory, title);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.MECHANICAL_MANA_POOL_GUI);
 
         BlockEntityMechanicalManaPool blockEntity = this.menu.getBlockEntity();

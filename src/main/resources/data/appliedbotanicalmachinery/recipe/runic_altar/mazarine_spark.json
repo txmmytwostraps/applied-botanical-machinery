@@ -1,33 +1,15 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "item": "botania:rune_envy"
-    },
-    {
-      "item": "botania:rune_greed"
-    },
-    {
-      "item": "botania:rune_sloth"
-    },
-    {
-      "item": "botania:rune_gluttony"
-    },
-    {
-      "item": "botania:rune_mana"
-    },
-    {
-      "item": "appliedbotanicalmachinery:aureate_spark"
-    },
-    {
-      "item": "appliedbotanicalmachinery:mazarine_ingot_block"
-    },
-    {
-      "item": "appliedbotanicalmachinery:mazarine_ingot"
-    },
-    {
-      "item": "appliedbotanicalmachinery:mazarine_dragonstone_block"
-    }
+    "botania:rune_envy",
+    "botania:rune_greed",
+    "botania:rune_sloth",
+    "botania:rune_gluttony",
+    "botania:rune_mana",
+    "appliedbotanicalmachinery:aureate_spark",
+    "appliedbotanicalmachinery:mazarine_ingot_block",
+    "appliedbotanicalmachinery:mazarine_ingot",
+    "appliedbotanicalmachinery:mazarine_dragonstone_block"
   ],
   "mana": 2500000,
   "output": {

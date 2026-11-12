@@ -1,5 +1,9 @@
 package appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalDaisy;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import appliedbotanicalmachinery.client.LegacyBlockRenderer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalDaisy.BlockEntityDaisyAdvanced;
 import net.minecraft.client.Minecraft;
@@ -10,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RenderDaisyAdvanced implements BlockEntityRenderer<BlockEntityDaisyAdvanced> {
+public class RenderDaisyAdvanced extends LegacyBlockRenderer<BlockEntityDaisyAdvanced> {
     public RenderDaisyAdvanced() {
     }
 
@@ -19,13 +23,13 @@ public class RenderDaisyAdvanced implements BlockEntityRenderer<BlockEntityDaisy
         if (state != null) {
             poseStack.pushPose();
             poseStack.translate(translateX, 0.0, translateZ);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
+            velrondevs.botania.client.core.helper.RenderHelper.renderBlockState(state, poseStack, buffer, null, -1, light, overlay);
             poseStack.popPose();
         }
 
     }
 
     @Override
-    public void render(BlockEntityDaisyAdvanced blockEntity, float partialTick, PoseStack poseStack,
-                       MultiBufferSource buffer, int light, int overlay) {}
+    protected void render(BlockEntityDaisyAdvanced blockEntity, float partialTick, PoseStack poseStack,
+                       MultiBufferSource buffer, @Nonnull SubmitNodeCollector collector, int light, int overlay) {}
 }

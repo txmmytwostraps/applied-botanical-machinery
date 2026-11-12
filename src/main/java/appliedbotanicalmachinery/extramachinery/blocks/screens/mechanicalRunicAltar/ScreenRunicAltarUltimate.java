@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
 import appliedbotanicalmachinery.util.Inventories;
 
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraScreenBase;
@@ -13,12 +15,10 @@ import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
 import appliedbotanicalmachinery.extramachinery.util.GhostItemRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import velrondevs.botania.registry.BotaniaBlocks;
 
 import javax.annotation.Nonnull;
@@ -32,13 +32,10 @@ public class ScreenRunicAltarUltimate extends ExtraScreenBase<ContainerRunicAlta
     SlotInfo slotInfo;
 
     public ScreenRunicAltarUltimate(ContainerRunicAltarUltimate menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerRunicAltarUltimate.WIDTH_GUI, ContainerRunicAltarUltimate.HEIGHT_GUI);
 
         bars = new Bars(this);
         slotInfo = new SlotInfo(this);
-
-        this.imageWidth = ContainerRunicAltarUltimate.WIDTH_GUI;
-        this.imageHeight = ContainerRunicAltarUltimate.HEIGHT_GUI;
 
         bars.setBar(AllBars.MANA);
         bars.setDrawCoord(43, 121);
@@ -67,8 +64,8 @@ public class ScreenRunicAltarUltimate extends ExtraScreenBase<ContainerRunicAlta
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.ULTIMATE_MECHANICAL_RUNIC_ALTAR_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, slotInfo);
 
@@ -91,7 +88,7 @@ public class ScreenRunicAltarUltimate extends ExtraScreenBase<ContainerRunicAlta
 
         if (blockEntity.getProgress() > 0) {
             float pct = Math.min((float)blockEntity.getProgress() / (float)blockEntity.getMaxProgress(), 1.0F);
-            guiGraphics.blit(LibResources.ULTIMATE_MECHANICAL_RUNIC_ALTAR_GUI, this.leftPos + 102, this.topPos + 41, this.imageWidth, 0, Math.round(11.0F * pct), 37);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LibResources.ULTIMATE_MECHANICAL_RUNIC_ALTAR_GUI, this.leftPos + 102, this.topPos + 41, this.imageWidth, 0, Math.round(11.0F * pct), 37, 256, 256);
         }
 
         slotInfo.renderHoveredToolTip(guiGraphics, mouseX, mouseY, blockEntity.getInventory());

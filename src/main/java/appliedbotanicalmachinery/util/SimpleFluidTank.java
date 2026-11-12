@@ -1,13 +1,14 @@
 package appliedbotanicalmachinery.util;
 
+import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-
-import javax.annotation.Nonnull;
-import java.util.function.Predicate;
 
 /**
  * A one-tank fluid handler with a validator, in the shape of the old FluidTank.
@@ -90,7 +91,8 @@ public class SimpleFluidTank extends FluidStacksResourceHandler {
     }
 
     @Override
-    public int extract(int index, @Nonnull FluidResource resource, int amount, @Nonnull TransactionContext transaction) {
+    public int extract(int index, @Nonnull FluidResource resource, int amount,
+            @Nonnull TransactionContext transaction) {
         return this.canDrain ? super.extract(index, resource, amount, transaction) : 0;
     }
 

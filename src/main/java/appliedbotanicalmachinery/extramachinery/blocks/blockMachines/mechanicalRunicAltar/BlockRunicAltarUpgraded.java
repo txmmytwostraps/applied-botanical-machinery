@@ -1,11 +1,14 @@
 package appliedbotanicalmachinery.extramachinery.blocks.blockMachines.mechanicalRunicAltar;
 
+import appliedbotanicalmachinery.client.ClientSetup;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import appliedbotanicalmachinery.extramachinery.blocks.base.ExtraBotanicalBlock;
 import appliedbotanicalmachinery.extramachinery.blocks.containers.mechanicalRunicAltar.ContainerRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.screens.mechanicalRunicAltar.ScreenRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tesr.mechanicalRunicAltar.RendererRunicAltarUpgraded;
 import appliedbotanicalmachinery.extramachinery.blocks.tiles.mechanicalRunicAltar.BlockEntityRunicAltarUpgraded;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -14,8 +17,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.moddingx.libx.block.RotationShape;
 import org.moddingx.libx.menu.type.AdvancedMenuType;
@@ -29,8 +30,8 @@ import javax.annotation.Nonnull;
 public class BlockRunicAltarUpgraded extends ExtraBotanicalBlock<BlockEntityRunicAltarUpgraded, ContainerRunicAltarUpgraded> {
     public static final RotationShape SHAPE;
 
-    public BlockRunicAltarUpgraded(ModX mod, Class<BlockEntityRunicAltarUpgraded> teClass, AdvancedMenuType<ContainerRunicAltarUpgraded, BlockPos> menu) {
-        super(mod, teClass, menu, false, true);
+    public BlockRunicAltarUpgraded(ModX mod, Class<BlockEntityRunicAltarUpgraded> teClass, AdvancedMenuType<ContainerRunicAltarUpgraded, BlockPos> menu, BlockBehaviour.Properties properties) {
+        super(mod, teClass, menu, false, true, properties);
     }
 
     @Override
@@ -39,13 +40,10 @@ public class BlockRunicAltarUpgraded extends ExtraBotanicalBlock<BlockEntityRuni
         builder.register(null, new ClientExtensionInfo.MenuScreen<>(this.menu, ScreenRunicAltarUpgraded::new));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void setupClient(SetupContext ctx) {
         super.setupClient(ctx);
-        BlockEntityRenderers.register(this.getBlockEntityType(), (context) -> {
-            return new RendererRunicAltarUpgraded();
-        });
+        ClientSetup.blockEntityRenderer(this.getBlockEntityType(), () -> new RendererRunicAltarUpgraded());
     }
 
     @Nonnull

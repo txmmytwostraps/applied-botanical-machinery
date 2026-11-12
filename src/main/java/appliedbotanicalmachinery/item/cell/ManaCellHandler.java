@@ -2,8 +2,6 @@ package appliedbotanicalmachinery.item.cell;
 
 import java.util.function.Consumer;
 
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;

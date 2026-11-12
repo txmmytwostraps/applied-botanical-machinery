@@ -1,12 +1,8 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:crystal_ingot"
-    },
-    {
-      "item": "botania:manasteel_ingot"
-    }
+    "appliedbotanicalmachinery:crystal_ingot",
+    "botania:manasteel_ingot"
   ],
   "output": [
     {

@@ -3,7 +3,7 @@ package appliedbotanicalmachinery.extramachinery.gui;
 import appliedbotanicalmachinery.util.Inventories;
 
 import appliedbotanicalmachinery.extramachinery.config.LibXClientConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.moddingx.libx.inventory.BaseItemStackHandler;
@@ -66,14 +66,14 @@ public class SlotInfo {
         return false;
     }
 
-    public void renderHoveredToolTip(GuiGraphics guiGraphics, int mouseX, int mouseY, BaseItemStackHandler inventory) {
+    public void renderHoveredToolTip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, BaseItemStackHandler inventory) {
         if (LibXClientConfig.slotInfo && slots.size() >= 1) {
             for (Integer key: slots.keySet()){
                 int [] x_y = slots.get(key);
                 if (isMouseOver(mouseX, mouseY, x_y[0], x_y[1])){
                     if (Inventories.get(inventory, key).isEmpty()){
                         Component text = Component.translatable(translatables.get(key));
-                        guiGraphics.renderTooltip(this.parent.getMinecraft().font, text, mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(this.parent.getMinecraft().font, text, mouseX, mouseY);
                     }
                 }
             }

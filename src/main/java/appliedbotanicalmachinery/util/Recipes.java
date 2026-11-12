@@ -1,5 +1,11 @@
 package appliedbotanicalmachinery.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -8,30 +14,27 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
 import velrondevs.botania.api.recipe.BotaniaRecipe;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
- * Recipe lookups for both sides. The server reads its recipe manager; the client reads the recipe types the
- * server synced (Botania Revived syncs its own types and keeps them in {@link BotaniaRecipeTypes}).
+ * Recipe lookups for both sides. The server reads its recipe manager; the client reads the recipe types the server
+ * synced (Botania Revived syncs its own types and keeps them in {@link BotaniaRecipeTypes}).
  */
 public final class Recipes {
 
     private Recipes() {
     }
 
-    public static <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> all(@Nullable Level level, RecipeType<T> type) {
+    public static <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> all(@Nullable Level level,
+            RecipeType<T> type) {
         return BotaniaRecipeTypes.recipeMap(level).byType(type);
     }
 
     /**
-     * The ingredients of a recipe. Botania recipes keep them in {@link BotaniaRecipe#getIngredients()} and report
-     * no placement info, so {@code placementInfo()} is only used for other recipes.
+     * The ingredients of a recipe. Botania recipes keep them in {@link BotaniaRecipe#getIngredients()} and report no
+     * placement info, so {@code placementInfo()} is only used for other recipes.
      */
     public static List<Ingredient> ingredients(Recipe<?> recipe) {
         if (recipe instanceof BotaniaRecipe botaniaRecipe) {
@@ -54,8 +57,7 @@ public final class Recipes {
         for (ItemStack stack : stacks) {
             countsLeft.add(stack.isEmpty() ? 0 : stack.getCount());
         }
-        ingredientLoop:
-        for (Ingredient ingredient : ingredients) {
+        ingredientLoop: for (Ingredient ingredient : ingredients) {
             for (int i = 0; i < stacks.size(); i++) {
                 if (countsLeft.get(i) > 0 && ingredient.test(stacks.get(i))) {
                     countsLeft.set(i, countsLeft.get(i) - 1);
@@ -70,7 +72,8 @@ public final class Recipes {
     /**
      * Whether the stack is an ingredient of any recipe of the type (LibX's RecipeHelper.isItemValidInput).
      */
-    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(@Nullable Level level, RecipeType<T> type, ItemStack stack) {
+    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(@Nullable Level level,
+            RecipeType<T> type, ItemStack stack) {
         for (RecipeHolder<T> holder : all(level, type)) {
             for (Ingredient ingredient : ingredients(holder.value())) {
                 if (ingredient.test(stack)) {

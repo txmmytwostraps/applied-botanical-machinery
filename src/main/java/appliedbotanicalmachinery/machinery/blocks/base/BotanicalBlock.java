@@ -1,5 +1,7 @@
 package appliedbotanicalmachinery.machinery.blocks.base;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.world.item.BlockItem;
@@ -32,7 +34,6 @@ import org.moddingx.libx.mod.ModX;
 import org.moddingx.libx.registration.RegistrationContext;
 import org.moddingx.libx.registration.SetupContext;
 import org.moddingx.libx.registration.util.CapabilityInfo;
-import org.moddingx.libx.registration.util.ClientExtensionInfo;
 import org.moddingx.libx.render.ItemStackRenderer;
 import velrondevs.botania.api.BotaniaCapabilities;
 import velrondevs.botania.api.BotaniaClientCapabilities;
@@ -45,16 +46,14 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
     public final boolean fullCube;
     public final boolean specialRender;
 
-    public BotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender) {
-        this(mod, teClass, menu, fullCube, specialRender, new Item.Properties());
+    public BotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender, BlockBehaviour.Properties properties) {
+        this(mod, teClass, menu, fullCube, specialRender, new Item.Properties(), properties);
     }
 
-    public BotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender, @Nullable Item.Properties itemProperties) {
+    public BotanicalBlock(ModX mod, Class<T> teClass, AdvancedMenuType<C, ? super BlockPos> menu, boolean fullCube, boolean specialRender, @Nullable Item.Properties itemProperties, BlockBehaviour.Properties properties) {
         super(mod, teClass, menu, fullCube ?
-                        Properties.ofFullCopy(Blocks.STONE).strength(2, 10)
-                        : Properties.ofFullCopy(Blocks.STONE).strength(2, 10).dynamicShape().noOcclusion().forceSolidOn(),
-                itemProperties
-        );
+                        properties.strength(2, 10)
+                        : properties.strength(2, 10).dynamicShape().noOcclusion().forceSolidOn(), itemProperties);
         this.fullCube = fullCube;
         this.specialRender = specialRender;
     }
@@ -71,9 +70,6 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
     public void registerClientAdditional(RegistrationContext ctx, EntryCollector builder) {
         super.registerClientAdditional(ctx, builder);
         builder.registerNamed(null, "wand_hud", new CapabilityInfo.BlockEntity<>(this.getBlockEntityType(), BotaniaClientCapabilities.WAND_HUD, (tile, side) -> tile.actAsMana() ? tile : null));
-        if (this.hasItemRenderer()) {
-            builder.register(null, new ClientExtensionInfo.Item(ItemStackRenderer::createProperties));
-        }
     }
 
     protected boolean hasItemRenderer() {

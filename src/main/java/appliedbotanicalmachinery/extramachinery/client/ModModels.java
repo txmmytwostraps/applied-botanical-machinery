@@ -1,24 +1,33 @@
 package appliedbotanicalmachinery.extramachinery.client;
 
 import appliedbotanicalmachinery.AppliedBotanics;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import velrondevs.botania.client.core.helper.RenderHelper;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 
 public class ModModels {
 
     public static final ModModels INSTANCE = new ModModels();
 
-    public final Material baseSparkWorldIcon = mainAtlas("item/base_spark");
-    public final Material malachiteSparkWorldIcon = mainAtlas("item/malachite_spark");
-    public final Material saffronSparkWorldIcon = mainAtlas("item/saffron_spark");
-    public final Material shadowSparkWorldIcon = mainAtlas("item/shadow_spark");
-    public final Material crimsonSparkWorldIcon = mainAtlas("item/crimson_spark");
-    public final Material aureateSparkWorldIcon = mainAtlas("item/aureate_spark");
-    public final Material mazarineSparkWorldIcon = mainAtlas("item/mazarine_spark");
+    public final Icon baseSparkWorldIcon = mainAtlas("item/base_spark");
+    public final Icon malachiteSparkWorldIcon = mainAtlas("item/malachite_spark");
+    public final Icon saffronSparkWorldIcon = mainAtlas("item/saffron_spark");
+    public final Icon shadowSparkWorldIcon = mainAtlas("item/shadow_spark");
+    public final Icon crimsonSparkWorldIcon = mainAtlas("item/crimson_spark");
+    public final Icon aureateSparkWorldIcon = mainAtlas("item/aureate_spark");
+    public final Icon mazarineSparkWorldIcon = mainAtlas("item/mazarine_spark");
 
-    private static Material mainAtlas(String name) {
-        return new Material(InventoryMenu.BLOCK_ATLAS, res(name));
+    private static Icon mainAtlas(String name) {
+        return new Icon(res(name));
+    }
+
+    /**
+     * An item texture, looked up on the items atlas when drawn (items have their own atlas since 1.21.5).
+     */
+    public record Icon(Identifier id) {
+        public TextureAtlasSprite sprite() {
+            return RenderHelper.itemSprite(this.id);
+        }
     }
 
     private static Identifier res(String name){

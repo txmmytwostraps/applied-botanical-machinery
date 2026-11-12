@@ -10,11 +10,9 @@ import appliedbotanicalmachinery.extramachinery.core.LibResources;
 import appliedbotanicalmachinery.extramachinery.gui.AllBars;
 import appliedbotanicalmachinery.extramachinery.gui.Bars;
 import appliedbotanicalmachinery.extramachinery.gui.SlotInfo;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import velrondevs.botania.client.core.helper.RenderHelper;
 
 import javax.annotation.Nonnull;
@@ -26,12 +24,9 @@ public class ScreenIndustrialAgglomerationFactoryUpgraded extends ExtraScreenBas
     Bars bars;
 
     public ScreenIndustrialAgglomerationFactoryUpgraded(ContainerIndustrialAgglomerationFactoryUpgraded menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
+        super(menu, inventory, title, ContainerIndustrialAgglomerationFactoryUpgraded.WIDTH_GUI, ContainerIndustrialAgglomerationFactoryUpgraded.HEIGHT_GUI);
 
         bars = new Bars(this);
-
-        this.imageWidth = ContainerIndustrialAgglomerationFactoryUpgraded.WIDTH_GUI;
-        this.imageHeight = ContainerIndustrialAgglomerationFactoryUpgraded.HEIGHT_GUI;
 
         bars.setBar(AllBars.MANA);
         bars.setDrawCoord(33, 109);
@@ -44,8 +39,8 @@ public class ScreenIndustrialAgglomerationFactoryUpgraded extends ExtraScreenBas
         return screenAddInventory;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void renderBg(@Nonnull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.drawDefaultGuiBackgroundLayer(guiGraphics, LibResources.UPGRADED_INDUSTRIAL_AGGLOMERATION_FACTORY_GUI, screenAddInventory,
                 new int[] {blockEntity.getCurrentMana()}, new int[] {blockEntity.getMaxMana()}, bars, null);
 

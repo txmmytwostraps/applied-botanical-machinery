@@ -1,15 +1,9 @@
 {
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "appliedbotanicalmachinery:malachite_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    }
+    "appliedbotanicalmachinery:malachite_ingot",
+    "botania:gaia_ingot",
+    "botania:terrasteel_block"
   ],
   "mana": 1000000,
   "result": {
