@@ -31,7 +31,7 @@ public class BlockEntityMechanicalManaInfuser extends WorkingTile<StackListInput
     public BlockEntityMechanicalManaInfuser(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, ModRecipes.infuser, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalManaInfuser, 0, 3);
         this.inventory = BaseItemStackHandler.builder(4)
-                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack), 0, 1, 2)
+                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack, InfuserRecipe::getIngredients), 0, 1, 2)
                 .output(3)
                 .contentsChanged(() -> {
                     this.setChanged();

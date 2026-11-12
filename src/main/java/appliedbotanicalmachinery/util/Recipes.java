@@ -3,6 +3,7 @@ package appliedbotanicalmachinery.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -74,8 +75,17 @@ public final class Recipes {
      */
     public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(@Nullable Level level,
             RecipeType<T> type, ItemStack stack) {
+        return isItemValidInput(level, type, stack, Recipes::ingredients);
+    }
+
+    /**
+     * {@link #isItemValidInput(Level, RecipeType, ItemStack)} for recipes that keep their ingredients somewhere else
+     * (Masterful Botany's InfuserRecipe has getIngredients() and no placement info).
+     */
+    public static <I extends RecipeInput, T extends Recipe<I>> boolean isItemValidInput(@Nullable Level level,
+            RecipeType<T> type, ItemStack stack, Function<T, List<Ingredient>> ingredientsOf) {
         for (RecipeHolder<T> holder : all(level, type)) {
-            for (Ingredient ingredient : ingredients(holder.value())) {
+            for (Ingredient ingredient : ingredientsOf.apply(holder.value())) {
                 if (ingredient.test(stack)) {
                     return true;
                 }

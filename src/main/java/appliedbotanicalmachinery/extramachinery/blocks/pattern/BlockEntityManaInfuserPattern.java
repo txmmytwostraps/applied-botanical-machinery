@@ -93,7 +93,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
 
         if (UPGRADE_SLOT_1 != -1 && UPGRADE_SLOT_2 != -1){
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack, InfuserRecipe::getIngredients), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .validator((stack) -> (stack.getItem() == ModItems.catalystSpeed.asItem() || stack.getItem() == ModItems.catalystManaInfinity.asItem()), UPGRADE_SLOT_1, UPGRADE_SLOT_2)
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .slotLimit(1, UPGRADE_SLOT_1, UPGRADE_SLOT_2)
@@ -102,7 +102,7 @@ public class BlockEntityManaInfuserPattern extends WorkingTile<StackListInput, I
         }
         else {
             this.inventory = BaseItemStackHandler.builder(LAST_OUTPUT_SLOT + 1)
-                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
+                    .validator((stack) -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack, InfuserRecipe::getIngredients), Range.closedOpen(FIRST_INPUT_SLOT, LAST_INPUT_SLOT + 1))
                     .output(Range.closedOpen(FIRST_OUTPUT_SLOT, LAST_OUTPUT_SLOT + 1))
                     .contentsChanged(() -> { this.setChanged();this.setDispatchable();this.needsRecipeUpdate();})
                     .build();
