@@ -121,11 +121,12 @@ public class ResizeBaseItemStackHandler extends ItemStacksResourceHandler implem
     public void deserialize(@Nonnull ValueInput input) {
         super.deserialize(input);
         if (this.stacks.size() != this.size) {
-            NonNullList<ItemStack> oldStacks = this.stacks;
-            this.stacks = NonNullList.withSize(this.size, ItemStack.EMPTY);
-            for (int slot = 0; slot < Math.min(oldStacks.size(), this.size); slot++) {
-                this.stacks.set(slot, oldStacks.get(slot));
+            NonNullList<ItemStack> resized = NonNullList.withSize(this.size, ItemStack.EMPTY);
+            for (int slot = 0; slot < Math.min(this.stacks.size(), this.size); slot++) {
+                resized.set(slot, this.stacks.get(slot));
             }
+            // setStacks also resizes the transaction journals to match
+            this.setStacks(resized);
         }
     }
 
