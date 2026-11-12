@@ -88,7 +88,7 @@ public abstract class BotanicalBlock<T extends BotanicalTile, C extends BlockEnt
     public ItemStack getCloneItemStack(@Nonnull LevelReader level, @Nonnull BlockPos pos, @Nonnull BlockState state, boolean includeData, @Nonnull Player player) {
         ItemStack stack = new ItemStack(this);
         if (level.getBlockEntity(pos) instanceof BotanicalTile blockEntity) {
-            // the machine keeps its contents when picked, with or without includeData (as before 1.21.5)
+            // the machine keeps its contents when picked, with or without includeData
             try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(blockEntity.problemPath(), LogUtils.getLogger())) {
                 TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
                 blockEntity.saveCustomOnly(output);

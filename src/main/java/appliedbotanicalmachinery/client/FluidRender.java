@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
- * Fluid sprites and colors from the fluid models (26.1 keeps them there instead of the fluid type extensions).
+ * Fluid sprites and colors, read from the fluid models.
  */
 public final class FluidRender {
 
@@ -23,7 +23,7 @@ public final class FluidRender {
     }
 
     /**
-     * The tint of the fluid as an ARGB color; -1 (white) for untinted fluids.
+     * The tint of the fluid as an ARGB color. -1 (white) for untinted fluids.
      */
     public static int tint(FluidStack stack) {
         var tintSource = model(stack).fluidTintSource();

@@ -20,7 +20,7 @@ import velrondevs.botania.api.recipe.BotaniaRecipe;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 /**
- * Recipe lookups for both sides. The server reads its recipe manager; the client reads the recipe types the server
+ * Recipe lookups for both sides. The server reads its recipe manager. The client reads the recipe types the server
  * synced (Botania Revived syncs its own types and keeps them in {@link BotaniaRecipeTypes}).
  */
 public final class Recipes {
@@ -95,7 +95,7 @@ public final class Recipes {
     }
 
     /**
-     * The result of a Botania recipe ({@code getResultItem(registries)}); empty for other recipes.
+     * The result of a Botania recipe ({@code getResultItem(registries)}). Empty for other recipes.
      */
     public static ItemStack result(Recipe<?> recipe, HolderLookup.Provider registries) {
         if (recipe instanceof BotaniaRecipe botaniaRecipe) {

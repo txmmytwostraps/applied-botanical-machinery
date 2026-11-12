@@ -9,7 +9,7 @@ import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
- * Slot-based helpers over NeoForge's item {@link ResourceHandler}, matching the old item handler calls.
+ * Slot-based helpers over NeoForge's item {@link ResourceHandler}.
  */
 public final class Inventories {
 
@@ -17,7 +17,7 @@ public final class Inventories {
     }
 
     /**
-     * A copy of the stack in the slot. Changing it does not change the inventory; use {@link #set} for that.
+     * A copy of the stack in the slot. Changing it does not change the inventory. Use {@link #set} for that.
      */
     public static ItemStack get(ResourceHandler<ItemResource> handler, int slot) {
         return ItemUtil.getStack(handler, slot);
@@ -72,7 +72,7 @@ public final class Inventories {
     }
 
     /**
-     * The stack limit of the slot for this stack (the old getSlotLimit / getStackLimit).
+     * The stack limit of the slot for this stack.
      */
     public static int limit(ResourceHandler<ItemResource> handler, int slot, ItemStack stack) {
         return handler.getCapacityAsInt(slot, stack.isEmpty() ? ItemResource.EMPTY : ItemResource.of(stack));

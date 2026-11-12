@@ -22,7 +22,7 @@ public class ModModels {
     }
 
     /**
-     * An item texture, looked up on the items atlas when drawn (items have their own atlas since 1.21.5).
+     * An item texture, looked up on the items atlas when drawn.
      */
     public record Icon(Identifier id) {
         public TextureAtlasSprite sprite() {

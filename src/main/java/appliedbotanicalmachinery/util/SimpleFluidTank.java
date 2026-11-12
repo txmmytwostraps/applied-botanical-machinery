@@ -11,7 +11,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * A one-tank fluid handler with a validator, in the shape of the old FluidTank.
+ * A one-tank fluid handler with a validator.
  */
 public class SimpleFluidTank extends FluidStacksResourceHandler {
 

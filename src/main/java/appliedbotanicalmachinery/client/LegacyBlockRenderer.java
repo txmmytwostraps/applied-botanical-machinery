@@ -18,14 +18,14 @@ import net.minecraft.world.phys.Vec3;
 import velrondevs.botania.client.core.helper.DeferredBufferSource;
 
 /**
- * A block entity renderer that draws straight from the block entity, as renderers did before render states. The buffer
- * source records vertices and submits them to the frame's node collector (Botania Revived's DeferredBufferSource).
+ * A block entity renderer that draws straight from the block entity. The buffer source records vertices and submits
+ * them to the frame's node collector (Botania Revived's DeferredBufferSource).
  */
 public abstract class LegacyBlockRenderer<T extends BlockEntity>
         implements BlockEntityRenderer<T, LegacyBlockRenderer.State<T>> {
 
     /**
-     * The camera of the frame being drawn; set before {@link #render} runs.
+     * The camera of the frame being drawn. Set before {@link #render} runs.
      */
     @Nullable
     protected CameraRenderState camera;

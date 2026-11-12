@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /**
- * A {@link LegacyBlockRenderer} that turns the pose stack to the block's horizontal facing first, as LibX's
- * RotatedBlockRenderer did. The block entity is drawn as if it faced north.
+ * A {@link LegacyBlockRenderer} that turns the pose stack to the block's horizontal facing first. The block entity is
+ * drawn as if it faced north.
  */
 public abstract class LegacyRotatedRenderer<T extends BlockEntity> extends LegacyBlockRenderer<T> {
 

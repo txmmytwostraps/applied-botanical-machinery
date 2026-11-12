@@ -25,7 +25,7 @@ neoForge {
         client {
             client()
 
-            // 26.1.2 runs keep their own folders, apart from the 1.21.1 line's worlds
+            // Run folders of their own, apart from the master branch's worlds
             gameDirectory = project.file("run26")
         }
 

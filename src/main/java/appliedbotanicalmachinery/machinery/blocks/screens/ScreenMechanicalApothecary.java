@@ -90,7 +90,7 @@ public class ScreenMechanicalApothecary extends AbstractContainerScreen<Containe
 
     @Override
     protected void extractTooltip(@Nonnull GuiGraphicsExtractor guiGraphics, int x, int y) {
-        // x and y are screen coordinates now; the tank area is given relative to the GUI
+        // x and y are screen coordinates. The tank area is relative to the GUI.
         if (x - this.leftPos >= 163 && x - this.leftPos <= 179 &&
                 y - this.topPos >= 16 && y - this.topPos <= 96) {
             Component fluid = Component.translatable(this.tile.getFluidInventory().getFluidAmount() + " / " + this.tile.getFluidInventory().getCapacity() + " mB");

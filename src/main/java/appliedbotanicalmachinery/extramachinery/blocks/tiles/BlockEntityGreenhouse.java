@@ -716,7 +716,7 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements EnergyH
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        // the block's onRemove did this before 1.21.5
+        // drop the contents when the block is broken
         this.drops();
         super.preRemoveSideEffects(pos, state);
     }

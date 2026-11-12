@@ -22,7 +22,7 @@ public class AppliedBotanicsClient {
         bus.addListener(AppliedBotanicsClient::registerCellModels);
     }
 
-    // Drive models of the mana cells; AE2 reads them on the client only
+    // Drive models of the mana cells. AE2 reads them on the client only.
     private static void registerCellModels(InitializeClientRegistriesEvent event) {
         for (var tier : ABItems.Tier.values()) {
             var model = AppliedBotanics.id("block/drive/cells/" + tier.toString().toLowerCase(Locale.ROOT).substring(1)
