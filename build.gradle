@@ -193,6 +193,13 @@ var syncDataMods = tasks.register("syncDataMods", Sync) {
 }
 tasks.matching { it.name == "runData" }.configureEach { dependsOn syncDataMods }
 
+// LibX datagen loads the mod's existing data and refuses to register a loot table twice, so the old output goes first
+var cleanGeneratedResources = tasks.register("cleanGeneratedResources", Delete) {
+    delete "src/generated/resources"
+}
+tasks.matching { it.name == "runData" }.configureEach { dependsOn cleanGeneratedResources }
+tasks.named("processResources") { mustRunAfter cleanGeneratedResources }
+
 // Lets the dev server read console commands such as "stop"
 tasks.matching { it.name == "runServer" }.configureEach { standardInput = System.in }
 
