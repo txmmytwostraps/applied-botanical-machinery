@@ -3,6 +3,7 @@ package appliedbotanicalmachinery.machinery.blocks.tiles;
 import appliedbotanicalmachinery.util.Recipes;
 
 import appliedbotanicalmachinery.machinery.blocks.base.WorkingTile;
+import appliedbotanicalmachinery.machinery.compat.MasterfulBotanyCompat;
 import appliedbotanicalmachinery.machinery.config.LibXClientConfig;
 import appliedbotanicalmachinery.machinery.config.LibXServerConfig;
 import net.minecraft.core.BlockPos;
@@ -29,9 +30,9 @@ public class BlockEntityMechanicalManaInfuser extends WorkingTile<StackListInput
     private final BaseItemStackHandler inventory;
 
     public BlockEntityMechanicalManaInfuser(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, ModRecipes.infuser, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalManaInfuser, 0, 3);
+        super(type, MasterfulBotanyCompat.isLoaded() ? ModRecipes.infuser : null, pos, state, LibXServerConfig.MaxManaCapacity.mechanicalManaInfuser, 0, 3);
         this.inventory = BaseItemStackHandler.builder(4)
-                .validator(stack -> this.level != null && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack, InfuserRecipe::getIngredients), 0, 1, 2)
+                .validator(stack -> this.level != null && MasterfulBotanyCompat.isLoaded() && Recipes.isItemValidInput(this.level, ModRecipes.infuser, stack, InfuserRecipe::getIngredients), 0, 1, 2)
                 .output(3)
                 .contentsChanged(() -> {
                     this.setChanged();
@@ -63,6 +64,11 @@ public class BlockEntityMechanicalManaInfuser extends WorkingTile<StackListInput
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean canMatchRecipes() {
+        return MasterfulBotanyCompat.isLoaded();
     }
 
     @Override
