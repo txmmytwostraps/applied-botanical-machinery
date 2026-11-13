@@ -64,7 +64,7 @@ public class BlockEntityMechanicalDaisy extends BlockEntityBase implements Ticki
     @Override
     protected void loadAdditional(@Nonnull ValueInput nbt) {
         super.loadAdditional(nbt);
-        nbt.child(TileTags.INVENTORY).ifPresent(this.inventory::deserialize);
+        nbt.child(TileTags.INVENTORY).ifPresent(input -> this.inventory.deserialize(Inventories.upgrade(input)));
         this.workingTicks = nbt.getIntArray(TileTags.WORKING_TICKS).filter(ticks -> ticks.length == 8).orElse(this.workingTicks);
     }
 

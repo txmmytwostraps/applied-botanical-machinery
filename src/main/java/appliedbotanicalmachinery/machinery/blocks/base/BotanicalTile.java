@@ -7,6 +7,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import appliedbotanicalmachinery.machinery.core.TileTags;
+import appliedbotanicalmachinery.util.Inventories;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
@@ -101,7 +102,7 @@ public abstract class BotanicalTile extends BlockEntityBase implements ManaPool,
     @Override
     protected void loadAdditional(@Nonnull ValueInput tag) {
         super.loadAdditional(tag);
-        this.getInventory().deserialize(tag.childOrEmpty(TileTags.INVENTORY));
+        this.getInventory().deserialize(Inventories.upgrade(tag.childOrEmpty(TileTags.INVENTORY)));
         this.mana = tag.getIntOr(TileTags.MANA, 0);
         this.inputKey = tag.getStringOr(TileTags.INPUT_KEY, this.inputKey);
         this.outputKey = tag.getStringOr(TileTags.OUTPUT_KEY, this.outputKey);

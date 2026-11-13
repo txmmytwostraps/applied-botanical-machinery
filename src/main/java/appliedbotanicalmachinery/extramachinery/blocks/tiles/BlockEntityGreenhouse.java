@@ -484,8 +484,8 @@ public class BlockEntityGreenhouse extends ExtraBotanicalTile implements EnergyH
     protected void loadAdditional(@Nonnull ValueInput nbt) {
         super.loadAdditional(nbt);
 
-        this.getFlowerInventory().deserialize(nbt.childOrEmpty("invFlower"));
-        this.getUpgradeInventory().deserialize(nbt.childOrEmpty("invUpgrade"));
+        this.getFlowerInventory().deserialize(Inventories.upgrade(nbt.childOrEmpty("invFlower")));
+        this.getUpgradeInventory().deserialize(Inventories.upgrade(nbt.childOrEmpty("invUpgrade")));
         this.fuelInventoryEmpty = nbt.getBooleanOr("fuelInventoryEmpty", false);
         this.energy = nbt.getIntOr("energyStorage", 0);
         this.energy_capacity = nbt.getIntOr("energyCapacity", 0);

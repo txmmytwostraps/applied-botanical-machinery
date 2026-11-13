@@ -4,6 +4,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
 
+import appliedbotanicalmachinery.util.Inventories;
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -94,7 +95,7 @@ public abstract class ExtraBotanicalTile extends BlockEntityBase implements Mana
     @Override
     protected void loadAdditional(@Nonnull ValueInput tag) {
         super.loadAdditional(tag);
-        this.getInventory().deserialize(tag.childOrEmpty("inv"));
+        this.getInventory().deserialize(Inventories.upgrade(tag.childOrEmpty("inv")));
         this.mana = tag.getIntOr("mana", 0);
         manaCap = tag.getIntOr("manaCap", 0);
 

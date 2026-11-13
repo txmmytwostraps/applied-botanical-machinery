@@ -358,10 +358,10 @@ public class BlockEntityDaisyPattern extends BlockEntityBase implements TickingB
 
     protected void loadAdditional(@Nonnull ValueInput nbt) {
         super.loadAdditional(nbt);
-        nbt.child("invBase").ifPresent(this.inventory::deserialize);
+        nbt.child("invBase").ifPresent(input -> this.inventory.deserialize(Inventories.upgrade(input)));
         this.workingTicks = nbt.getIntArray("workingTicks").filter(ticks -> ticks.length == this.workingTicks.length).orElse(this.workingTicks);
         if (this.inventoryUpgrade != null) {
-            nbt.child("inv").ifPresent(this.inventoryUpgrade::deserialize);
+            nbt.child("inv").ifPresent(input -> this.inventoryUpgrade.deserialize(Inventories.upgrade(input)));
         }
         nbt.read("tank", FluidStack.OPTIONAL_CODEC).ifPresent(loaded -> {
             if (!loaded.isEmpty() && Fluids.WATER.isSame(loaded.getFluid())) {
