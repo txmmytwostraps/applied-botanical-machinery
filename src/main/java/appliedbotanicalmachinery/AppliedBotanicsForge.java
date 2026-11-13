@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,6 +31,7 @@ import appeng.api.client.StorageCellModels;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.storage.StorageCells;
 import appeng.api.upgrades.Upgrades;
@@ -62,6 +64,9 @@ public class AppliedBotanicsForge {
             }
 
             AEKeyTypes.register(ManaKeyType.TYPE);
+            // Applied Botanics' key type id, for addons that look it up by id (Neo ECO AE Extension's MEGA mana cells)
+            BuiltInRegistries.REGISTRY.get(AEKeyType.REGISTRY_KEY.location())
+                    .addAlias(ResourceLocation.fromNamespaceAndPath("appbot", "mana"), ManaKeyType.TYPE.getId());
         });
 
         bus.addListener((RegisterCapabilitiesEvent event) -> {
